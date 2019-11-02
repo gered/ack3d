@@ -21,21 +21,29 @@
 #include "ackext.h"
 #include "iff.h"
 
-extern  int  errno;
-
 extern  char    rsName[];
 
-unsigned char      colordat[768];  // maximum it can be...256 colors
+unsigned char      colordat[768];  /* maximum it can be...256 colors    */
 
-unsigned char      cplanes[8][80]; // setting max at 640 pixels width
-                                   // thats 8 pixels per byte per plane
-unsigned char      *pplanes= &cplanes[0][0];  // for a form pbm
+unsigned char      cplanes[8][80]; /* setting max at 640 pixels width   */
+                   /* thats 8 pixels per byte per plane */
+unsigned char      *pplanes= &cplanes[0][0];  /* for a form pbm     */
 
 #define MAX_BUF_POS 4096
 
-        int         rdbufpos;
-        int         rdSize;
-        UCHAR       rdBuffer[MAX_BUF_POS+2];
+    int     rdbufpos;
+    int     rdSize;
+    UCHAR       rdBuffer[MAX_BUF_POS+2];
+
+short ReadNxtBlock(short handle)
+{
+    short   retlen;
+
+retlen = read(handle,rdBuffer,MAX_BUF_POS);
+rdbufpos = 0;
+
+return(retlen);
+}
 
 //=============================================================================
 //
@@ -48,19 +56,21 @@ if (rsHandle)
     {
     rsHandle = open(rsName,O_RDONLY|O_BINARY);
     if (rsHandle < 1)
-        rsHandle = 0;
+    rsHandle = 0;
     }
 
 }
 
+
 unsigned char *AckReadiff(char *picname)
    {
-   int    handle;
+   FILE     *pic;
+   short    handle;
    form_chunk   fchunk;
    ChunkHeader  chunk;
    BitMapHeader bmhd;
-   long length,fpos;
-   char value;     // must remain signed, no matter what. ignore any warnings.
+   long length;
+   char value;     /* must remain signed, no matter what. ignore any warnings. */
    short sofar;
    short width,height,planes;
    short pixw;
@@ -70,142 +80,144 @@ unsigned char *AckReadiff(char *picname)
     rdSize = MAX_BUF_POS;
 
     if (!rsHandle)
-        handle = open(picname,O_RDONLY|O_BINARY);
+    {
+    if ((pic = fopen(picname,"rb")) == NULL)
+        {
+        ErrorCode = ERR_BADPICNAME;
+        return(0L);
+        }
+    }
     else
+    {
+    pic = fdopen(rsHandle,"rb");
+    if (pic == NULL)
         {
-        handle = rsHandle;
-        lseek(rsHandle,rbaTable[(ULONG)picname],SEEK_SET);
+        ErrorCode = ERR_BADPICNAME;
+        return(0L);
         }
 
-    read(handle,&fchunk,sizeof(form_chunk));
+    fseek(pic,rbaTable[(ULONG)picname],SEEK_SET);
+    }
+   fread(&fchunk,1,sizeof(form_chunk),pic); /* read in the first 12 bytes*/
 
-    if (fchunk.type != FORM)
-        {
-        if (!rsHandle)
-            close(handle);
-
-                ErrorCode = ERR_INVALIDFORM;
-                return(0L);
-                }
-
-        if (fchunk.subtype != ID_PBM)
-                {
-        if (!rsHandle)
-            close(handle);
-                ErrorCode = ERR_NOPBM;
-                return(0L);
-                }
-        // now lets loop...Because the Chunks can be in any order!
-        while(1)
-                {
-        read(handle,&chunk,sizeof(ChunkHeader));
-                chunk.ckSize = ByteFlipLong(chunk.ckSize);
-                if (chunk.ckSize & 1) chunk.ckSize ++;  // must be word aligned
-                if(chunk.ckID == ID_BMHD)
-          {
-        read(handle,&bmhd,sizeof(BitMapHeader));
-          bmhd.w=iffswab(bmhd.w);                  // the only things we need.
-          bmhd.h=iffswab(bmhd.h);
-          destx = (unsigned char *)AckMalloc((bmhd.w * bmhd.h)+4);
-          if ( !destx )
-                 {
-         if (!rsHandle)
-            close(handle);
-                 ErrorCode = ERR_NOMEMORY;
-                 return(0L);
-                 }
-
-          savedestx = destx;
-
-          destx[0] = bmhd.w%256;
-          destx[1] = bmhd.w/256;
-          destx[2] = bmhd.h%256;
-          destx[3] = bmhd.h/256;
-          destx += 4;
-          continue;
-          }
-                if(chunk.ckID == ID_CMAP)
-          {
-          short i;
-          unsigned char r,g;
-
-      read(handle,colordat,chunk.ckSize);
-          for (i=0;i<768;i++)
-                        {
-                         r = colordat[i];   // r,g do not stand for red and green
-                        g = r >> 2;
-                        colordat[i] = g;
-                        }
-          continue;
-          }
-                if(chunk.ckID == ID_BODY)
-          {
-          for(height = 0; height<bmhd.h; height ++)
-                  {
-                  unsigned char *dest;
-                  dest = (unsigned char *)&(pplanes[0]); // point at first char
-                  sofar = bmhd.w;                        // number of bytes = 8
-                  if (sofar&1) sofar++;
-                  while (sofar)
-                {
-                if (bmhd.compression)
-                        {
-            value = 0;
-            read(handle,&value,1);
-                        if (value > 0)
-                                {
-                                short len;
-                                len = value +1;
-                                sofar -= len;
-                if (!(read(handle,dest,len)))
-                                {
-                    if (!rsHandle)
-                        close(handle);
-                            ErrorCode = ERR_BADPICFILE;
-                            AckFree(savedestx);
-                                return(0L);
-                                }
-                                dest +=len;
-                                }
-                        else
-                                {
-                                short count;
-                                count = -value; // get amount to dup
-                                count ++;
-                                sofar -= count;
-                value = 0;
-                read(handle,&value,1);
-                                while (--count >= 0) *dest++ = value;
-                                }
-                        }
-                else
-                        {
-            read(handle,dest,sofar);
-                        sofar = 0;
-                        }
-                }
-                  if (sofar < 0)
-                {
-        if (!rsHandle)
-            close(handle);
-                }
-                  memcpy(destx,pplanes,bmhd.w);
-                  destx += bmhd.w;
-                  }
-          break; // leave if we've unpacked the BODY
-          }
-
-        lseek(handle,chunk.ckSize,SEEK_CUR);
-                }
-
-    if (!rsHandle)
-        close(handle);
-        return((char *)savedestx);
+   if (fchunk.type != FORM)
+      {
+      CloseFile(pic);
+        ErrorCode = ERR_INVALIDFORM;
+        return(0L);
         }
 
+    if (fchunk.subtype != ID_PBM)
+        {
+        CloseFile(pic);
+        ErrorCode = ERR_NOPBM;
+        return(0L);
+        }
+    /* now lets loop...Because the Chunks can be in any order! */
+    while(1)
+        {
+        fread(&chunk,1,sizeof(ChunkHeader),pic);
+        chunk.ckSize = ByteFlipLong(chunk.ckSize);
+        if (chunk.ckSize & 1) chunk.ckSize ++;  /* must be word aligned */
+        if(chunk.ckID == ID_BMHD)
+      {
+      fread(&bmhd,1,sizeof(BitMapHeader),pic);
+      bmhd.w=iffswab(bmhd.w);          /* the only things we need. */
+      bmhd.h=iffswab(bmhd.h);
+      destx = (unsigned char *)AckMalloc((bmhd.w * bmhd.h)+4);
+      if ( !destx )
+         {
+         CloseFile(pic);
+         ErrorCode = ERR_NOMEMORY;
+         return(0L);
+         }
+
+      savedestx = destx;
+
+      destx[0] = bmhd.w%256;
+      destx[1] = bmhd.w/256;
+      destx[2] = bmhd.h%256;
+      destx[3] = bmhd.h/256;
+      destx += 4;
+      continue;
+      }
+        if(chunk.ckID == ID_CMAP)
+      {
+      short i;
+      unsigned char r,g;
+
+      fread(colordat,1,chunk.ckSize,pic);
+      for (i=0;i<768;i++)
+            {
+             r = colordat[i];     /* r,g do not stand for red and green */
+            g = r >> 2;
+            colordat[i] = g;
+            }
+      continue;
+      }
+        if(chunk.ckID == ID_BODY)
+      {
+      for(height = 0; height<bmhd.h; height ++)
+          {
+          unsigned char *dest;
+          dest = (unsigned char *)&(pplanes[0]); /* point at first char  */
+          sofar = bmhd.w;               /* number of bytes = 8  */
+          if (sofar&1) sofar++;
+          while (sofar)
+        {
+        if (bmhd.compression)
+            {
+            value=fgetc(pic);     /* get the next byte    */
+            if (value > 0)
+                {
+                short len;
+                len = value +1;
+                sofar -= len;
+                if(!(fread(dest,len,1,pic)))
+              {
+              CloseFile(pic);
+              ErrorCode = ERR_BADPICFILE;
+              AckFree(savedestx);
+              return(0L);
+              }
+                dest +=len;
+                }
+            else
+                {
+                short count;
+                count = -value; /* get amount to dup */
+                count ++;
+                sofar -= count;
+                value=fgetc(pic);
+                while (--count >= 0) *dest++ = value;
+                }
+            }
+        else
+            {
+            fread(dest,sofar,1,pic); /* just throw on plane */
+            sofar = 0;
+            }
+        }
+          if (sofar < 0)
+        {
+        CloseFile(pic);
+        }
+          _fmemcpy(destx,pplanes,bmhd.w);
+          destx += bmhd.w;
+          }
+      break; /* leave if we've unpacked the BODY*/
+      }
+
+        fseek(pic,chunk.ckSize,SEEK_CUR);
+        }
+
+    CloseFile(pic);
+    return((char *)savedestx);
+    }
 
 long ByteFlipLong(long NUMBER)
    {
+   /* Hey, I didn;t write this function!!! */
    long Y, T;
    short I;
 
@@ -222,6 +234,5 @@ short iffswab(unsigned short number)
    xx1 = number <<8; xx2 = number >>8; result = xx1|xx2;
    return(result);
    }
-
 // **** End of Source ****
 
