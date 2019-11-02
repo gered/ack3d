@@ -1466,115 +1466,6 @@ typedef struct {
 
 short near long_sqrt(long v);
 
-//=============================================================================
-//
-//=============================================================================
-void DoTest(void)
-{
-    int     done,cnt,Total;
-    int     xp,yp,ColX;
-    long    dx,dy;
-    UCHAR   *Video;
-    AWALL   aw[2];
-    short   i,minAngle,maxAngle,objAngle;
-
-AckRegisterStructure(ae);
-
-memset(ae->xGrid,0,(GRID_ARRAY*2));
-memset(ae->yGrid,0,(GRID_ARRAY*2));
-memset(Grid,0,(GRID_ARRAY*2));
-
-aw[0].x1 = 64;
-aw[0].y1 = 128;
-aw[0].x2 = 128;
-aw[0].y2 = 128;
-
-aw[1].x1 = 128;
-aw[1].y1 = 128;
-aw[1].x2 = 128;
-aw[1].y2 = 64;
-Total = 2;
-Video = (UCHAR *)0xA0000;
-done = 0;
-xp = yp = 256;
-
-
-while (!done)
-    {
-    memset(ae->ScreenBuffer,0,64000);
-    minAngle = ae->PlayerAngle - (INT_ANGLE_32 + 10);
-    if (minAngle < 0)
-    minAngle += INT_ANGLE_360;
-
-    maxAngle = ae->PlayerAngle + (INT_ANGLE_32 + 10);
-    if (maxAngle >= INT_ANGLE_360)
-    maxAngle -= INT_ANGLE_360;
-
-    xp = ae->xPlayer;
-    yp = ae->yPlayer;
-
-    for (cnt = 0; cnt < Total; cnt++)
-    {
-    dx = aw[cnt].x1 - xp;
-    dy = aw[cnt].y1 - yp;
-    aw[cnt].d1 = long_sqrt((dx*dx)+(dy*dy));
-    objAngle = AckGetObjectAngle(dx,dy);
-    dx = aw[cnt].x2 - xp;
-    dy = aw[cnt].y2 - yp;
-    aw[cnt].d2 = long_sqrt((dx*dx)+(dy*dy));
-
-    if (minAngle > maxAngle)
-        {
-        if (objAngle >= minAngle)
-        ColX = objAngle - minAngle;
-        else
-        ColX = (objAngle+INT_ANGLE_360) - minAngle;
-        }
-    else
-        {
-        ColX = objAngle - minAngle;
-        }
-
-    if (ColX > -40 && ColX < 320)
-        DrawBmpBox(ColX,100,aw[cnt].x2,100,aw[cnt].d1,aw[cnt].d2);
-    }
-    memmove(Video,ae->ScreenBuffer,64000);
-
-    if (AckKeys[ESCAPE_KEY])
-    break;
-
-    if (AckKeys[LEFT_ARROW_KEY])
-    {
-    ae->PlayerAngle--;
-    if (ae->PlayerAngle < 0)
-        ae->PlayerAngle += INT_ANGLE_360;
-    }
-
-    if (AckKeys[RIGHT_ARROW_KEY])
-    {
-    ae->PlayerAngle++;
-    if (ae->PlayerAngle >= INT_ANGLE_360)
-        ae->PlayerAngle -= INT_ANGLE_360;
-    }
-
-    if (AckKeys[UP_ARROW_KEY])
-    {
-    AckMovePOV(ae->PlayerAngle,16);
-    }
-
-    if (AckKeys[DOWN_ARROW_KEY])
-    {
-    i = ae->PlayerAngle + INT_ANGLE_180;
-    if (i >= INT_ANGLE_360)
-        i -= INT_ANGLE_360;
-
-    AckMovePOV(i,16);
-    }
-
-    }
-
-
-}
 
 //=============================================================================
 //
@@ -1696,7 +1587,7 @@ StrAmount = MAX_STR_AMOUNT;
 AckSetupKeyboard();
 AckSetupTimer();
 
-StartBGmusic();
+//StartBGmusic();
 
 // Switch to mode 13
 AckSetVGAmode();
@@ -1719,7 +1610,7 @@ SetMouseCursor(120,160);
 fpos = 64;
 DemoFlag = 0;
 if (DemoPtr != NULL) DemoFlag = 1;
-TimerEnd = AckTimerCounter + 180;
+TimerEnd = AckTimerCounter + 18;
 
 
 // MUST register each ACKENG structure once before use and after AckInitialize
@@ -1825,14 +1716,14 @@ while (!done)
         {
         AckSetObjectType(ae,j,NO_WALK);
         ae->ObjList[j]->Flags &= ~OF_ANIMDONE;
-        ObjCounter[j] = AckTimerCounter + 18 + (rand() % 120);
+        ObjCounter[j] = AckTimerCounter + 18 + (rand() % 20);
         }
 
 
 
     if (AckTimerCounter > ObjCounter[j])
         {
-        ObjCounter[j] = AckTimerCounter + 180 + (rand() % 180);
+        ObjCounter[j] = AckTimerCounter + 18 + (rand() % 18);
         if (ae->ObjList[j]->CurrentType == NO_WALK)
         AckSetObjectType(ae,j,NO_ATTACK);
         else
@@ -1860,7 +1751,7 @@ while (!done)
         if (AckTimerCounter > TimerEnd)
             {
             DemoFlag++;
-            TimerEnd = AckTimerCounter + 540;
+            TimerEnd = AckTimerCounter + 54;
             }
         break;
 
@@ -1869,7 +1760,7 @@ while (!done)
         if (AckTimerCounter > TimerEnd)
             {
             DemoFlag = 1;
-            TimerEnd = AckTimerCounter + 2160;
+            TimerEnd = AckTimerCounter + 216;
             }
         break;
 
@@ -1958,7 +1849,7 @@ while (!done)
 
     AckDisplayScreen();     // Copy ScrnBuffer to actual video
     CkEnd = AckTimerCounter - CkStart;
-    if (!CkEnd) CkEnd = 1;
+    if (!CkEnd) CkEnd = 4;
 
     TurnFactor = INT_ANGLE_1 * CkEnd;
     MoveFactor = 3 * CkEnd;
@@ -2172,7 +2063,7 @@ while (!done)
     }
     }
 
-EndBGmusic();
+//EndBGmusic();
 ShutDownFlag = 1;
 AckWrapUp(ae);
 AckSetTextmode();
