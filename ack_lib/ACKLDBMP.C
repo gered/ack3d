@@ -31,7 +31,7 @@ pos = col * 64;
 for (i = 0; i < 64; i++)
     {
     if (bmp[pos++])
-	return(1);
+    return(1);
     }
 
 return(0);
@@ -65,21 +65,21 @@ if (ae->bmLoadType == BMLOAD_BBM)
     buf = AckReadiff(BitmapName);
 
 if (ae->bmLoadType == BMLOAD_GIF)
-	buf = AckReadgif(BitmapName);
+    buf = AckReadgif(BitmapName);
 
 if (ae->bmLoadType == BMLOAD_PCX)
-	buf = AckReadPCX(BitmapName);
+    buf = AckReadPCX(BitmapName);
 
 if (buf == NULL)
-	return(ERR_LOADINGBITMAP);
+    return(ERR_LOADINGBITMAP);
 
 x = (*(short *)buf);
 y = (*(short *)&buf[2]);
 if ((x*y) != BITMAP_SIZE)
-	{
-	AckFree(buf);
-	return(ERR_INVALIDFORM);
-	}
+    {
+    AckFree(buf);
+    return(ERR_INVALIDFORM);
+    }
 
 memmove(buf,&buf[4],BITMAP_SIZE);
 bFlag = 1;
@@ -105,13 +105,13 @@ if (!bFlag)
     {
     handle = _lopen(BitmapName,OF_READ);
     if (handle < 1)
-    	{
-    	AckFree(buf);
-    	AckFree(bmp);
-    	return(ERR_BADFILE);
-    	}
+        {
+        AckFree(buf);
+        AckFree(bmp);
+        return(ERR_BADFILE);
+        }
 
-    read(handle,buf,4);		// Skip width and height for now
+    read(handle,buf,4);     // Skip width and height for now
     read(handle,buf,BITMAP_SIZE);
     _lclose(handle);
     }
@@ -121,11 +121,11 @@ for (y = 0; y < BITMAP_HEIGHT; y++)
     sPos = y;
     dPos = y * BITMAP_WIDTH;
     for (x = 0; x < BITMAP_WIDTH; x++)
-    	{
-    	ch = buf[sPos];
-    	bmp[dPos++] = ch;
-    	sPos += BITMAP_WIDTH;
-    	}
+        {
+        ch = buf[sPos];
+        bmp[dPos++] = ch;
+        sPos += BITMAP_WIDTH;
+        }
     }
 
 
@@ -135,7 +135,7 @@ memset(bmpFlags,0,BITMAP_WIDTH);
 for (x = 0; x < BITMAP_WIDTH; x++)
     {
     if (!BlankSlice(x,bmp))
-	bmpFlags[x] = 1;
+    bmpFlags[x] = 1;
 
     }
 
@@ -188,7 +188,7 @@ if (ae->ObjList[ObjNumber] == NULL)
     ae->ObjList[ObjNumber] = (NEWOBJECT *)AckMalloc(sizeof(NEWOBJECT));
 
     if (ae->ObjList[ObjNumber] == NULL)
-	return(ERR_NOMEMORY);
+    return(ERR_NOMEMORY);
 
     memset(ae->ObjList[ObjNumber],0,sizeof(NEWOBJECT));
     }
@@ -213,28 +213,28 @@ short AckSetObjectType(ACKENG *ae,short oNum,short oType)
 switch (oType)
     {
     case NO_CREATE:
-	os = &ae->ObjList[oNum]->Create;
-	break;
+    os = &ae->ObjList[oNum]->Create;
+    break;
 
     case NO_DESTROY:
-	os = &ae->ObjList[oNum]->Destroy;
-	break;
+    os = &ae->ObjList[oNum]->Destroy;
+    break;
 
     case NO_WALK:
-	os = &ae->ObjList[oNum]->Walk;
-	break;
+    os = &ae->ObjList[oNum]->Walk;
+    break;
 
     case NO_ATTACK:
-	os = &ae->ObjList[oNum]->Attack;
-	break;
+    os = &ae->ObjList[oNum]->Attack;
+    break;
 
     case NO_INTERACT:
-	os = &ae->ObjList[oNum]->Interact;
-	break;
+    os = &ae->ObjList[oNum]->Interact;
+    break;
 
     default:
-	result = ERR_BADOBJTYPE;
-	break;
+    result = ERR_BADOBJTYPE;
+    break;
     }
 
 if (!result)
@@ -253,16 +253,16 @@ if (ae->ObjList[oNum]->Flags & OF_MOVEABLE)
     {
     j = 0;
     for (i = 0; i < MoveObjectCount; i++)
-	{
-	if (MoveObjectList[i] == oNum)
-	    {
-	    j = 1;
-	    break;
-	    }
-	}
+    {
+    if (MoveObjectList[i] == oNum)
+        {
+        j = 1;
+        break;
+        }
+    }
 
     if (!j)
-	MoveObjectList[MoveObjectCount++] = oNum;
+    MoveObjectList[MoveObjectCount++] = oNum;
 
     i = (ae->ObjList[oNum]->y & 0xFFC0) + (ae->ObjList[oNum]->x >> 6);
     ObjGrid[i] = 0;
@@ -292,28 +292,28 @@ if (os->flags & OF_MULTIVIEW)
 switch (oType)
     {
     case NO_CREATE:
-	memmove(&ae->ObjList[oNum]->Create,os,sizeof(OBJSEQ));
-	break;
+    memmove(&ae->ObjList[oNum]->Create,os,sizeof(OBJSEQ));
+    break;
 
     case NO_DESTROY:
-	memmove(&ae->ObjList[oNum]->Destroy,os,sizeof(OBJSEQ));
-	break;
+    memmove(&ae->ObjList[oNum]->Destroy,os,sizeof(OBJSEQ));
+    break;
 
     case NO_WALK:
-	memmove(&ae->ObjList[oNum]->Walk,os,sizeof(OBJSEQ));
-	break;
+    memmove(&ae->ObjList[oNum]->Walk,os,sizeof(OBJSEQ));
+    break;
 
     case NO_ATTACK:
-	memmove(&ae->ObjList[oNum]->Attack,os,sizeof(OBJSEQ));
-	break;
+    memmove(&ae->ObjList[oNum]->Attack,os,sizeof(OBJSEQ));
+    break;
 
     case NO_INTERACT:
-	memmove(&ae->ObjList[oNum]->Interact,os,sizeof(OBJSEQ));
-	break;
+    memmove(&ae->ObjList[oNum]->Interact,os,sizeof(OBJSEQ));
+    break;
 
     default:
-	result = ERR_BADOBJTYPE;
-	break;
+    result = ERR_BADOBJTYPE;
+    break;
     }
 
 if (!result && ae->ObjList[oNum]->CurrentBitmaps == NULL)
@@ -324,4 +324,3 @@ return(result);
 
 // **** End of Source ****
 
-

@@ -14,7 +14,7 @@
 #define DWORD unsigned long
 
 long ByteFlipLong(long);
-UCHAR *Readiff(char *);	 /* this returns back a bitmap with a picture in it*/
+UCHAR *Readiff(char *);  /* this returns back a bitmap with a picture in it*/
 
 typedef LONG ID;  /* An ID is four printable ASCII chars like FORM or DPPV */
 
@@ -30,23 +30,23 @@ typedef LONG ID;  /* An ID is four printable ASCII chars like FORM or DPPV */
 
 typedef struct
     {
-    ID	  type;
+    ID    type;
     long  cksize;
-    ID	  subtype;
+    ID    subtype;
     } form_chunk;
 
 typedef struct {
-    ID	   ckID;
+    ID     ckID;
     LONG  ckSize;
     } ChunkHeader;
 
 typedef struct {
-    ID	   ckID;
+    ID     ckID;
     LONG  ckSize;
     UBYTE ckData[ 1 /*REALLY: ckSize*/ ];
     } Chunk;
 
-#define ID_PBM	MakeID('P','B','M',' ')
+#define ID_PBM  MakeID('P','B','M',' ')
 #define ID_ILBM MakeID('I','L','B','M')
 #define ID_BMHD MakeID('B','M','H','D')
 #define ID_CMAP MakeID('C','M','A','P')
@@ -73,8 +73,8 @@ typedef struct {
     UWORD  x, y;         /* position for this image */
     UBYTE nPlanes;      /* # source bitplanes */
     UBYTE masking;    /* masking technique */
-    UBYTE compression;	/* compression algoithm */
-    UBYTE pad1;		/* UNUSED.  For consistency, put 0 here.*/
+    UBYTE compression;  /* compression algoithm */
+    UBYTE pad1;     /* UNUSED.  For consistency, put 0 here.*/
     UWORD transparentColor;   /* transparent "color number" */
     UBYTE xAspect, yAspect;   /* aspect ratio, a rational number x/y */
     UWORD  pageWidth, pageHeight;  /* source "page" size in pixels */
@@ -95,4 +95,3 @@ void ByteFlipShort(short *);
 short iffswab(unsigned short);
 short swab(unsigned short);
 
-

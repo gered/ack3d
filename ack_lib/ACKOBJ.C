@@ -25,8 +25,8 @@ extern  void    (*WallMaskRtn)(void);
 
 //北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北
 // Internal function called by FindObject(). Your programs may call this
-// function if they need to calculate the angle between two points. dx and 
-// dy represent the deltas between the two points. (i.e. dx = x1 - x and 
+// function if they need to calculate the angle between two points. dx and
+// dy represent the deltas between the two points. (i.e. dx = x1 - x and
 // dy = y1 - y)
 //
 // Quadrants
@@ -40,7 +40,7 @@ extern  void    (*WallMaskRtn)(void);
 //              positive.
 //
 // The angle between the two points is determined by using the formula:
-// tan (angle) = dy/dx. The look-up table LongTanTable[] is used to 
+// tan (angle) = dy/dx. The look-up table LongTanTable[] is used to
 // access tangent values of angles.
 //北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北
 short AckGetObjectAngle(long dx,long dy)
@@ -88,7 +88,7 @@ if (dx < 0)
 // as used in our tangent table. Then, we divide dy by dx (rise/run)
 // to get the ratio so we can determine the tangent of the angle between
 // the two pints. We use the ratio to search the tangent table
-// and the index that is returned tells us what the actual angle is. 
+// and the index that is returned tells us what the actual angle is.
 // We only need to check angles from 0 to 90 degrees. Later, the angle
 // will be adjusted to take into account which quadrant we are in.
 //=======================================================================
@@ -101,8 +101,8 @@ objAngle = 0;           // Initialize angle to 0
 
 //=============================================================================
 // Now we use a binary lookup trick to speed up the search. This invloves
-// a test to see if the angle is between o and 45 degrees or between 45 and 
-// 90 degrees. Then, we search the list sequentially to find the first value 
+// a test to see if the angle is between o and 45 degrees or between 45 and
+// 90 degrees. Then, we search the list sequentially to find the first value
 // higher than our ratio.
 //=============================================================================
 Beg = 0;    // Assume midpoint between 0 and 45 degrees
@@ -166,7 +166,7 @@ for (i = 0; i < 16; i++)
     {
     result += result;
     high = (high << 2) | ((low >>30) & 0x3);
-    low <<= 2;                                // Shift left by 2 
+    low <<= 2;                                // Shift left by 2
     tmp = result + result + 1;
     if (high >= tmp)
         {
@@ -373,7 +373,7 @@ if (FoundObjectCount)       // Make sure objects were found during ray casting
             ObjNum = oPtr->CurrentBitmaps[j];
             }
 
-        // Done processing multiple sides. Next, find the 
+        // Done processing multiple sides. Next, find the
         // ending column based on the starting column plus the scaled
         // width of the object.
         ColEnd = NewX + wt;
@@ -383,7 +383,7 @@ if (FoundObjectCount)       // Make sure objects were found during ray casting
         bmpFlags = &wall[BITMAP_SIZE];
         j = distance;
 
-        // Loop from starting column to ending column and fold in the 
+        // Loop from starting column to ending column and fold in the
         // object into the appropriate slice structure.
         for (Column = NewX - wt; Column < ColEnd; Column++)
             {
@@ -430,9 +430,9 @@ if (FoundObjectCount)       // Make sure objects were found during ray casting
                                 }
                             // Fill in the slice structure with the
                             // info about the object
-                            sa->Distance = distance; 
-                            sa->bNumber  = ObjNum;   
-                            sa->bColumn  = BmpColumn; 
+                            sa->Distance = distance;
+                            sa->bNumber  = ObjNum;
+                            sa->bColumn  = BmpColumn;
                             sa->bMap     = omaps;
                             sa->Active   = 1;
                             sa->Type     = ST_OBJECT;

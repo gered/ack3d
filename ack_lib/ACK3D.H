@@ -2,16 +2,16 @@
 // This file contains the main data structures and definitions
 // required to support the ACK-3D engine. The data structures defined are
 // the ones you use to set up the communication links between your application
-// and the ACK-3D library. The four main data structures set up in this header file 
+// and the ACK-3D library. The four main data structures set up in this header file
 // include: ACKENG, DOORS, NEWOBJECT, and OBJSEQ.
 
-// USED TO RID OURSELVES OF THE MANY CASTING PROBLEMS 
+// USED TO RID OURSELVES OF THE MANY CASTING PROBLEMS
 #define CAST(t,f) (t)(f)
 
-// Internal definitions used to simplify field declarations. 
-typedef unsigned long	ULONG;
-typedef unsigned short	USHORT;
-typedef unsigned char	UCHAR;
+// Internal definitions used to simplify field declarations.
+typedef unsigned long   ULONG;
+typedef unsigned short  USHORT;
+typedef unsigned char   UCHAR;
 
 // Error codes returned from ACK-3D functions. You can use these error codes in your
 //    applications to debug the function calls.
@@ -72,10 +72,10 @@ typedef unsigned char	UCHAR;
 
 // Defines required to support bitmaps.
 // Each bitmap used in ACK-3D is 64x64 pixels in size.
-#define BITMAP_WIDTH	64
-#define BITMAP_HEIGHT	64
-#define BITMAP_SHIFT	6	// Bits to shift for bitmap width
-#define BITMAP_SIZE	(BITMAP_WIDTH * BITMAP_HEIGHT)
+#define BITMAP_WIDTH    64
+#define BITMAP_HEIGHT   64
+#define BITMAP_SHIFT    6   // Bits to shift for bitmap width
+#define BITMAP_SIZE (BITMAP_WIDTH * BITMAP_HEIGHT)
 
 // Defines used to set up map grid. The grid is used with the ACKENG structure.
 // Each grid component is 64x64 units in size.
@@ -89,13 +89,13 @@ typedef unsigned char	UCHAR;
 #define GRID_XMAXLONG   (GRID_XMAX * FP_MULT)
 #define GRID_YMAXLONG   (GRID_YMAX * FP_MULT)
 // The main grid array used with the ACKENG structure
-#define GRID_ARRAY	(GRID_WIDTH+2) * (GRID_HEIGHT+2)
+#define GRID_ARRAY  (GRID_WIDTH+2) * (GRID_HEIGHT+2)
 
 // Defines to specify maximum sizes for the various components used with
 // ACK-3D, including wall bitmaps, light zones, shading palette, views, multi-
 // height walls, doors, object bitmaps, and objects.
 #define MAX_WALLBMPS    256     // Total wall bitmaps allowed
-#define MAX_ZONES       8		// Number of light zones
+#define MAX_ZONES       8       // Number of light zones
 #define PAL_SIZE        4096    // Shading palette ranges
 #define MAX_VIEWS       47      // Total sides to an object
 #define MAX_MULTI       3       // Max height for multi-height walls
@@ -105,32 +105,32 @@ typedef unsigned char	UCHAR;
 #define MAX_OBJECTS     254     // Total objects allowed in map
 
 // Defines to set up different wall types.
-#define WALL_TYPE_TRANS	0x0800	// Transparent wall
-#define WALL_TYPE_MULTI	0x0400	// Wall is 1.5 times high
-#define WALL_TYPE_UPPER	0x0200	// Wall is above floor level
-#define WALL_TYPE_PASS	0x0100	// Wall can be walked through
+#define WALL_TYPE_TRANS 0x0800  // Transparent wall
+#define WALL_TYPE_MULTI 0x0400  // Wall is 1.5 times high
+#define WALL_TYPE_UPPER 0x0200  // Wall is above floor level
+#define WALL_TYPE_PASS  0x0100  // Wall can be walked through
 
-#define TYPE_WALL	0
-#define TYPE_OBJECT	1
+#define TYPE_WALL   0
+#define TYPE_OBJECT 1
 
 #define RES_LOW     1   // Resolution is low for walls, floor, and ceiling
-#define RES_MEDIUM	2   // Resolution is low only for floor and ceiling
+#define RES_MEDIUM  2   // Resolution is low only for floor and ceiling
 
 //***************************************************************
 // Definitions and data structures used to represent and process objects.
 
 // These defines specify the two settings for the Active field in the NEWOBJECT structure.
-#define OBJECT_ACTIVE   1		// Active and may be moveable
-#define OBJECT_INACTIVE 0		// Won't be considered moveable
+#define OBJECT_ACTIVE   1       // Active and may be moveable
+#define OBJECT_INACTIVE 0       // Won't be considered moveable
 
 // These defines specify values for the Flags field in the NEWOBJECT structure.
 // They are used to indicate the type of animation available for an object.
-#define OF_PASSABLE     0x80	// Object can be walked thru
-#define OF_ANIMATE      0x40	// Object bitmaps are animated
-#define OF_MOVEABLE     0x20	// Object will move X,Y
-#define OF_MULTIVIEW    0x10	// Object has multiple sides
-#define OF_ANIMONCE     0x08	// Animate once then stop
-#define OF_ANIMDONE     0x04	// One shot animation is completed
+#define OF_PASSABLE     0x80    // Object can be walked thru
+#define OF_ANIMATE      0x40    // Object bitmaps are animated
+#define OF_MOVEABLE     0x20    // Object will move X,Y
+#define OF_MULTIVIEW    0x10    // Object has multiple sides
+#define OF_ANIMONCE     0x08    // Animate once then stop
+#define OF_ANIMDONE     0x04    // One shot animation is completed
 
 // These defines specify values for the CurrentType field in the NEWOBJECT structure.
 // They are used to indicate the current status of the object.
@@ -142,39 +142,39 @@ typedef unsigned char	UCHAR;
 #define NO_INTERACT 5
 
 // The Object Sequence structure. This structure is used by the NEWOBJECT structure.
-#define MAX_OBJ_BITMAPS	32  // Max bitmaps per sequence type
+#define MAX_OBJ_BITMAPS 32  // Max bitmaps per sequence type
 typedef struct {
-	UCHAR	flags;                      // Flags for this sequence
-	UCHAR	bitmaps[MAX_OBJ_BITMAPS];   // Bitmap numbers in this sequence
-	short	bmSides;                    // Number of views in sequence
-	short	bmBitmapsPerView;           // Number of bitmaps in each view
-	short	AngleFactor;                // Used internally to support the object sequence
-	UCHAR	MaxBitmaps;                 // Max bitmaps in this sequence
-	} OBJSEQ;
+    UCHAR   flags;                      // Flags for this sequence
+    UCHAR   bitmaps[MAX_OBJ_BITMAPS];   // Bitmap numbers in this sequence
+    short   bmSides;                    // Number of views in sequence
+    short   bmBitmapsPerView;           // Number of bitmaps in each view
+    short   AngleFactor;                // Used internally to support the object sequence
+    UCHAR   MaxBitmaps;                 // Max bitmaps in this sequence
+    } OBJSEQ;
 
 // The defininition of the main object structure--NEWOBJECT.
 typedef struct {
-	char	Active;             // Determines object status: 0=Inactive, 1=Active
-	UCHAR	Flags;              // Misc flags for this object
-	char	Speed;              // Speed of obj (used by application)
-	short	Dir;                // Direction of obj (used by application)
-	short	x;                  // Current x,y location in grid
-	short	y;
-	short	mPos;               // Current map location in grid
-	UCHAR	id;                 // Object id
-	short	CurrentType;        // Create, Destroy, etc. is current
-	UCHAR	*CurrentBitmaps;    // Current bitmap list
-	short	Sides;              // Number of views
-	short	aFactor;			// Angle factor
-	short	BitmapsPerView;		// Number of bitmaps in each view
-	UCHAR	CurrentBm;          // Current bitmap number
-	UCHAR	Maxbm;              // Max bitmap number for this view
-	OBJSEQ	Create;             // Stores structures for the 5 object sequences
-	OBJSEQ	Destroy;
-	OBJSEQ	Walk;
-	OBJSEQ	Attack;
-	OBJSEQ	Interact;
-	} NEWOBJECT;
+    char    Active;             // Determines object status: 0=Inactive, 1=Active
+    UCHAR   Flags;              // Misc flags for this object
+    char    Speed;              // Speed of obj (used by application)
+    short   Dir;                // Direction of obj (used by application)
+    short   x;                  // Current x,y location in grid
+    short   y;
+    short   mPos;               // Current map location in grid
+    UCHAR   id;                 // Object id
+    short   CurrentType;        // Create, Destroy, etc. is current
+    UCHAR   *CurrentBitmaps;    // Current bitmap list
+    short   Sides;              // Number of views
+    short   aFactor;            // Angle factor
+    short   BitmapsPerView;     // Number of bitmaps in each view
+    UCHAR   CurrentBm;          // Current bitmap number
+    UCHAR   Maxbm;              // Max bitmap number for this view
+    OBJSEQ  Create;             // Stores structures for the 5 object sequences
+    OBJSEQ  Destroy;
+    OBJSEQ  Walk;
+    OBJSEQ  Attack;
+    OBJSEQ  Interact;
+    } NEWOBJECT;
 
 //**************************************************************************
 // The definitions and data structure that are used to represent doors.
@@ -183,101 +183,101 @@ typedef struct {
 #define DEFAULT_DOOR_SPEED  2
 // These defines are used to set the Type field.
 // Obsolete door codes since any wall can be a door
-#define DOOR_XCODE      60		// Map codes for the various doors
+#define DOOR_XCODE      60      // Map codes for the various doors
 #define DOOR_SIDECODE   61
 #define DOOR_YCODE      62
 
 // These two defines are used to set the Flags field in the DOORS structure.
-#define DOOR_OPENING        0x80	// Set if door is currently opening
-#define DOOR_CLOSING        0x40	// Set if door is currently closing
+#define DOOR_OPENING        0x80    // Set if door is currently opening
+#define DOOR_CLOSING        0x40    // Set if door is currently closing
 // Other attributes that can be assigned to the Flags field.
-#define DOOR_TYPE_SECRET    0x8000		// Secret door
-#define DOOR_LOCKED         0x4000		// Locked door
-#define DOOR_TYPE_SLIDE     0x2000		// Sliding door
-#define DOOR_TYPE_SPLIT     0x1000		// Split door
+#define DOOR_TYPE_SECRET    0x8000      // Secret door
+#define DOOR_LOCKED         0x4000      // Locked door
+#define DOOR_TYPE_SLIDE     0x2000      // Sliding door
+#define DOOR_TYPE_SPLIT     0x1000      // Split door
 
 // The main DOORS structure.
 typedef struct {
-	short   mPos;		// Stores position info for a door
-	short   mPos1;
-	short   mCode; 		// Bitmap ID of the door
-	short   mCode1;
-	UCHAR   ColOffset;	// Column offset for the door
-	char    Speed;		// Speed setting for opening and closing the door
-	char    Type;		// Code for the door type
-	UCHAR   Flags;		// Door attribute settings
+    short   mPos;       // Stores position info for a door
+    short   mPos1;
+    short   mCode;      // Bitmap ID of the door
+    short   mCode1;
+    UCHAR   ColOffset;  // Column offset for the door
+    char    Speed;      // Speed setting for opening and closing the door
+    char    Type;       // Code for the door type
+    UCHAR   Flags;      // Door attribute settings
 } DOORS;
 
 //***********************************************************************
 // The defines and data structure for the main interface structure--ACKENG.
 
 // These defines are used for the LightFlag field in the ACKENG structure.
-#define SHADING_ON	1	// Set if distance shading is on
-#define SHADING_OFF	0
+#define SHADING_ON  1   // Set if distance shading is on
+#define SHADING_OFF 0
 
 // These defines are used for the SysFlags field in the ACKENG structure.
-#define SYS_SOLID_BACK	0x8000		// On if solid color bkgd vs picture
-#define SYS_SOLID_FLOOR 0x4000		// On if solid vs texture floor
-#define SYS_SOLID_CEIL	0x2000		// On if solid vs texture ceiling
-#define SYS_NO_WALLS	0x1000		// On if walls are NOT to display
-#define SYS_SINGLE_BMP	0x0800		// On if 1 bitmap for floor & ceiling
+#define SYS_SOLID_BACK  0x8000      // On if solid color bkgd vs picture
+#define SYS_SOLID_FLOOR 0x4000      // On if solid vs texture floor
+#define SYS_SOLID_CEIL  0x2000      // On if solid vs texture ceiling
+#define SYS_NO_WALLS    0x1000      // On if walls are NOT to display
+#define SYS_SINGLE_BMP  0x0800      // On if 1 bitmap for floor & ceiling
 
 // These defines indicate how bitmaps will be loaded. they are used with the bmLoadType field.
-#define BMLOAD_BBM	0	// Bitmaps will be loaded using BBM format
-#define BMLOAD_GIF	1	// Bitmaps will be loaded using GIF format
-#define BMLOAD_PCX	2	// Bitmaps will be loaded using PCX format
+#define BMLOAD_BBM  0   // Bitmaps will be loaded using BBM format
+#define BMLOAD_GIF  1   // Bitmaps will be loaded using GIF format
+#define BMLOAD_PCX  2   // Bitmaps will be loaded using PCX format
 
 // The main interface structure used between the application and the ACK-3D engine.
 // This structure MUST be allocated or defined before any ACK-3D calls are made.
 typedef struct {
-	USHORT      xGrid[GRID_ARRAY];      // Map for X walls
-	USHORT      yGrid[GRID_ARRAY];      // Map for Y walls
-	UCHAR       *mxGrid[GRID_ARRAY];	// Wall data for multi-height X walls
-	UCHAR       *myGrid[GRID_ARRAY];	// Wall data for multi-height Y walls
-	UCHAR       *bMaps[MAX_WALLBMPS];	// Pointers to wall bitmaps
-	UCHAR       *oMaps[MAX_OBJBMPS];    // Pointers to object bitmaps
+    USHORT      xGrid[GRID_ARRAY];      // Map for X walls
+    USHORT      yGrid[GRID_ARRAY];      // Map for Y walls
+    UCHAR       *mxGrid[GRID_ARRAY];    // Wall data for multi-height X walls
+    UCHAR       *myGrid[GRID_ARRAY];    // Wall data for multi-height Y walls
+    UCHAR       *bMaps[MAX_WALLBMPS];   // Pointers to wall bitmaps
+    UCHAR       *oMaps[MAX_OBJBMPS];    // Pointers to object bitmaps
 
-	UCHAR       *ScreenBuffer;      // 64k buffer for screen
-	UCHAR       *OverlayBuffer;     // Buffer for compiled overlay
-	UCHAR       *BkgdBuffer;        // Buffer for ceiling, floor
+    UCHAR       *ScreenBuffer;      // 64k buffer for screen
+    UCHAR       *OverlayBuffer;     // Buffer for compiled overlay
+    UCHAR       *BkgdBuffer;        // Buffer for ceiling, floor
 
-	short       xPlayer;            // X value from 0 to 4095--stores current position
-	short       yPlayer;            // Y value from 0 to 4095--stores current position
-	short       PlayerAngle;        // Angle value from 0 to 1799
+    short       xPlayer;            // X value from 0 to 4095--stores current position
+    short       yPlayer;            // Y value from 0 to 4095--stores current position
+    short       PlayerAngle;        // Angle value from 0 to 1799
 
-	short       DoorSpeed;          // Door open/close speed
-	short       NonSecretCode;      //  Wall code for secret door
+    short       DoorSpeed;          // Door open/close speed
+    short       NonSecretCode;      //  Wall code for secret door
 
-	UCHAR       TopColor;           // Base color of ceiling
-	UCHAR       BottomColor;        // Base color of floor
-	UCHAR       FloorBitmap;        // Bitmap number for single floor
-	UCHAR       CeilBitmap;         // Bitmap number for single ceiling
+    UCHAR       TopColor;           // Base color of ceiling
+    UCHAR       BottomColor;        // Base color of floor
+    UCHAR       FloorBitmap;        // Bitmap number for single floor
+    UCHAR       CeilBitmap;         // Bitmap number for single ceiling
 
-	UCHAR       LightFlag;          // 0 = no light shading, 1 = ON
-	UCHAR       PalTable[PAL_SIZE]; // 16 zones of 256 colors each
+    UCHAR       LightFlag;          // 0 = no light shading, 1 = ON
+    UCHAR       PalTable[PAL_SIZE]; // 16 zones of 256 colors each
 
-	short       WinStartX;          // Value of left side of viewport
-	short       WinStartY;          // Value of top side of viewport
-	short       WinEndX;            // Value of right side
-	short       WinEndY;            // Value of bottom side
-	short       CenterRow;          // Value of (WinEndY-WinStartY)/2
-	short       CenterOffset;       // Center row times bytes per row
-	short       WinWidth;           // Value of WinEndX - WinStartX
-	short       WinHeight;          // Value of WinEndY - WinStartY
-	USHORT      WinLength;          // Number of dwords in window
-	USHORT      WinStartOffset;     // Value of WinStartY * 320
-	USHORT      SysFlags;           // General system flags--determines display attributes
-	UCHAR       bmLoadType;         // Bitmap load flags (BBM, GIF, PCX, etc)
-	short       MaxObjects;         // Total number of objects in map
-	NEWOBJECT   *ObjList[MAX_OBJECTS+1];    // Current objects in map
-	DOORS       Door[MAX_DOORS];    // Doors moving at one time
+    short       WinStartX;          // Value of left side of viewport
+    short       WinStartY;          // Value of top side of viewport
+    short       WinEndX;            // Value of right side
+    short       WinEndY;            // Value of bottom side
+    short       CenterRow;          // Value of (WinEndY-WinStartY)/2
+    short       CenterOffset;       // Center row times bytes per row
+    short       WinWidth;           // Value of WinEndX - WinStartX
+    short       WinHeight;          // Value of WinEndY - WinStartY
+    USHORT      WinLength;          // Number of dwords in window
+    USHORT      WinStartOffset;     // Value of WinStartY * 320
+    USHORT      SysFlags;           // General system flags--determines display attributes
+    UCHAR       bmLoadType;         // Bitmap load flags (BBM, GIF, PCX, etc)
+    short       MaxObjects;         // Total number of objects in map
+    NEWOBJECT   *ObjList[MAX_OBJECTS+1];    // Current objects in map
+    DOORS       Door[MAX_DOORS];    // Doors moving at one time
 } ACKENG;
 
 // Structure used to build the palette ranges for light shading
 // There are 16 color ranges (or zones) each containing 256 colors.
 typedef struct {
-	unsigned char start;    // Starting color for this range
-	unsigned char length;   // Length of range
+    unsigned char start;    // Starting color for this range
+    unsigned char length;   // Length of range
 } ColorRange;
 
 //*************************************************************************
@@ -433,4 +433,3 @@ void AckSetTextmode(void);
 short AckDisplayScreen(void);
 
 
-

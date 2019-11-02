@@ -11,14 +11,14 @@
 
 void Mymemset(void *,int,int);
 
-	int MouseModifier = 2;
+    int MouseModifier = 2;
 
 //=============================================================================
 // Check if mouse is installed, returns -1 if it IS installed
 //=============================================================================
 int MouseInstalled(void)
 {
-    int	    yesno;
+    int     yesno;
     union REGPACK regs;
 
 Mymemset(&regs,0,sizeof(union REGPACK));
@@ -59,7 +59,7 @@ intr(0x33,&regs);
 //=============================================================================
 int ReadMouseCursor(int *mrow,int *mcol)
 {
-    int	    bstatus;
+    int     bstatus;
     union REGPACK regs;
 
 Mymemset(&regs,0,sizeof(union REGPACK));
@@ -77,7 +77,7 @@ return(bstatus);
 //=============================================================================
 int ReadMouseButtons(void)
 {
-    int	    bstatus;
+    int     bstatus;
     union REGPACK regs;
 
 Mymemset(&regs,0,sizeof(union REGPACK));
@@ -178,4 +178,3 @@ intr(0x33,&regs);
 
 }
 
-

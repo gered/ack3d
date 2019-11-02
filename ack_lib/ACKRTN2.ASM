@@ -22,7 +22,7 @@
         extrn   _yPglobal:dword
         extrn   _xBegGlobal:dword
         extrn   _yBegGlobal:dword
-	extrn	_aeGlobal:dword
+    extrn   _aeGlobal:dword
         extrn   _xGridGlobal:dword
         extrn   _yGridGlobal:dword
         extrn   _xPglobalHI:dword
@@ -46,7 +46,7 @@
         extrn   _CeilingHeight:word
         extrn   _gTopColor:byte
         extrn   _gBottomColor:byte
-	extrn	_PlayerAngle:word
+    extrn   _PlayerAngle:word
         extrn   _gScrnBuffer:dword
         extrn   _gBkgdBuffer:dword
         extrn   _gCenterOff:word
@@ -70,7 +70,7 @@
         extrn   _ViewColumn:word
         extrn   _SinTable:dword
         extrn   _CosTable:dword
-	extrn	_LongTanTable:dword
+    extrn   _LongTanTable:dword
         extrn   _LongInvTanTable:dword
         extrn   _InvCosTable:byte
         extrn   _InvSinTable:byte
@@ -94,7 +94,7 @@
         extrn   _x_yPos:dword
         extrn   _x_xNext:dword
         extrn   _x_yNext:dword
-	extrn	_y_xPos:dword
+    extrn   _y_xPos:dword
         extrn   _y_yPos:dword
         extrn   _y_xNext:dword
         extrn   _y_yNext:dword
@@ -118,7 +118,7 @@
         extrn   _Floorptr2:dword
         extrn   _Floorht:dword
         extrn   _Floorwt:dword
-	extrn	_Floorvht:word
+    extrn   _Floorvht:word
         extrn   _Flooreht:word
         extrn   _FloorLastbNum:dword
         extrn   _FloorLastbm:dword
@@ -133,15 +133,15 @@
         ACKEXT  DrawBackDrop
         ACKEXT  ShowCol
         ACKEXT  ShowColMask
-	ACKEXT	FindDoor
-	ACKEXT	xRayCast
-	ACKEXT	yRayCast
+    ACKEXT  FindDoor
+    ACKEXT  xRayCast
+    ACKEXT  yRayCast
 
-	ACKPUBS xxxAckDrawFloor
-	ACKPUBS xxxAckDrawFloorOnly
-	ACKPUBS xxxAckDrawCeilingOnly
+    ACKPUBS xxxAckDrawFloor
+    ACKPUBS xxxAckDrawFloorOnly
+    ACKPUBS xxxAckDrawCeilingOnly
 
-	.DATA
+    .DATA
 
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
 ; Globals used by the AckDrawFloor routine
@@ -157,45 +157,45 @@ FSCRN   dd      ?
 CSCRN   dd      ?
 CV      dd      ?
 SV      dd      ?
-BA	dd	?
+BA  dd  ?
 BA1     dd      ?
 ZDPTR   dd      ?
 POS     dd      ?
 BMPOS   dd      ?
 MPOS    dd      ?
 MPOSHI  dd      ?
-SCANTBL dd	?
+SCANTBL dd  ?
 LINENUM dd      ?
-LASTDIST dd	?
+LASTDIST dd ?
 ;LASTX   dd      ?
 ;LASTY   dd      ?
 LASTEBP dd      ?
 LASTEAX dd      ?
-LASTEDX dd	?
-WALLDIST dd	?
+LASTEDX dd  ?
+WALLDIST dd ?
 
-	.CODE
-	IDEAL
+    .CODE
+    IDEAL
 
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
 ;
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
 ACKPROC xxxAckDrawFloor
-	 push	 ebp
+     push    ebp
          push    esi
          push    edi
          push    ebx
          push    ecx
          push    edx
 
-	 movzx	 eax,[word ptr _PlayerAngle]
+     movzx   eax,[word ptr _PlayerAngle]
          mov        ecx,eax
-	 sub	    eax,INT_ANGLE_32
+     sub        eax,INT_ANGLE_32
          jnc        short adf_20
          add        eax,INT_ANGLE_360
 
 adf_20:
-	 mov	    ebx,640
+     mov        ebx,640
          cdq
     idiv    ebx
     mov     [BCOL],edx
@@ -214,12 +214,12 @@ adf_30:
     sar     eax,1
     movzx   ebx,[word ptr _gWinEndY]
     sub     ebx,eax
-	 inc	    ebx
+     inc        ebx
     sub     ebx,5  ; 6
     mov     [EY],ebx
     mov     edi,[_gScrnBuffer]
     movzx   eax,[word ptr _gCenterOff]
-    mov	    ebx,eax
+    mov     ebx,eax
     add     eax,1920
     add     eax,edi
     mov     [BFSCRN],eax
@@ -236,14 +236,14 @@ adf_30:
 adf_loop:
     mov     eax,[_CosTable]
     shl     ebx,2
-    mov	    eax,[eax+ebx]
+    mov     eax,[eax+ebx]
     mov     [CV],eax
-    mov	    eax,[_SinTable]
+    mov     eax,[_SinTable]
     mov     eax,[eax+ebx]
     mov     [SV],eax
 
     mov     eax,[dword ptr _WallDistTable+ebp*4]
-    mov	    [WALLDIST],eax
+    mov     [WALLDIST],eax
 
     mov     eax,[BCSCRN]
     mov     [CSCRN],eax
@@ -260,17 +260,17 @@ adf_loop:
 
 adf_l10:
     mov     eax,[_BackArray+ebx*4]
-    add	    eax,ecx
+    add     eax,ecx
     mov     [BA1],eax
-    inc	    ebx
+    inc     ebx
     cmp     ebx,640
     jb      short adf_l20
     sub     ebx,ebx
 
 adf_l20:
-	 mov	    [BCOL],ebx
-    lea	    esi,[offset _zdTable]
-    mov	    ecx,[EY]	    ;Number of rows to draw
+     mov        [BCOL],ebx
+    lea     esi,[offset _zdTable]
+    mov     ecx,[EY]        ;Number of rows to draw
     imul    eax,ebp,800
 
     add     esi,eax
@@ -284,7 +284,7 @@ adf_yloop:
     cmp     edx,[WALLDIST]
     jb      short adf_distokay
     lea     edi,[edi+320]
-    jmp	    adf_ycont
+    jmp     adf_ycont
 
 adf_distokay:
     cmp     edx,[LASTDIST]
@@ -294,7 +294,7 @@ adf_distokay:
     mov     ebp,[LASTEBP]
     mov     eax,[LASTEAX]
     mov     edx,[LASTEDX]
-    jmp	    short adf_samedist
+    jmp     short adf_samedist
 
 adf_newdist:
     mov     [LASTDIST],edx
@@ -308,7 +308,7 @@ adf_newdist:
     add     eax,edx
     mov     edx,[_yPglobal]
     add     ebx,edx
-;   mov	    [LASTX],eax
+;   mov     [LASTX],eax
 ;   mov     [LASTY],ebx
 
 ;adf_samedist:
@@ -318,7 +318,7 @@ adf_newdist:
     sar     ebp,6
     add     ebp,edx             ;Pos within floor and ceiling maps
 
-    and	    ebx,63
+    and     ebx,63
     shl     ebx,6
     and     eax,63
     add     eax,ebx             ;bitmap position
@@ -333,14 +333,14 @@ adf_newdist:
     mov     edx,[_WallbMaps]
     mov     edx,[edx+ebx*4]
     movzx   edx,[byte ptr edx+eax]
-    mov	    ebx,[SCANTBL]
-    mov	    dl,[ebx+edx]
-    mov	    dh,dl
-    mov	    [LASTEDX],edx
+    mov     ebx,[SCANTBL]
+    mov     dl,[ebx+edx]
+    mov     dh,dl
+    mov     [LASTEDX],edx
 
 adf_samedist:
-    mov	    [edi],dx
-	 lea	    edi,[edi+320]
+    mov     [edi],dx
+     lea        edi,[edi+320]
 
     movzx   ebx,[word ptr _CeilMap+ebp]
     mov     ebp,[CSCRN]
@@ -356,7 +356,7 @@ adf_samedist:
     mov     [ebp],ax
 
     mov     eax,[LINENUM]
-    add	    eax,4
+    add     eax,4
     mov     [LINENUM],eax
          mov        eax,[_scantables+eax]
     mov     [SCANTBL],eax
@@ -380,7 +380,7 @@ adf_ycont:
     mov     eax,[LINENUM]
     add     eax,4
     mov     [LINENUM],eax
-    mov	    eax,[_scantables+eax]
+    mov     eax,[_scantables+eax]
     mov     [SCANTBL],eax
     sub     [dword ptr CSCRN],320
     dec     [dword ptr BA]
@@ -404,7 +404,7 @@ adf_l90:
     add     [dword ptr BCSCRN],2
     pop     ebp
     lea     ebp,[ebp+2]
-    cmp	    ebp,320
+    cmp     ebp,320
     jb      adf_loop
 
 
@@ -422,12 +422,12 @@ adf_exit:
 ;
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
 ACKPROC xxxAckDrawFloorOnly
-	 push	 ebp
-	 push	 esi
-	 push	 edi
-	 push	 ebx
-	 push	 ecx
-	 push	 edx
+     push    ebp
+     push    esi
+     push    edi
+     push    ebx
+     push    ecx
+     push    edx
 
          movzx   eax,[word ptr _PlayerAngle]
          mov        ecx,eax
@@ -446,7 +446,7 @@ adfo_20:
     mov     [HEIGHT],eax
 
     sub     ecx,INT_ANGLE_32
-    jnc	    short adfo_30
+    jnc     short adfo_30
     add     ecx,INT_ANGLE_360
 
 adfo_30:
@@ -470,7 +470,7 @@ adfo_30:
     mov     ebp,0
     mov     [LINENUM],ebp
     mov     ebx,[dword ptr _scantables]
-    mov	    [SCANTBL],ebx
+    mov     [SCANTBL],ebx
     mov     ebx,[VA]
 
 adfo_loop:
@@ -518,7 +518,7 @@ adfo_l20:
 adfo_yloop:
     mov     edx,[esi]
     lea     esi,[esi+4]
-    mov	    eax,[CV]
+    mov     eax,[CV]
     mov     ebx,[SV]
     imul    eax,edx
     imul    ebx,edx
@@ -542,7 +542,7 @@ adfo_yloop:
 
     mov     ebx,0
 
-    shl	    ebp,1
+    shl     ebp,1
     mov     bx,[word ptr _FloorMap+ebp]
     mov     edx,[_WallbMaps]
     mov     edx,[edx+ebx*4]
@@ -566,7 +566,7 @@ adfo_ycont:
     mov     eax,[LINENUM]
     add     eax,4
          mov        [LINENUM],eax
-    mov	    eax,[_scantables+eax]
+    mov     eax,[_scantables+eax]
     mov     [SCANTBL],eax
     dec     [dword ptr BA]
     dec     [dword ptr BA1]
@@ -590,7 +590,7 @@ adfo_l90:
     pop     ebp
     lea     ebp,[ebp+2]
     cmp     ebp,320
-    jb	    adfo_loop
+    jb      adfo_loop
 
 adfo_exit:
     pop     edx
@@ -607,14 +607,14 @@ adfo_exit:
 ;
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
 ACKPROC xxxAckDrawCeilingOnly
-	 push	 ebp
-	 push	 esi
-	 push	 edi
-	 push	 ebx
-	 push	 ecx
-	 push	 edx
+     push    ebp
+     push    esi
+     push    edi
+     push    ebx
+     push    ecx
+     push    edx
 
-	 movzx	 eax,[word ptr _PlayerAngle]
+     movzx   eax,[word ptr _PlayerAngle]
          mov        ecx,eax
          sub        eax,INT_ANGLE_32
          jnc        short adco_20
@@ -802,4 +802,3 @@ adco_exit:
 
     end
 
-

@@ -33,25 +33,25 @@ sPos = vPos;
 while (vLen > 0)
     {
     if (sBuf[sPos])
-	{
-	sPos1 = sPos;
-	while (vLen > 0 && sBuf[sPos1++])
-	    vLen--;
+    {
+    sPos1 = sPos;
+    while (vLen > 0 && sBuf[sPos1++])
+        vLen--;
 
-	len = (sPos1 - sPos) - 1;
-	(*(short *)&ae->ScreenBuffer[bPos]) = len;
-	bPos += 2;
-	(*(short *)&ae->ScreenBuffer[bPos]) = sPos;
-	bPos += 2;
-	memmove(&ae->ScreenBuffer[bPos],&sBuf[sPos],len);
-	bPos += len;
-	sPos = sPos1;
-	}
+    len = (sPos1 - sPos) - 1;
+    (*(short *)&ae->ScreenBuffer[bPos]) = len;
+    bPos += 2;
+    (*(short *)&ae->ScreenBuffer[bPos]) = sPos;
+    bPos += 2;
+    memmove(&ae->ScreenBuffer[bPos],&sBuf[sPos],len);
+    bPos += len;
+    sPos = sPos1;
+    }
     else
-	{
-	sPos++;
-	vLen--;
-	}
+    {
+    sPos++;
+    vLen--;
+    }
     }
 
 (*(short *)&ae->ScreenBuffer[bPos]) = 0;
@@ -70,4 +70,3 @@ return(ERR_NOMEMORY);
 
 // **** End of Source ****
 
-

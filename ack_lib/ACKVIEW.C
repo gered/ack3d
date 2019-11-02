@@ -111,7 +111,7 @@ USHORT yRayCast(void);
 USHORT xRayCastMulti(void);
 USHORT yRayCastMulti(void);
 
-void ShowCol(void);                     // Routines for drawing a slice 
+void ShowCol(void);                     // Routines for drawing a slice
 void ShowColMask(void);                 // column by column
 void ShowColNS(void);
 void ShowColMaskNS(void);
@@ -162,7 +162,7 @@ gWinHalfHeight = (gWinEndY - (gWinHeight >> 1)) + 1;
 gCenterRow  = ae->CenterRow;            // Start of center row in viewport
 gCenterOff  = ae->CenterOffset;         // Offset to center of viewport
 gScrnBuffer = ae->ScreenBuffer;         // Screen buffer access
-gScrnBufferCenter = gScrnBuffer + gCenterOff;   
+gScrnBufferCenter = gScrnBuffer + gCenterOff;
 gBkgdBuffer = ae->BkgdBuffer;           // Buffer for ceiling and floors
 gPalTable   = ae->PalTable;             // Palette of colors used
 gDoor       = &ae->Door[0];             // List of moving doors
@@ -176,7 +176,7 @@ if (SysFlags & SYS_SOLID_CEIL)  // Soild ceiling is selcted
     {
     mode = 1;                           // Draw floor only (ceiling will be solid)
     if (SysFlags & SYS_SOLID_FLOOR)     // Solid floor is selcted
-        mode = 2;                               // Draw solid floor and ceiling 
+        mode = 2;                               // Draw solid floor and ceiling
     }
 
 if (SysFlags & SYS_SOLID_FLOOR) // Solid floor is selected
@@ -191,13 +191,13 @@ if (!LightFlag)                         // No light shading used
     WallMaskRtn = ShowColMaskNS;        // using light shading
     switch (mode)                               // Check floor and ceiling type
         {
-        case 0:                         // Draw both solid floor and ceiling 
+        case 0:                         // Draw both solid floor and ceiling
             if (ae->SysFlags & SYS_SINGLE_BMP)
                 FloorCeilRtn = AckDrawOneFloor;   // Use the same bitmap for each
             else
                 FloorCeilRtn = AckDrawFloorHz;
             break;
-        case 1:                         // Draw solid ceiling and texture floor 
+        case 1:                         // Draw solid ceiling and texture floor
             FloorCeilRtn = DrawSolidCeilAndFloorNS;
             break;
         case 2:                         // Draw both solid floor and solid ceiling
@@ -272,7 +272,7 @@ yPglobal    = aeGlobal->yPlayer;                        // The player's y coordi
 yBegGlobal  = yPglobal & GRID_MASK;             // Upper left corner (y) of grid square
 yPglobalHI  = ((long)yPglobal << FP_SHIFT);     // Convert y coordinate to fixed point
 PlayerAngle = aeGlobal->PlayerAngle;            // The player's angle
-SysFlags    = aeGlobal->SysFlags;                       // Ceiling and floor attributes; 
+SysFlags    = aeGlobal->SysFlags;                       // Ceiling and floor attributes;
 BuildUpView();          // Assembly routine defined in ACKRTN3.ASM. This routine
                         // kicks off the ray casting process.
 }
@@ -308,7 +308,7 @@ void BuildSlice(void)
     UCHAR   *mgPtr;
     SLICE   *spNext;
 
-WallDistance = 3000000;         // Set to a ridiculous distance 
+WallDistance = 3000000;         // Set to a ridiculous distance
 sPtr->Distance = 200;           // Initialize the distance from the POV to the slice
 wFound = 0;                     // Wall not found yet
 sPtr->Fnc = ShowNone;           // Use the stub function for now for drawing the slice
@@ -320,11 +320,11 @@ if ((BitmapNumber = xRayCast()) != 0)   // Something has been hit while casting
     // Use the y intercept to determine the column of the slice
     BitmapColumn = (LastY1 >> FP_SHIFT) & (BITMAP_WIDTH-1);
 
-    // Keep the orientation the same no matter which side we're on 
+    // Keep the orientation the same no matter which side we're on
     if ((short)iLastX < xPglobal)
         BitmapColumn = (BITMAP_WIDTH-1) - BitmapColumn;
 
-    // Did we strike a door? 
+    // Did we strike a door?
     if ((BitmapNumber & (DOOR_TYPE_SLIDE+DOOR_TYPE_SPLIT)))
         {
         index = FindDoor(xMapPosn);     // Locate the position of the door
@@ -848,4 +848,3 @@ return(WallCode);
 }
 // **** End of Source ****
 
-

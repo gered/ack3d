@@ -14,9 +14,9 @@
 #include "ackext.h"
 
 typedef struct {
-	int	sel;
-	int	off;
-	} SELOFF;
+    int sel;
+    int off;
+    } SELOFF;
 
 void AckGetIntVector(int VecNum,int *sel,int *off);
 void AckSetIntVector(int VecNum,int sel,void *VecOff);
@@ -24,12 +24,12 @@ void AckKbdInt(void);
 void AckTimerHandler(void);
 void AckSetTextMode(void);
 
-	long	AckMemUsed;
-	short	AckDisplayErrors;
-	SELOFF	OldKeybdInt;
-	char	AckKeyboardSetup;
-	SELOFF	OldTimerInt;
-	char	AckTimerSetup;
+    long    AckMemUsed;
+    short   AckDisplayErrors;
+    SELOFF  OldKeybdInt;
+    char    AckKeyboardSetup;
+    SELOFF  OldTimerInt;
+    char    AckTimerSetup;
 
 //北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北
 // Establish a hook into interrupt 9 for keyboard handling
@@ -72,11 +72,11 @@ mBlock = malloc(mSize);
 if (mBlock == NULL)
     {
     if (AckDisplayErrors)
-	{
-	AckSetTextMode();
-	printf("\n\nOut of memory on call to AckMalloc.\n");
-	printf("Memory used: %ld bytes.\n",AckMemUsed);
-	}
+    {
+    AckSetTextMode();
+    printf("\n\nOut of memory on call to AckMalloc.\n");
+    printf("Memory used: %ld bytes.\n",AckMemUsed);
+    }
     return(mBlock);
     }
 
@@ -104,12 +104,12 @@ mBlock -= 1;
 if ((*(UCHAR *)mBlock) != 0xF2)
     {
     if (AckDisplayErrors)
-	{
-	AckSetTextMode();
-	printf("\n\nCorrupt memory block in AckFree.\n");
-	printf("Mem ptr: %p",mBlock);
-	return;
-	}
+    {
+    AckSetTextMode();
+    printf("\n\nCorrupt memory block in AckFree.\n");
+    printf("Mem ptr: %p",mBlock);
+    return;
+    }
     }
 
 mBlock += 1;
@@ -145,9 +145,9 @@ if (handle > 0)
     {
     read(handle,buf,768);
     if (!rsHandle)
-	_lclose(handle);
+    _lclose(handle);
 
-    memset(buf,0,3);	    // Make sure color 0 is always black
+    memset(buf,0,3);        // Make sure color 0 is always black
     AckSetPalette(buf);
     }
 else
@@ -164,60 +164,60 @@ return(ErrCode);
 //北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北
 void AckSetupPalRanges(ACKENG *ae,ColorRange *ranges)
 {
-	short	i,j,k,found;
-	short	rangenos;
-	UCHAR	plotcolor;
+    short   i,j,k,found;
+    short   rangenos;
+    UCHAR   plotcolor;
 
 if (ae->LightFlag == SHADING_OFF)
     {
     for ( i = 0;i<16;i++)
-	{
-	for (j=0;j<256;j++)
-	    {
-	    ae->PalTable[j+(i*256)] = j;
-	    }
-	}
+    {
+    for (j=0;j<256;j++)
+        {
+        ae->PalTable[j+(i*256)] = j;
+        }
+    }
     return;
     }
 
 for (rangenos = 0; rangenos < 64; rangenos++)
     {
     if (ranges[rangenos].start == 0)
-	break;
+    break;
     }
 
 for ( i = 0;i<16;i++)
     {
     for (j=0;j<256;j++)
-	{
-	found = 0;
-	// find the range the color is in.
-	for ( k = 0; k < rangenos; k++ )
-	    {
-	    if (j >= ranges[k].start && j < ranges[k].start+ranges[k].length)
-		{
-		found = 1;
-		break;
-		}
-	    }
-	if (found)
-	    {
+    {
+    found = 0;
+    // find the range the color is in.
+    for ( k = 0; k < rangenos; k++ )
+        {
+        if (j >= ranges[k].start && j < ranges[k].start+ranges[k].length)
+        {
+        found = 1;
+        break;
+        }
+        }
+    if (found)
+        {
 //=============================================================================
-//	 add color + i;
-//	 if color + i > color+range then plot color = 0;
-//	 otherwise plotcolor = color+i
+//   add color + i;
+//   if color + i > color+range then plot color = 0;
+//   otherwise plotcolor = color+i
 //=============================================================================
-	    if (j+i >= ranges[k].start+ranges[k].length)
-		   plotcolor = 0;
-	    else
-		   plotcolor = j+i;
-	    }
-	else
-	    {
-	    plotcolor = j;
-	    }
-	ae->PalTable[j+(i*256)] = plotcolor;
-	}
+        if (j+i >= ranges[k].start+ranges[k].length)
+           plotcolor = 0;
+        else
+           plotcolor = j+i;
+        }
+    else
+        {
+        plotcolor = j;
+        }
+    ae->PalTable[j+(i*256)] = plotcolor;
+    }
     }
 
 
@@ -282,8 +282,8 @@ return(0);
 //北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北
 short AckFreeBitmap(UCHAR *bmType)
 {
-	short	  i;
-	UCHAR *Bmp;
+    short     i;
+    UCHAR *Bmp;
 
 if (bmType != NULL)
     AckFree(bmType);
@@ -293,4 +293,3 @@ return(0);
 
 // **** End of Source ****
 
-

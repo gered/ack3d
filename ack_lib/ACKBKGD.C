@@ -29,14 +29,13 @@ short AckBuildBackground (ACKENG * ae)
 #if FLOOR_ACTIVE
 #else
   AckBuildCeilingFloor (ae->BkgdBuffer,
-			ae->LightFlag,
-			ae->TopColor,
-			ae->BottomColor,
-			ae->WinStartY,
-			ae->WinEndY,
-			ae->CenterRow);
+            ae->LightFlag,
+            ae->TopColor,
+            ae->BottomColor,
+            ae->WinStartY,
+            ae->WinEndY,
+            ae->CenterRow);
 #endif
 
   return (0);
 }
-

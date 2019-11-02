@@ -367,7 +367,7 @@ else
     _llseek(handle,rbaTable[(ULONG)fName],SEEK_SET);  // Access opened resource file
     }
 
-aLen = GRID_ARRAY * 2;                 
+aLen = GRID_ARRAY * 2;
 mLen = GRID_MAX * 2;
 
 if (_lread(handle,Grid,mLen) != mLen)   // Read in grid map data
@@ -448,10 +448,10 @@ return(0);
 }
 
 //сссссссссссссссссссссссссссссссссссссссссссссссссссссссссссссссссссссссс
-// Internal function to create height and distance tables for objects. In 
+// Internal function to create height and distance tables for objects. In
 // the DistanceTable[] each entry represents the distance from the player
 // to a wall. The value stored in the array is the hight of the wall at
-// the corresponding distance. For example, DistanceTable[100] indicates 
+// the corresponding distance. For example, DistanceTable[100] indicates
 // that the distance to the wall is 100 units. The value stored at this
 // location is 81--the pixel height f the wall.
 //сссссссссссссссссссссссссссссссссссссссссссссссссссссссссссссссссссссссс
@@ -539,4 +539,3 @@ for (i = 0; i < GRID_HEIGHT; i++)     // Loop until entire grid has been checked
 
 // **** End of Source ****
 
-

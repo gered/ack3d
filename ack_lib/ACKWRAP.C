@@ -14,14 +14,14 @@
 #include "ackext.h"
 
 typedef struct {
-	int	sel;
-	int	off;
-	} SELOFF;
+    int sel;
+    int off;
+    } SELOFF;
 
-extern	char	AckKeyboardSetup;
-extern	SELOFF	OldKeybdInt;
-extern	char	AckTimerSetup;
-extern	SELOFF	OldTimerInt;
+extern  char    AckKeyboardSetup;
+extern  SELOFF  OldKeybdInt;
+extern  char    AckTimerSetup;
+extern  SELOFF  OldTimerInt;
 
 void AckSetIntVector(int VecNum,int sel,int VecOff);
 
@@ -76,4 +76,3 @@ return (0);
 }
 
 // **** End of Source ****
-

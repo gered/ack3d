@@ -782,7 +782,7 @@ buv070:
         cmp     [word ptr _LastWallHeight],200  ; No need to check if > 200
         jg      short buv080
 
-        mov     eax,[_sPtr]                     ; Get base address of column slice 
+        mov     eax,[_sPtr]                     ; Get base address of column slice
         cmp     [dword ptr eax+saNext],0        ; Check for any more walls
         je      short buv080
         cmp     [word ptr eax+saDist],96        ; Distance from POV to slice is
@@ -827,4 +827,3 @@ buv_exit:
 
         end
 
-

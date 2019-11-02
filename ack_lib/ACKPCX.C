@@ -159,4 +159,3 @@ return(pcx->bitmap);         // return bitmap buffer
 
 // **** End of Source ****
 
-

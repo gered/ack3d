@@ -142,9 +142,8 @@ UCHAR  HitMap[4096];
 
 UCHAR *VidSeg;
 char *scantables[96];
-UCHAR	AckKeys[128];	// Buffer for keystrokes
+UCHAR   AckKeys[128];   // Buffer for keystrokes
 long AckTimerCounter;
 
 // **** End of Data ****
 
-

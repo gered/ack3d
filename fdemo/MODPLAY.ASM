@@ -1,10 +1,10 @@
 ;께께께께께께께께께께께께께께께께께께께께께께께께께께께께께께께께께께께께께께께
-;		 Tiny MOD Player for Watcom C/C++32 and DOS/4GW
+;        Tiny MOD Player for Watcom C/C++32 and DOS/4GW
 ;                      Version 2.02a  May 09th, 1994
 ;
 ;                      Copyright 1993,94 Carlos Hasan
 ;께께께께께께께께께께께께께께께께께께께께께께께께께께께께께께께께께께께께께께께
- 
+
 ideal
 p386
 model   flat,c
@@ -16,13 +16,13 @@ jumps
 
 global  MODPlayModule:near
 global  MODStopModule:near
-global	MODPlaySample:near
-global	MODPlayVoice:near
-global	MODStopVoice:near
-global	MODSetPeriod:near
-global	MODSetVolume:near
+global  MODPlaySample:near
+global  MODPlayVoice:near
+global  MODStopVoice:near
+global  MODSetPeriod:near
+global  MODSetVolume:near
 ;;global  _GETDS:near
-global	OurDataSeg:dword
+global  OurDataSeg:dword
 
 ;굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇
 ; EQUATES
@@ -46,32 +46,32 @@ RepLength       dw      ?
 ends    MODSample
 
 struc   MODHeader                       ; file header
-SongName	db	20 dup (?)
+SongName    db  20 dup (?)
 Samples         MODSample 31 dup (?)
 OrderLen        db      ?
-ReStart		db	?
-Order		db	128 dup (?)
-Sign		dd	?
-ends	MODHeader
+ReStart     db  ?
+Order       db  128 dup (?)
+Sign        dd  ?
+ends    MODHeader
 
 ;굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇
 ; MOD Player structures
 ;굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇굇
 
-struc	Voice
-Address		dd	?,?		; Current Address
-StartAddress	dd	?		; Loop Start Address
-EndAddress	dd	?		; Loop End Address
-Frequency	dd	?		; Frequency
-Volume		db	?,?		; Volume
-ends	Voice
+struc   Voice
+Address     dd  ?,?     ; Current Address
+StartAddress    dd  ?       ; Loop Start Address
+EndAddress  dd  ?       ; Loop End Address
+Frequency   dd  ?       ; Frequency
+Volume      db  ?,?     ; Volume
+ends    Voice
 
-struc	Track
-Period		dw	?		; Note Period
-Instr		db	?		; Instr Number
-Volume		db	?		; Volume
-Effect		dw	?		; Effect
-ends	Track
+struc   Track
+Period      dw  ?       ; Note Period
+Instr       db  ?       ; Instr Number
+Volume      db  ?       ; Volume
+Effect      dw  ?       ; Effect
+ends    Track
 
 struc   Sample
 Period          dw      ?               ; Default Period
@@ -94,7 +94,7 @@ IRQVector       df      ?               ; IRQ Saved Vector
 
 BufSelector     dw      ?               ; DPMI Buffer Selector
 VolBuffer       dd      ?               ; Volume Buffer Address
-DMABuffer	dd	?		; DMA Buffer Address
+DMABuffer   dd  ?       ; DMA Buffer Address
 DMALength       dw      ?               ; DMA Buffer Length
 
 BufferPos       dw      ?               ; Current Buffer Position
@@ -118,9 +118,9 @@ OrderLen        db      ?               ; Order Length
 PatternRow      db      ?               ; Pattern Row
 OrderList       db      128 dup (?)     ; Order List
 PatternPtr      dd      ?               ; Current Pattern Address
-Tempo		db	?		; Tempo
+Tempo       db  ?       ; Tempo
 TempoCount      db      ?               ; Tempo Internal Counter
-BPM		db	?		; BPM value
+BPM     db  ?       ; BPM value
 
 ActiveTracks    dw      ?               ; Number of Active Tracks
 Tracks          Track MAXVOICES dup (?) ; Array of Tracks
@@ -145,61 +145,61 @@ codeseg
 ; In:
 ;  Song  = Modulefile address
 ;  Chans = Number of channels
-;  Rate	 = Sampling Rate
-;  Port	 = I/O Port
-;  IRQ	 = IRQ Level
-;  DRQ	 = DRQ Channel
+;  Rate  = Sampling Rate
+;  Port  = I/O Port
+;  IRQ   = IRQ Level
+;  DRQ   = DRQ Channel
 ; Out:
-;  EAX	 = status
+;  EAX   = status
 ;같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같
-proc	MODPlayModule Song:dword,Chans:dword,Rate:dword,Port:dword,IRQ:dword,DRQ:dword
-	pushad
-	mov	edi,[Song]		; Load parameters from stack
-	mov	eax,[Chans]
-	mov	[ActiveVoices],ax
-	mov	eax,[Rate]
-	mov	[SBRate],ax
-	mov	eax,[Port]
-	mov	[IOAddr],ax
-	mov	eax,[IRQ]
-	mov	[IRQNum],al
-	mov	eax,[DRQ]
-	mov	[DRQNum],al
-	mov	eax,MIDCRATE*428	; setup frequency divisor
-	xor	edx,edx
-	shld	edx,eax,16
-	shl	eax,16
-	movzx	ebx,[SBRate]
-	div	ebx
-	mov	[FreqDivisor],eax
-	call	MODSetup		; setup MOD player stuff
-	jc	MODPlayDone
-	call	MCInit			; setup the muti-channel stuff
-	jc	MODPlayDone
-	mov	dl,[BPM]		; setup the multi-channel timer
-	call	MCStartTimer
-	call	DMASetBuf		; setup DMA controller
-	call	IRQSetVect		; setup PIC interrupt
-	call	SBOpenDevice		; setup SB for playback
-	jnc	MODPlayDone
-	call	MODStopModule
+proc    MODPlayModule Song:dword,Chans:dword,Rate:dword,Port:dword,IRQ:dword,DRQ:dword
+    pushad
+    mov edi,[Song]      ; Load parameters from stack
+    mov eax,[Chans]
+    mov [ActiveVoices],ax
+    mov eax,[Rate]
+    mov [SBRate],ax
+    mov eax,[Port]
+    mov [IOAddr],ax
+    mov eax,[IRQ]
+    mov [IRQNum],al
+    mov eax,[DRQ]
+    mov [DRQNum],al
+    mov eax,MIDCRATE*428    ; setup frequency divisor
+    xor edx,edx
+    shld    edx,eax,16
+    shl eax,16
+    movzx   ebx,[SBRate]
+    div ebx
+    mov [FreqDivisor],eax
+    call    MODSetup        ; setup MOD player stuff
+    jc  MODPlayDone
+    call    MCInit          ; setup the muti-channel stuff
+    jc  MODPlayDone
+    mov dl,[BPM]        ; setup the multi-channel timer
+    call    MCStartTimer
+    call    DMASetBuf       ; setup DMA controller
+    call    IRQSetVect      ; setup PIC interrupt
+    call    SBOpenDevice        ; setup SB for playback
+    jnc MODPlayDone
+    call    MODStopModule
 MODPlayDone:
-	popad
-	sbb	eax,eax			; return status in EAX
-	ret
+    popad
+    sbb eax,eax         ; return status in EAX
+    ret
 endp
 
 ;같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같
 ; MODStopModule - Stop playing the current modulefile
 ;같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같
-proc	MODStopModule
-	pushad
-	call	SBCloseDevice		; done SB playback
-	call	IRQRestVect		; done PIC interrupt
-	call	DMAReset		; done DMA controller
-	call	MCDone			; done multi-channel stuff
-	popad
-	ret
+proc    MODStopModule
+    pushad
+    call    SBCloseDevice       ; done SB playback
+    call    IRQRestVect     ; done PIC interrupt
+    call    DMAReset        ; done DMA controller
+    call    MCDone          ; done multi-channel stuff
+    popad
+    ret
 endp
 
 ;같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같
@@ -208,21 +208,21 @@ endp
 ;  Voice  = Audio channel
 ;  Instr  = Instrument
 ;같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같
-proc	MODPlaySample AVoice:dword,AInstr:dword
-	pushad
-	mov	ebx,[AVoice]		; change the voice sample parameters
-	mov	eax,[AInstr]
-	mov	edx,[eax+Sample.SampleData]
-	mov	esi,[eax+Sample.SampleLength]
-	add	esi,edx
-	mov	edi,esi
-	call	MCStartVoice
-	movzx	ecx,[eax+Sample.Period] ; change the voice frequency
-	call	MCSetFrequency
-	mov	ax,[eax+Sample.Volume]	; and set the voice volume
-	call	MCSetVolume
-	popad
-	ret
+proc    MODPlaySample AVoice:dword,AInstr:dword
+    pushad
+    mov ebx,[AVoice]        ; change the voice sample parameters
+    mov eax,[AInstr]
+    mov edx,[eax+Sample.SampleData]
+    mov esi,[eax+Sample.SampleLength]
+    add esi,edx
+    mov edi,esi
+    call    MCStartVoice
+    movzx   ecx,[eax+Sample.Period] ; change the voice frequency
+    call    MCSetFrequency
+    mov ax,[eax+Sample.Volume]  ; and set the voice volume
+    call    MCSetVolume
+    popad
+    ret
 endp
 
 ;같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같
@@ -233,20 +233,20 @@ endp
 ;  Period = Amiga Period
 ;  Volume = Volume
 ;같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같
-proc	MODPlayVoice AVoice:dword,AInstr:dword,APeriod:dword,AVolume:dword
-	pushad
-	mov	ebx,[AVoice]		; change the voice sample parameters
-	mov	eax,[AInstr]
-	mov	edx,[4*eax+SmpAddress]
-	mov	esi,[4*eax+SmpStartAddress]
-	mov	edi,[4*eax+SmpEndAddress]
-	call	MCStartVoice
-	mov	ecx,[APeriod]		; change the voice frequency
-	call	MCSetFrequency
-	mov	eax,[AVolume]		 ; and set the voice volume
-	call	MCSetVolume
-	popad
-	ret
+proc    MODPlayVoice AVoice:dword,AInstr:dword,APeriod:dword,AVolume:dword
+    pushad
+    mov ebx,[AVoice]        ; change the voice sample parameters
+    mov eax,[AInstr]
+    mov edx,[4*eax+SmpAddress]
+    mov esi,[4*eax+SmpStartAddress]
+    mov edi,[4*eax+SmpEndAddress]
+    call    MCStartVoice
+    mov ecx,[APeriod]       ; change the voice frequency
+    call    MCSetFrequency
+    mov eax,[AVolume]        ; and set the voice volume
+    call    MCSetVolume
+    popad
+    ret
 endp
 
 ;같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같
@@ -254,13 +254,13 @@ endp
 ; In:
 ;  Voice = Audio channel
 ;같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같
-proc	MODStopVoice AVoice:dword
-	pushad
-	mov	ebx,[AVoice]		; set the voice volume to zero
-	xor	al,al
-	call	MCSetVolume
-	popad
-	ret
+proc    MODStopVoice AVoice:dword
+    pushad
+    mov ebx,[AVoice]        ; set the voice volume to zero
+    xor al,al
+    call    MCSetVolume
+    popad
+    ret
 endp
 
 ;같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같
@@ -269,13 +269,13 @@ endp
 ;  Voice  = Audio channel
 ;  Period = Amiga Period
 ;같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같
-proc	MODSetPeriod AVoice:dword,APeriod:dword
-	pushad
-	mov	ebx,[AVoice]
-	mov	ecx,[APeriod]
-	call	MCSetFrequency
-	popad
-	ret
+proc    MODSetPeriod AVoice:dword,APeriod:dword
+    pushad
+    mov ebx,[AVoice]
+    mov ecx,[APeriod]
+    call    MCSetFrequency
+    popad
+    ret
 endp
 
 ;같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같
@@ -284,13 +284,13 @@ endp
 ;  Voice  = Audio channel
 ;  Volume = New Volume
 ;같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같
-proc	MODSetVolume AVoice:dword,AVolume:dword
-	pushad
-	mov	ebx,[AVoice]
-	mov	eax,[AVolume]
-	call	MCSetVolume
-	popad
-	ret
+proc    MODSetVolume AVoice:dword,AVolume:dword
+    pushad
+    mov ebx,[AVoice]
+    mov eax,[AVolume]
+    call    MCSetVolume
+    popad
+    ret
 endp
 
 ;같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같
@@ -301,10 +301,10 @@ endp
 ;  CF = status
 ;같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같
 MODSetup:
-	pushad				; check for valid modfile formats
-	mov	[ActiveTracks],4
-	cmp	[edi+MODHeader.Sign],'.K.M'
-	je	MODParse
+    pushad              ; check for valid modfile formats
+    mov [ActiveTracks],4
+    cmp [edi+MODHeader.Sign],'.K.M'
+    je  MODParse
         cmp     [edi+MODHeader.Sign],'4TLF'
         je      MODParse
         mov     [ActiveTracks],6
@@ -320,15 +320,15 @@ MODParse:
         mov     [PatternRow],40h
         mov     [Tempo],6
         mov     [TempoCount],0
-	mov	[BPM],125
+    mov [BPM],125
         mov     al,[edi+MODHeader.OrderLen]
         mov     [OrderLen],al
 
         mov     ecx,80h                 ; copy order list
-	xor	ebx,ebx
+    xor ebx,ebx
         xor     ah,ah
 MODCopyOrder:
-	mov	al,[edi+ebx+MODHeader.Order]
+    mov al,[edi+ebx+MODHeader.Order]
         mov     [ebx+OrderList],al
         cmp     al,ah
         jb      MODCopyNext
@@ -352,7 +352,7 @@ MODCopyPatterns:
 
         mov     ecx,31                  ; setup samples data
         lea     edi,[edi+MODHeader.Samples]
-	xor	ebx,ebx
+    xor ebx,ebx
         inc     ebx
 MODCopySamples:
         mov     al,[edi+MODSample.Volume]
@@ -368,15 +368,15 @@ MODCopySamples:
         add     eax,eax
         add     edx,edx
         add     ebp,ebp
-	cmp	edx,2			; if not looped, then the loop
+    cmp edx,2           ; if not looped, then the loop
         ja      MODSetSmpLength         ; start and end are the same.
         xor     edx,edx
         mov     ebp,eax
 MODSetSmpLength:
-	add	edx,ebp
+    add edx,ebp
         add     eax,esi
         add     edx,esi
-	add	ebp,esi
+    add ebp,esi
         mov     [4*ebx+SmpAddress],esi
         mov     [4*ebx+SmpEndAddress],edx
         mov     [4*ebx+SmpStartAddress],ebp
@@ -397,10 +397,10 @@ MODCallBack:
         dec     [TempoCount]            ; decrease tempo counter
         jle     MODNextRow              ; next row?
         lea     esi,[Tracks]
-	xor	ebx,ebx
+    xor ebx,ebx
 MODUpdateLoop:
         call    MODUpNote               ; update note events
-	add	esi,size Track
+    add esi,size Track
         inc     ebx
         cmp     bx,[ActiveTracks]
         jb      MODUpdateLoop
@@ -416,12 +416,12 @@ MODNextRow:
         mov     [PatternRow],bl         ; reset the pattern row
         mov     bl,[OrderPos]
         inc     bl                      ; update the order position
-	cmp	bl,[OrderLen]
+    cmp bl,[OrderLen]
         jb      MODSetOrder
         xor     bl,bl
 MODSetOrder:
         mov     [OrderPos],bl
-	mov	bl,[ebx+OrderList]	; get the pattern from the order list
+    mov bl,[ebx+OrderList]  ; get the pattern from the order list
         mov     edi,[4*ebx+PatternList]
         mov     [PatternPtr],edi        ; set the pattern address
 MODDontWrap:
@@ -447,9 +447,9 @@ MODGetNoteLoop:
 ;  EDI = pattern data address
 ;같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같
 MODGetNote:
-	mov	al,[edi+2]		; get the sample number
-	shr	al,4
-	mov	ah,[edi]
+    mov al,[edi+2]      ; get the sample number
+    shr al,4
+    mov ah,[edi]
         and     ah,0F0h
         or      al,ah
         test    al,al                   ; nonzero value?
@@ -464,7 +464,7 @@ MODGetPeriod:
         xchg    al,ah
         and     ax,0FFFh
         test    ax,ax
-	je	MODGetEffect		; nonzero value?
+    je  MODGetEffect        ; nonzero value?
         mov     [esi+Track.Period],ax   ; set new period value
         movzx   ecx,ax
         call    MCSetFrequency
@@ -472,8 +472,8 @@ MODGetPeriod:
         movzx   eax,[esi+Track.Instr]
         mov     edx,[4*eax+SmpAddress]
         mov     esi,[4*eax+SmpStartAddress]
-	mov	edi,[4*eax+SmpEndAddress]
-	call	MCStartVoice
+    mov edi,[4*eax+SmpEndAddress]
+    call    MCStartVoice
         pop     edi esi
 MODGetEffect:
         mov     ax,[edi+2]              ; get the effect value
@@ -488,7 +488,7 @@ MODGetEffect:
         je      EFXJumpPos
         cmp     ah,0Dh
         je      EFXBreak
-	cmp	ah,09h
+    cmp ah,09h
         je      EFXSampleOffset
         ret
 
@@ -499,10 +499,10 @@ MODGetEffect:
 ;  ESI = track address
 ;같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같
 MODUpNote:
-	mov	ax,[esi+Track.Effect]	; dispatch the effects
-	cmp	ah,0Ah
-	je	EFXSlideVolume
-	ret
+    mov ax,[esi+Track.Effect]   ; dispatch the effects
+    cmp ah,0Ah
+    je  EFXSlideVolume
+    ret
 
 
 ;갚갚갚갚갚갚갚갚갚갚갚갚갚갚갚갚갚갚갚갚갚갚갚갚갚갚갚갚갚갚갚갚갚갚갚갚갚갚갚
@@ -512,7 +512,7 @@ MODUpNote:
 ;   The registers EBX,ESI,EDI must be preserved.
 ;   The effect parameters are passed through the registers:
 ;       EBX - voice number
-;	ESI - track address
+;   ESI - track address
 ;       AL  - effect parameter
 ;갚갚갚갚갚갚갚갚갚갚갚갚갚갚갚갚갚갚갚갚갚갚갚갚갚갚갚갚갚갚갚갚갚갚갚갚갚갚갚
 
@@ -536,7 +536,7 @@ EFXSetSpeed:
         mov     [TempoCount],al
         ret
 EFXSetBPM:
-	mov	[BPM],al
+    mov [BPM],al
         mov     dl,al
         call    MCStartTimer
         ret
@@ -548,7 +548,7 @@ EFXJumpPos:
         dec     al
         mov     [OrderPos],al
         mov     [PatternRow],40h
-	ret
+    ret
 
 ;같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같
 ; EFXBreak - breaks the current pattern.
@@ -572,7 +572,7 @@ EFXSlideVolume:
         mov     al,40h
 EFXVolSlided:
         mov     [esi+Track.Volume],al
-	call	MCSetVolume
+    call    MCSetVolume
         ret
 EFXVolumeDown:
         sub     al,ah
@@ -584,7 +584,7 @@ EFXVolumeDown:
 ; EFXSampleOffset - Set the sample offset
 ;같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같
 EFXSampleOffset:
-	xor	edx,edx
+    xor edx,edx
         mov     dh,al
         push    esi edi
         movzx   eax,[esi+Track.Instr]
@@ -606,9 +606,9 @@ EFXSampleOffset:
 ;  CF = status
 ;같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같
 MCInit:
-	pushad
-	xor	ax,ax			; initialize variables
-	mov	[BufferPos],ax
+    pushad
+    xor ax,ax           ; initialize variables
+    mov [BufferPos],ax
         mov     [TimerCount],ax
         mov     [TimerSpeed],ax
         mov     [BufSelector],ax
@@ -627,7 +627,7 @@ MCInit:
         cmp     ax,cx
         jae     MCAlignVolBuffer
         mov     esi,edi
-	add	edi,4200h
+    add edi,4200h
 MCAlignVolBuffer:                       ; VolBuffer must be page aligned
         add     esi,0FFh                ; (256 bytes = 1 page)
         and     esi,not 0FFh
@@ -651,7 +651,7 @@ MCDoVolBuffer:
         imul    bh
         sar     ax,cl
         mov     [edi],ah
-	inc	edi
+    inc edi
         inc     bl
         jne     MCDoVolBuffer
         inc     bh
@@ -675,7 +675,7 @@ MCDone:
         mov     [BufSelector],0
 MCDoneExit:
         popad
-	ret
+    ret
 
 ;같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같
 ; MCStartVoice - Set the voice sample instrument parameters
@@ -723,7 +723,7 @@ MCSetFreqDone:
 ;  AL = volume
 ;같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같
 MCSetVolume:
-	push	ebx
+    push    ebx
         mov     ebx,[4*ebx+VoiceTable]
         mov     [ebx+Voice.Volume],al
         pop     ebx
@@ -747,7 +747,7 @@ MCStartTimer:
         mov     [TimerSpeed],ax
         pop     dx
         pop     cx
-	pop	ax
+    pop ax
         ret
 
 ;같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같
@@ -771,7 +771,7 @@ MCPollLoop:
         cmp     [TimerCount],0          ; time to call the MOD callback?
         jg      MCPollChunk
         call    MODCallBack
-	mov	ax,[TimerSpeed]		; update timer accumulator
+    mov ax,[TimerSpeed]     ; update timer accumulator
         add     [TimerCount],ax
 MCPollChunk:
         mov     ax,[BufferLen]          ; get the chunk length
@@ -795,7 +795,7 @@ MCVoicesLoop:
         call    MCMixVoice
         pop     edi
         pop     edx
-	pop	ecx
+    pop ecx
         pop     ebx
         add     ebx,size Voice
         dec     dx
@@ -814,12 +814,12 @@ MCPollDone:
 ;  ECX = Number of samples
 ;같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같
 MCMixVoice:
-	push	ebx
+    push    ebx
 
 ; Modify the mixing chunk of code
 
-	mov	eax,[ebx+Voice.EndAddress]
-	mov	[dword ds:MCMixCode0],eax
+    mov eax,[ebx+Voice.EndAddress]
+    mov [dword ds:MCMixCode0],eax
         mov     [dword ds:MCMixCode2],eax
         sub     eax,[ebx+Voice.StartAddress]
         mov     [dword ds:MCMixCode1],eax
@@ -836,7 +836,7 @@ MCMixVoice:
 ; Load the volume table address
 
         mov     bh,[ebx+Voice.Volume]
-	and	ebx,0FF00h
+    and ebx,0FF00h
         add     ebx,[VolBuffer]
 
 ; Start of the mixing chunk of code (non pure code)
@@ -879,12 +879,12 @@ MCMixBreak:
 ;  AL = data
 ;같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같
 SBWrite:
-	push	eax
-	push	ecx
-	push	edx
-	mov	dx,[IOAddr]
-	add	dx,0Ch
-	mov	ecx,10000h		; wait until the DSP is ready
+    push    eax
+    push    ecx
+    push    edx
+    mov dx,[IOAddr]
+    add dx,0Ch
+    mov ecx,10000h      ; wait until the DSP is ready
         mov     ah,al                   ; to receive the data byte
 SBWriteWait:
         in      al,dx
@@ -895,7 +895,7 @@ SBWriteWait:
         pop     edx
         pop     ecx
         pop     eax
-	ret
+    ret
 
 ;같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같
 ; SBResetDSP - reset the Sound Blaster DSP chip
@@ -919,7 +919,7 @@ SBResetDSP:
 SBReadWait:
         in      al,dx
         and     al,80h
-	loopz	SBReadWait
+    loopz   SBReadWait
         sub     dx,04h
         in      al,dx                   ; read the DSP data byte
         cmp     al,0AAh
@@ -941,9 +941,9 @@ SBResetDone:
 ;  CF = initialization status
 ;같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같
 SBOpenDevice:
-	pusha
-	call	SBResetDSP		; check for a SB card
-	jc	SBOpenDone
+    pusha
+    call    SBResetDSP      ; check for a SB card
+    jc  SBOpenDone
         mov     al,0D1h
         call    SBWrite                 ; turn on SB speaker
         mov     al,40h
@@ -964,7 +964,7 @@ SBOpenDevice:
         clc                             ; set successful status
 SBOpenDone:
         popa
-	ret
+    ret
 
 ;같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같
 ; SBCloseDevice - shutdown the SB playback
@@ -988,7 +988,7 @@ DMAReset:
         pusha
         mov     al,[DRQNum]             ; reset the DMA channel
         or      al,04h
-	out	0Ah,al
+    out 0Ah,al
         popa
         ret
 
@@ -1012,7 +1012,7 @@ DMASetBuf:
         add     dx,dx
         mov     eax,[DMABuffer]
         out     dx,al
-	mov	al,ah
+    mov al,ah
         out     dx,al
         inc     dx                      ; set the DMA buffer length
         mov     ax,[DMALength]
@@ -1048,15 +1048,15 @@ IRQGetIntNum:
         push    ax bx cx                ; get the virtual master and slave
         mov     ax,0400h                ; PIC base interrupts in DX
         int     31h
-	pop	cx bx ax
-	cmp	al,08h			; get the PIC base interrupt for
-	jb	IRQGetDone		; the IRQ number in AL
-	mov	dh,dl
-	sub	al,08h
+    pop cx bx ax
+    cmp al,08h          ; get the PIC base interrupt for
+    jb  IRQGetDone      ; the IRQ number in AL
+    mov dh,dl
+    sub al,08h
 IRQGetDone:
-	add	al,dh
-	pop	dx
-	ret
+    add al,dh
+    pop dx
+    ret
 
 ;같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같
 ; IRQRestVect - Restores the previous IRQ vector
@@ -1066,13 +1066,13 @@ IRQGetDone:
 ;같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같
 IRQRestVect:
         pushad
-	push	ds
-	in	al,0A1h			; disable the IRQ interrupt using
-	mov	ah,al			; the PIC interrupt mask registers
-	in	al,21h
-	mov	dx,01h
-	mov	cl,[IRQNum]
-	shl	dx,cl
+    push    ds
+    in  al,0A1h         ; disable the IRQ interrupt using
+    mov ah,al           ; the PIC interrupt mask registers
+    in  al,21h
+    mov dx,01h
+    mov cl,[IRQNum]
+    shl dx,cl
         or      ax,dx
         out     21h,al
         mov     al,ah
@@ -1090,7 +1090,7 @@ IRQRestVect:
 IRQRestDone:
         pop     ds
         xor     ebx,ebx
-	mov	[dword IRQVector],ebx
+    mov [dword IRQVector],ebx
         mov     [word 4+IRQVector],bx
         popad
         ret
@@ -1114,7 +1114,7 @@ IRQSetVect:
         push    cs
         pop     ds
         int     21h
-	pop	es ds
+    pop es ds
         in      al,0A1h                 ; enable this IRQ using the
         mov     al,ah                   ; PIC interrupt mask registers
         in      al,21h
@@ -1133,14 +1133,14 @@ IRQSetVect:
 ; IRQHandler - Hardware IRQ handler
 ;같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같
 IRQHandler:
-	pushad				; pushes all the registers
-	push	ds
-;;;	mov	ax,DGROUP		; load the DS selector
-;;;	mov	ds,ax
-;;;	call	_GETDS
-	mov	ax,cs:[dword ptr OurDataSeg]
-	mov	ds,ax
-	mov	dx,[IOAddr]		; send ack to the SB DSP chip
+    pushad              ; pushes all the registers
+    push    ds
+;;; mov ax,DGROUP       ; load the DS selector
+;;; mov ds,ax
+;;; call    _GETDS
+    mov ax,cs:[dword ptr OurDataSeg]
+    mov ds,ax
+    mov dx,[IOAddr]     ; send ack to the SB DSP chip
         add     dx,0Eh
         in      al,dx
         mov     al,14h                  ; restart DMA transfer
@@ -1163,4 +1163,3 @@ IRQAckPIC:
         iretd
 
 end
-

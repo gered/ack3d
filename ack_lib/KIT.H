@@ -4,62 +4,62 @@
 //  Module: KIT.H
 // (c) CopyRight 1994 All Rights Reserved
 
-#define MODE_GRAPHICS	0x13
-#define MODE_TEXT	0x03
+#define MODE_GRAPHICS   0x13
+#define MODE_TEXT   0x03
 
-#define SCREEN_LENGTH	64000	    // Bytes in one full screen
-#define SCREEN_LEN_WORDS 32000	    // Words in one screen
-#define SCREEN_LEN_DWORDS 16000	    // DWORDS in one screen
-#define SCREEN_PLANES	1	    // Number of planes for this mode
-#define SCREEN_WIDTH	320	    // Number of bytes in one row
-#define SCREEN_HEIGHT	200	    // Number of rows on screen
+#define SCREEN_LENGTH   64000       // Bytes in one full screen
+#define SCREEN_LEN_WORDS 32000      // Words in one screen
+#define SCREEN_LEN_DWORDS 16000     // DWORDS in one screen
+#define SCREEN_PLANES   1       // Number of planes for this mode
+#define SCREEN_WIDTH    320     // Number of bytes in one row
+#define SCREEN_HEIGHT   200     // Number of rows on screen
 
-#define BUTTON_OK	    0
-#define BUTTON_OKCANCEL	    1
-#define BUTTON_YESNO	    2
+#define BUTTON_OK       0
+#define BUTTON_OKCANCEL     1
+#define BUTTON_YESNO        2
 #define BUTTON_ABORTRETRY   3
 
-#define BUTTON_RET_OK	    0
+#define BUTTON_RET_OK       0
 #define BUTTON_RET_CANCEL   1
-#define BUTTON_RET_YES	    2
-#define BUTTON_RET_NO	    3
+#define BUTTON_RET_YES      2
+#define BUTTON_RET_NO       3
 #define BUTTON_RET_ABORT    4
 #define BUTTON_RET_RETRY    5
 
 // Used in IORTN.C for message boxes
 typedef struct {
-	short	  x;
-	short	  y;
-	short	  x1;
-	short	  y1;
-	short	  index;
-	} BUTTON;
+    short     x;
+    short     y;
+    short     x1;
+    short     y1;
+    short     index;
+    } BUTTON;
 
 
 // Used in IORTN.C for message boxes
 typedef struct {
-	short	  Count;
-	short	  List[4];
-	} INDEXES;
+    short     Count;
+    short     List[4];
+    } INDEXES;
 
 
 // Used in IORTN.C list boxes
 typedef struct _lcb {
     struct  _lcb    *Back;
     struct  _lcb    *Fwd;
-	    char    Data[1];
-	    } LCB;
+        char    Data[1];
+        } LCB;
 
 typedef struct {
-	short	  ux;
-	short	  uy;
-	short	  ux1;
-	short	  uy1;
-	short	  dx;
-	short	  dy;
-	short	  dx1;
-	short	  dy1;
-	} ARROWRECT;
+    short     ux;
+    short     uy;
+    short     ux1;
+    short     uy1;
+    short     dx;
+    short     dy;
+    short     dx1;
+    short     dy1;
+    } ARROWRECT;
 
 
 //=============================================================================
@@ -137,4 +137,3 @@ short ShowPickList(char **p,short SortFlag);
 //=============================================================================
 short LoadSet(char *fName);
 
-
