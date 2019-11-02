@@ -1587,7 +1587,7 @@ StrAmount = MAX_STR_AMOUNT;
 AckSetupKeyboard();
 AckSetupTimer();
 
-//StartBGmusic();
+StartBGmusic();
 
 // Switch to mode 13
 AckSetVGAmode();
@@ -2063,7 +2063,7 @@ while (!done)
     }
     }
 
-//EndBGmusic();
+EndBGmusic();
 ShutDownFlag = 1;
 AckWrapUp(ae);
 AckSetTextmode();
