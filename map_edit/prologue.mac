@@ -1,0 +1,44 @@
+P386
+
+
+Macro    SETUPSEGMENT
+
+SEGMENT _TEXT   PARA PUBLIC 'CODE'
+    ASSUME  CS:_TEXT
+
+    Endm
+
+macro   PENTER  STORAGE
+;; 17 - Enter a procedue with storage space
+;; Procedure enter, uses the 286/386 ENTER opcode
+    push    ebp
+    mov ebp,esp
+        IF      STORAGE
+    sub esp,STORAGE
+        ENDIF
+ENDIF
+        endm
+
+macro   PLEAVE
+;; 18 - Exit a procedure with stack correction.
+    mov esp,ebp
+    pop ebp
+        endm
+
+macro   PushCREGS
+;; 19 - Save registers for C
+        push    es
+    push    ds   ;The Kernel is responsible for maintaining DS
+    push    esi
+    push    edi
+        cld
+        endm
+
+macro   PopCREGS
+;; 20 - Restore registers for C
+    pop edi
+    pop esi
+    pop ds ;The Kernel is responsible for maintaining DS
+        pop     es
+        endm
+
