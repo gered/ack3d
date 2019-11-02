@@ -21,8 +21,7 @@ global  MODPlayVoice:near
 global  MODStopVoice:near
 global  MODSetPeriod:near
 global  MODSetVolume:near
-;;global  _GETDS:near
-global  OurDataSeg:dword
+global  _GETDS:near
 
 ;北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北
 ; EQUATES
@@ -1135,11 +1134,9 @@ IRQSetVect:
 IRQHandler:
     pushad              ; pushes all the registers
     push    ds
-;;; mov ax,DGROUP       ; load the DS selector
-;;; mov ds,ax
-;;; call    _GETDS
-    mov ax,cs:[dword ptr OurDataSeg]
+    mov ax,DGROUP       ; load the DS selector
     mov ds,ax
+    call    _GETDS
     mov dx,[IOAddr]     ; send ack to the SB DSP chip
         add     dx,0Eh
         in      al,dx
