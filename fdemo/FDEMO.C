@@ -16,6 +16,7 @@
 #include <sys\stat.h>
 #include "ack3d.h"
 #include "ackeng.h"
+#include "ackext.h"
 #include "kit.h"
 #include "modplay.h"
 
@@ -68,60 +69,9 @@ extern  short   AckDisplayErrors;   // 1 = sw to text mode and display error
 extern  long    mFactor;
 extern  long    dFactor;
 
-extern  long    zdTable[VIEW_WIDTH][200];
-
 extern  UCHAR   colordat[];
-extern  UINT    *ObjGrid;
-extern  UINT    *Grid;
-extern  UINT    FloorMap[];
-extern  short   ViewHeight;
-extern  short   CeilingHeight;
-extern  short   Resolution;
-extern  long    kduFactor;
-extern  long    kdvFactor;
-extern  long    kxFactor;
-extern  long    kyFactor;
-extern  short   tuFactor;
-extern  short   tvFactor;
-extern  short   rsHandle;
-extern  ULONG   *rbaTable;
-extern  UCHAR   *BackArray[];
-extern  long    *xNextTable;
-extern  long    *yNextTable;
-extern  UINT    *Grid;
-extern  long    *CosTable;
-extern  long    *SinTable;
 
-    ACKENG  *ae;
-
-// These are the ranges used for distance shading. Will need to be modified
-// for the new color palette used.
-#if 0
-ColorRange  ranges[64] = {
-    16,16,
-    32,16,
-    48,16,
-    64,16,
-    80,16,
-    96,8,
-    104,8,
-    112,8,
-    120,8,
-    128,8,
-    136,8,
-    144,8,
-    152,8,
-    160,8,
-    168,8,
-    176,8,
-    184,8,
-    192,16,
-    208,16,
-    224,8,
-    232,8,
-    0,0
-    };
-#endif
+ACKENG  *ae;
 
 ColorRange  ranges[64] = {
     16,15,
@@ -150,10 +100,6 @@ ColorRange  ranges[64] = {
 
 
 
-    UCHAR   scanCode;
-    UCHAR   KeyPressed;
-    UCHAR   MiniKey;
-    UCHAR   Keys[128];
     int     HaveMouse;
     short   FlashIndex;
     short   FlashCount;
@@ -186,13 +132,7 @@ ColorRange  ranges[64] = {
     short   Handw2;
     short   Handh2;
 
-    long    TimerCounter;
     long    ObjCounter[64];
-    void    (__interrupt __far *oldvec)();
-    void    __interrupt __far myInt();
-
-    void    (__interrupt __far *oldTimer)();
-    void    __interrupt __far myTimer();
 
     short   LastObjectIndex;
 
@@ -201,7 +141,6 @@ ColorRange  ranges[64] = {
 //-----------------------------------------------------------------------------
 volatile short framespersec = 0;
 volatile short cframes=0, count=0, ticks=0;
-volatile short AckTmCount=0, AckTmDelay=0;
 
     char    *ErrorMsgs[] = {
         "ERR_BADFILE      ",
@@ -231,62 +170,6 @@ volatile short AckTmCount=0, AckTmDelay=0;
 void AckRegisterStructure(ACKENG *ae);
 void AckSpeedUp(short);
 void AckSlowDown(void);
-
-//=============================================================================
-// Keyboard interrupt 9
-//=============================================================================
-void __interrupt __far myInt(void)
-{
-  register char x;
-
-//oldvec();    // Use when screen captures are wanted - calls orig vector
-
-scanCode = inp(0x60); // read keyboard data port
-x = inp(0x61);
-outp(0x61, (x | 0x80));
-outp(0x61, x);
-outp(0x20, 0x20);
-
-Keys[scanCode & 127] = 1;
-KeyPressed = 1;
-if (scanCode & 128)
-    {
-    Keys[scanCode & 127] = 0;
-    KeyPressed = 0;
-    }
-else
-    MiniKey = 1;
-
-}
-
-//=============================================================================
-// Timer interrupt - simply increments a counter for use in program
-// Calls the old timer after X iterations have cycled so clock stays correct
-//=============================================================================
-void __interrupt __far myTimer(void)
-{
-if (ShutDownFlag)
-    {
-    _enable();
-    outp(0x20,0x20);
-    return;
-    }
-
-TimerCounter++;
-
-AckTmCount++;
-if (AckTmCount > AckTmDelay)
-    {
-    oldTimer();
-    AckTmCount -= AckTmDelay;
-    }
-else
-    {
-    _enable();
-    outp(0x20,0x20);
-    }
-
-}
 
 //=============================================================================
 //
@@ -1319,7 +1202,7 @@ if (j > 0 && j != POV_PLAYER)
     if (ae->ObjList[j]->CurrentType == NO_WALK)
         {
         AckSetObjectType(ae,j,NO_INTERACT);
-        ObjCounter[j] = TimerCounter + 18 + (rand() % 120);
+        ObjCounter[j] = AckTimerCounter + 18 + (rand() % 120);
         }
     }
 
@@ -1657,29 +1540,29 @@ while (!done)
     }
     memmove(Video,ae->ScreenBuffer,64000);
 
-    if (Keys[ESCAPE_KEY])
+    if (AckKeys[ESCAPE_KEY])
     break;
 
-    if (Keys[LEFT_ARROW_KEY])
+    if (AckKeys[LEFT_ARROW_KEY])
     {
     ae->PlayerAngle--;
     if (ae->PlayerAngle < 0)
         ae->PlayerAngle += INT_ANGLE_360;
     }
 
-    if (Keys[RIGHT_ARROW_KEY])
+    if (AckKeys[RIGHT_ARROW_KEY])
     {
     ae->PlayerAngle++;
     if (ae->PlayerAngle >= INT_ANGLE_360)
         ae->PlayerAngle -= INT_ANGLE_360;
     }
 
-    if (Keys[UP_ARROW_KEY])
+    if (AckKeys[UP_ARROW_KEY])
     {
     AckMovePOV(ae->PlayerAngle,16);
     }
 
-    if (Keys[DOWN_ARROW_KEY])
+    if (AckKeys[DOWN_ARROW_KEY])
     {
     i = ae->PlayerAngle + INT_ANGLE_180;
     if (i >= INT_ANGLE_360)
@@ -1810,13 +1693,8 @@ Shooting = 0;
 MagAmount = MAX_MAG_AMOUNT;
 StrAmount = MAX_STR_AMOUNT;
 
-// Setup keyboard and timer interrupts
-oldvec=_dos_getvect(KEYBD);
-_dos_setvect(KEYBD,myInt);
-oldTimer=_dos_getvect(8);
-_dos_setvect(8,myTimer);
-AckTmDelay = 3;
-AckSpeedUp(AckTmDelay);     // Set the timer interrupt at 3 times normal
+AckSetupKeyboard();
+AckSetupTimer();
 
 StartBGmusic();
 
@@ -1841,16 +1719,16 @@ SetMouseCursor(120,160);
 fpos = 64;
 DemoFlag = 0;
 if (DemoPtr != NULL) DemoFlag = 1;
-TimerEnd = TimerCounter + 180;
+TimerEnd = AckTimerCounter + 180;
 
 
 // MUST register each ACKENG structure once before use and after AckInitialize
 AckRegisterStructure(ae);
 
-StartTime = TimerCounter;
+StartTime = AckTimerCounter;
 AckBuildView();
 AckDisplayScreen();
-EndTime = TimerCounter - StartTime;
+EndTime = AckTimerCounter - StartTime;
 
 if (!EndTime) EndTime = 1;
 
@@ -1947,14 +1825,14 @@ while (!done)
         {
         AckSetObjectType(ae,j,NO_WALK);
         ae->ObjList[j]->Flags &= ~OF_ANIMDONE;
-        ObjCounter[j] = TimerCounter + 18 + (rand() % 120);
+        ObjCounter[j] = AckTimerCounter + 18 + (rand() % 120);
         }
 
 
 
-    if (TimerCounter > ObjCounter[j])
+    if (AckTimerCounter > ObjCounter[j])
         {
-        ObjCounter[j] = TimerCounter + 180 + (rand() % 180);
+        ObjCounter[j] = AckTimerCounter + 180 + (rand() % 180);
         if (ae->ObjList[j]->CurrentType == NO_WALK)
         AckSetObjectType(ae,j,NO_ATTACK);
         else
@@ -1971,7 +1849,7 @@ while (!done)
 
     CheckMonsters();
 
-    CkStart = TimerCounter;
+    CkStart = AckTimerCounter;
     AckBuildView(); // Build floor, ceiling, and walls into ScrnBuffer
 
     if (DemoFlag)
@@ -1979,19 +1857,19 @@ while (!done)
     switch (DemoFlag)
         {
         case 1:
-        if (TimerCounter > TimerEnd)
+        if (AckTimerCounter > TimerEnd)
             {
             DemoFlag++;
-            TimerEnd = TimerCounter + 540;
+            TimerEnd = AckTimerCounter + 540;
             }
         break;
 
         case 2:
         ShowBitmap(130,20,ae->ScreenBuffer,Demoht,Demowt,&DemoPtr[4]);
-        if (TimerCounter > TimerEnd)
+        if (AckTimerCounter > TimerEnd)
             {
             DemoFlag = 1;
-            TimerEnd = TimerCounter + 2160;
+            TimerEnd = AckTimerCounter + 2160;
             }
         break;
 
@@ -2079,7 +1957,7 @@ while (!done)
 
 
     AckDisplayScreen();     // Copy ScrnBuffer to actual video
-    CkEnd = TimerCounter - CkStart;
+    CkEnd = AckTimerCounter - CkStart;
     if (!CkEnd) CkEnd = 1;
 
     TurnFactor = INT_ANGLE_1 * CkEnd;
@@ -2166,22 +2044,22 @@ while (!done)
     MoveAngle = j;
     }
 
-    if (Keys[ESCAPE_KEY])
+    if (AckKeys[ESCAPE_KEY])
     break;
 
-    if(Keys[RIGHT_ARROW_KEY])
+    if(AckKeys[RIGHT_ARROW_KEY])
     {
     Spin += 1;
     SpinAngle += TurnFactor; // INT_ANGLE_1 * Spin;
     }
 
-    if(Keys[LEFT_ARROW_KEY])
+    if(AckKeys[LEFT_ARROW_KEY])
     {
     Spin += 1;
     SpinAngle -= TurnFactor; // -INT_ANGLE_1 * Spin;
     }
 
-    if(Keys[UP_ARROW_KEY])
+    if(AckKeys[UP_ARROW_KEY])
     {
     MoveAmount += (MoveFactor + MoveHalfFactor); // 12;
     if (MoveAmount > MAX_AMOUNT)
@@ -2189,7 +2067,7 @@ while (!done)
     MoveAngle = ae->PlayerAngle;
     }
 
-    if(Keys[DOWN_ARROW_KEY])
+    if(AckKeys[DOWN_ARROW_KEY])
     {
     j = ae->PlayerAngle + INT_ANGLE_180;
     if (j >= INT_ANGLE_360)
@@ -2202,79 +2080,79 @@ while (!done)
     }
 
 
-    if (Keys[C_KEY])
+    if (AckKeys[C_KEY])
     {
     ae->SysFlags ^= SYS_SOLID_CEIL;
     ae->SysFlags &= ~SYS_SOLID_BACK;
-    Keys[C_KEY] = 0;
+    AckKeys[C_KEY] = 0;
 
     if ((ae->SysFlags & SYS_SOLID_CEIL) && (ResScrollBack != 0))
         ae->SysFlags |= SYS_SOLID_BACK;
     AckRegisterStructure(ae);
     }
 
-    if (Keys[R_KEY])
+    if (AckKeys[R_KEY])
     {
-    Keys[R_KEY] = 0;
+    AckKeys[R_KEY] = 0;
     Resolution++;
     if (Resolution > 2)
         Resolution = 0;
     }
 
-    if (Keys[F_KEY])
+    if (AckKeys[F_KEY])
     {
     ae->SysFlags ^= SYS_SOLID_FLOOR;
-    Keys[F_KEY] = 0;
+    AckKeys[F_KEY] = 0;
     AckRegisterStructure(ae);
     }
 
 
-    if (Keys[PGUP_KEY] && ViewHeight < 60)
+    if (AckKeys[PGUP_KEY] && ViewHeight < 60)
     {
     ViewHeight++;
     CeilingHeight++;
     }
 
-    if (Keys[PGDN_KEY] && ViewHeight > 4)
+    if (AckKeys[PGDN_KEY] && ViewHeight > 4)
     {
     ViewHeight--;
     CeilingHeight--;
     }
 
-    if (Keys[NUM_1_KEY])
+    if (AckKeys[NUM_1_KEY])
     {
-    Keys[NUM_1_KEY]=0;
+    AckKeys[NUM_1_KEY]=0;
     dFactor--;
     }
 
-    if (Keys[NUM_2_KEY])
+    if (AckKeys[NUM_2_KEY])
     {
-    Keys[NUM_2_KEY]=0;
+    AckKeys[NUM_2_KEY]=0;
     dFactor++;
     }
 
 
-    if (Keys[MINUS_KEY])
+    if (AckKeys[MINUS_KEY])
     {
-    Keys[MINUS_KEY]=0;
+    AckKeys[MINUS_KEY]=0;
     mFactor--;
     }
 
-    if (Keys[PLUS_KEY])
+    if (AckKeys[PLUS_KEY])
     {
-    Keys[PLUS_KEY]=0;
+    AckKeys[PLUS_KEY]=0;
     mFactor++;
     }
 
-    if (Keys[I_KEY])
+    if (AckKeys[I_KEY])
     {
-    Keys[I_KEY] = 0;
+    AckKeys[I_KEY] = 0;
     InfoFlag ^= 1;
     }
 
-    if (Keys[B_KEY])
+    if (AckKeys[B_KEY])
     {
-    Keys[B_KEY]=0;
+    AckKeys[B_KEY]=0;
     //  mFactor -= 64;
     if (!LevelFlag)
         LoadNewLevel("MALL.DTF");
@@ -2287,22 +2165,17 @@ while (!done)
     LevelFlag ^= 1;
     }
 
-    if (Keys[S_KEY])
+    if (AckKeys[S_KEY])
     {
-    Keys[S_KEY] = 0;
+    AckKeys[S_KEY] = 0;
     mFactor += 64;
     }
     }
 
 EndBGmusic();
 ShutDownFlag = 1;
-_disable();
-AckSlowDown();          // Set the timer back to normal speed
 AckWrapUp(ae);
 AckSetTextmode();
-_dos_setvect(KEYBD,oldvec);
-_dos_setvect(8,oldTimer);
-_enable();
 
 return(0);
 }
