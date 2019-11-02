@@ -5,6 +5,9 @@
 // the functions in the ACK-3D library. To locate data structures for the
 // ACK-3D interface, see the file ACK3D.H.
 
+#ifndef ACKENG_H_INCLUDED
+#define ACKENG_H_INCLUDED
+
 #define TRANS_WALLS     0
 #define FLOOR_ACTIVE    1
 #define USE_XMS         0       // Set to 0 if XMS not desired
@@ -62,4 +65,5 @@ typedef struct _slicer {
     struct _slicer *Next;   // References the wall slice behind the current slice
     } SLICE;
 
+#endif
 

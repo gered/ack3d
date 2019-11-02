@@ -9,14 +9,12 @@
 // (the "old" type) are not supported. use the "new" deluxe paint .lbm type
 // and do not choose "old".
 //=============================================================================
-#include <windows.h>
 #include <stdio.h>
-#include <conio.h>
-#include <process.h>
-#include <bios.h>
+#include <string.h>
+#include <io.h>
 #include <fcntl.h>
-#include <malloc.h>
-#include <mem.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 
 #include "ack3d.h"
 #include "ackeng.h"
@@ -48,7 +46,7 @@ void CloseFile(FILE *fp)
 fclose(fp);
 if (rsHandle)
     {
-    rsHandle = _lopen(rsName,OF_READ);
+    rsHandle = open(rsName,O_RDONLY|O_BINARY);
     if (rsHandle < 1)
         rsHandle = 0;
     }
@@ -57,8 +55,7 @@ if (rsHandle)
 
 unsigned char *AckReadiff(char *picname)
    {
-   FILE     *pic;
-   short    handle;
+   int    handle;
    form_chunk   fchunk;
    ChunkHeader  chunk;
    BitMapHeader bmhd;
@@ -73,19 +70,19 @@ unsigned char *AckReadiff(char *picname)
     rdSize = MAX_BUF_POS;
 
     if (!rsHandle)
-        handle = _lopen(picname,OF_READ);
+        handle = open(picname,O_RDONLY|O_BINARY);
     else
         {
         handle = rsHandle;
-        _llseek(rsHandle,rbaTable[(ULONG)picname],SEEK_SET);
+        lseek(rsHandle,rbaTable[(ULONG)picname],SEEK_SET);
         }
 
-    _lread(handle,&fchunk,sizeof(form_chunk));
+    read(handle,&fchunk,sizeof(form_chunk));
 
     if (fchunk.type != FORM)
         {
         if (!rsHandle)
-            _lclose(handle);
+            close(handle);
 
                 ErrorCode = ERR_INVALIDFORM;
                 return(0L);
@@ -94,26 +91,26 @@ unsigned char *AckReadiff(char *picname)
         if (fchunk.subtype != ID_PBM)
                 {
         if (!rsHandle)
-            _lclose(handle);
+            close(handle);
                 ErrorCode = ERR_NOPBM;
                 return(0L);
                 }
         // now lets loop...Because the Chunks can be in any order!
         while(1)
                 {
-        _lread(handle,&chunk,sizeof(ChunkHeader));
+        read(handle,&chunk,sizeof(ChunkHeader));
                 chunk.ckSize = ByteFlipLong(chunk.ckSize);
                 if (chunk.ckSize & 1) chunk.ckSize ++;  // must be word aligned
                 if(chunk.ckID == ID_BMHD)
           {
-        _lread(handle,&bmhd,sizeof(BitMapHeader));
+        read(handle,&bmhd,sizeof(BitMapHeader));
           bmhd.w=iffswab(bmhd.w);                  // the only things we need.
           bmhd.h=iffswab(bmhd.h);
           destx = (unsigned char *)AckMalloc((bmhd.w * bmhd.h)+4);
           if ( !destx )
                  {
          if (!rsHandle)
-            _lclose(handle);
+            close(handle);
                  ErrorCode = ERR_NOMEMORY;
                  return(0L);
                  }
@@ -132,7 +129,7 @@ unsigned char *AckReadiff(char *picname)
           short i;
           unsigned char r,g;
 
-      _lread(handle,colordat,chunk.ckSize);
+      read(handle,colordat,chunk.ckSize);
           for (i=0;i<768;i++)
                         {
                          r = colordat[i];   // r,g do not stand for red and green
@@ -154,16 +151,16 @@ unsigned char *AckReadiff(char *picname)
                 if (bmhd.compression)
                         {
             value = 0;
-            _lread(handle,&value,1);
+            read(handle,&value,1);
                         if (value > 0)
                                 {
                                 short len;
                                 len = value +1;
                                 sofar -= len;
-                if (!(_lread(handle,dest,len)))
+                if (!(read(handle,dest,len)))
                                 {
                     if (!rsHandle)
-                        _lclose(handle);
+                        close(handle);
                             ErrorCode = ERR_BADPICFILE;
                             AckFree(savedestx);
                                 return(0L);
@@ -177,32 +174,32 @@ unsigned char *AckReadiff(char *picname)
                                 count ++;
                                 sofar -= count;
                 value = 0;
-                _lread(handle,&value,1);
+                read(handle,&value,1);
                                 while (--count >= 0) *dest++ = value;
                                 }
                         }
                 else
                         {
-            _lread(handle,dest,sofar);
+            read(handle,dest,sofar);
                         sofar = 0;
                         }
                 }
                   if (sofar < 0)
                 {
         if (!rsHandle)
-            _lclose(handle);
+            close(handle);
                 }
-                  _fmemcpy(destx,pplanes,bmhd.w);
+                  memcpy(destx,pplanes,bmhd.w);
                   destx += bmhd.w;
                   }
           break; // leave if we've unpacked the BODY
           }
 
-        _llseek(handle,chunk.ckSize,SEEK_CUR);
+        lseek(handle,chunk.ckSize,SEEK_CUR);
                 }
 
     if (!rsHandle)
-        _lclose(handle);
+        close(handle);
         return((char *)savedestx);
         }
 

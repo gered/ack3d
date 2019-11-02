@@ -2,16 +2,12 @@
 // The main function AckInitialize() must be called first before any of the
 // other ACK-3D functions are called. The internal functions defined in this file
 // perform all of the set up work of loading tables and resource files.
-#include <windows.h>
-#include <stdlib.h>
 #include <stdio.h>
-#include <dos.h>
-#include <mem.h>
+#include <string.h>
 #include <io.h>
 #include <fcntl.h>
-#include <time.h>
-#include <string.h>
-#include <sys\stat.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
 #include "ack3d.h"
 #include "ackeng.h"
@@ -23,7 +19,6 @@ extern  char AckTimerSetup;
 short   *LowerTable[2048];
 short   tmpLowerValue[400];
 short   LowerLen[2048];
-short   OurDataSeg;
 
 char    rsName[128];
 
@@ -65,10 +60,6 @@ short AckInitialize(ACKENG *ae)
     short  j;
     UCHAR  topcolor;
 
-#ifdef __BORLANDC__      // Conditional for Borland C++
-OurDataSeg = _DS;
-#endif
-
 AckKeyboardSetup = 0;    // Indicates keyboard interrupt has not been set up
 AckTimerSetup = 0;       // Indicates timer has not been set up
 
@@ -109,9 +100,9 @@ short AckOpenResource(char *fName)
     ULONG   hLen;
 
 if (rsHandle)            // Is a resource file currently opened?
-    _lclose(rsHandle);   // Close it before opening a new one
+    close(rsHandle);     // Close it before opening a new one
 
-rsHandle = _lopen(fName,OF_READ);  // Open new resource file
+rsHandle = open(fName,O_RDONLY|O_BINARY);  // Open new resource file
 if (rsHandle < 1)                  // Check to see if file is opened properly
     {
     rsHandle = 0;                  // Reset file handle
@@ -123,15 +114,15 @@ if (rbaTable == NULL)
     rbaTable = (ULONG *)AckMalloc(hLen);  // Allocate buffer for file
 if (rbaTable == NULL)                     // Was memory available?
     {
-    _lclose(rsHandle);                    // Close file
+    close(rsHandle);                      // Close file
     rsHandle = 0;                         // Reset file handle
     return(ERR_NOMEMORY);                 // Return error code
     }
 
 // Read in the file and check for byte count error
-if (_lread(rsHandle,(ULONG *)rbaTable,hLen) != hLen)
+if (read(rsHandle,(ULONG *)rbaTable,hLen) != hLen)
     {
-    _lclose(rsHandle);         // Close file
+    close(rsHandle);           // Close file
     rsHandle = 0;              // Reset file handle
     AckFree(rbaTable);         // Free up buffer
     return(ERR_BADFILE);       // Return file error code
@@ -147,7 +138,7 @@ return(0);
 void AckCloseResource(void)
 {
 if (rsHandle)                // Check to make sure resource file is opened
-    _lclose(rsHandle);       // Close the resource
+    close(rsHandle);         // Close the resource
 
 if (rbaTable != NULL)        // Do we need to free the memory for the file buffer?
     {
@@ -230,14 +221,14 @@ BuildWallDstTables();            // Create the distance tables
 
 if (!rsHandle)                   // Check to make sure resource file is not opened
     {
-    handle = _lopen("trig.dat",OF_READ);    // Open trig data file
+    handle = open("trig.dat",O_RDONLY|O_BINARY);  // Open trig data file
     if (handle < 1)
         return(ERR_BADFILE);                // File can't be opened; return error code
     }
 else
     {
     handle = rsHandle;                           // Get handle for resource file
-    _llseek(handle,rbaTable[0],SEEK_SET);
+    lseek(handle,rbaTable[0],SEEK_SET);
     }
 
 // Allocate memory for trig and coordinate tables
@@ -275,21 +266,21 @@ if (LongTanTable     == NULL ||         // Make sure memory is allocated for tab
     ViewCosTable     == NULL)
     {
     if (!rsHandle)
-        _lclose(handle);
+        close(handle);
     return(ERR_NOMEMORY);                 // Return memory allocation error code
     }
 
 len = sizeof(long) * INT_ANGLE_360;       // Calculate size for each trig table
-_lread(handle,SinTable,len);              // Read in trig data and place in appropriate tables
-_lread(handle,CosTable,len);
-_lread(handle,LongTanTable,len);
-_lread(handle,LongInvTanTable,len);
-_lread(handle,InvCosTable,len);
-_lread(handle,InvSinTable,len);
-_lread(handle,LongCosTable,len);
+read(handle,SinTable,len);                // Read in trig data and place in appropriate tables
+read(handle,CosTable,len);
+read(handle,LongTanTable,len);
+read(handle,LongInvTanTable,len);
+read(handle,InvCosTable,len);
+read(handle,InvSinTable,len);
+read(handle,LongCosTable,len);
 
 if (!rsHandle)
-    _lclose(handle);                  // Done reading, close trig.dat
+    close(handle);                    // Done reading, close trig.dat
 
 ca = INT_ANGLE_32;
 na = -1;
@@ -357,72 +348,72 @@ short AckReadMapFile(ACKENG *ae,char *fName)
 
 if (!rsHandle)            // Check to see if resource file is open already
     {                                  // No resource file so open new one
-    handle = _lopen(fName,OF_READ);    // Open the specified resource
+    handle = open(fName,O_RDONLY|O_BINARY);   // Open the specified resource
     if (handle < 1)
         return(ERR_BADMAPFILE);       // File was not opened; return error code
     }
 else
     {
     handle = rsHandle;                // Get handle to open resource
-    _llseek(handle,rbaTable[(ULONG)fName],SEEK_SET);  // Access opened resource file
+    lseek(handle,rbaTable[(ULONG)fName],SEEK_SET);  // Access opened resource file
     }
 
 aLen = GRID_ARRAY * 2;
 mLen = GRID_MAX * 2;
 
-if (_lread(handle,Grid,mLen) != mLen)   // Read in grid map data
+if (read(handle,Grid,mLen) != mLen)    // Read in grid map data
     {
     if (!rsHandle)
-        _lclose(handle);
+        close(handle);
     return(ERR_READINGMAP);            // Return file read error code
     }
 
-if (_lread(handle,ObjGrid,mLen) != mLen)   // Read in object map data
+if (read(handle,ObjGrid,mLen) != mLen)       // Read in object map data
     {
     if (!rsHandle)
-        _lclose(handle);
+        close(handle);
     return(ERR_READINGMAP);
     }
 
-if (_lread(handle,ae->xGrid,aLen) != aLen)   // Read in x grid data
+if (read(handle,ae->xGrid,aLen) != aLen)     // Read in x grid data
     {
     if (!rsHandle)
-        _lclose(handle);
+        close(handle);
     return(ERR_READINGMAP);
     }
 
-if (_lread(handle,ae->yGrid,aLen) != aLen)   // Read in y grid data
+if (read(handle,ae->yGrid,aLen) != aLen)     // Read in y grid data
     {
     if (!rsHandle)
-        _lclose(handle);
+        close(handle);
     return(ERR_READINGMAP);
     }
 
-if (_lread(handle,FloorMap,mLen) != mLen)   // Read in floor map data
+if (read(handle,FloorMap,mLen) != mLen)      // Read in floor map data
     {
     if (!rsHandle)
-        _lclose(handle);
+        close(handle);
     return(ERR_READINGMAP);
     }
 
-if (_lread(handle,CeilMap,mLen) != mLen)    // Read in ceiling map data
+if (read(handle,CeilMap,mLen) != mLen)       // Read in ceiling map data
     {
     if (!rsHandle)
-        _lclose(handle);
+        close(handle);
     return(ERR_READINGMAP);
     }
 
-_lread(handle,&count,2);               // Check counter for multi-height walls
+read(handle,&count,2);                 // Check counter for multi-height walls
 if (count)
     {
     for (i = 0; i < count;i++)         // Read in multi-height wall data
         {
-        _lread(handle,&pos,2);     // Get grid position for this multi-height wall
+        read(handle,&pos,2);       // Get grid position for this multi-height wall
         mPtr = (UCHAR *)AckMalloc(MAX_MULTI+1);  // Allocate memory for multi-height wall data
         if (mPtr == NULL)
             {
             if (!rsHandle)
-                _lclose(handle);
+                close(handle);
             return(ERR_NOMEMORY);
             }
 
@@ -430,7 +421,7 @@ if (count)
         ae->myGrid[pos] = mPtr;
         ae->mxGrid[pos+1] = mPtr;
         ae->myGrid[pos+GRID_WIDTH] = mPtr;
-        _lread(handle,buf,MAX_MULTI);
+        read(handle,buf,MAX_MULTI);
         buf[MAX_MULTI] = '\0';
         len = strlen(buf);
         if (len > MAX_MULTI) len = MAX_MULTI;
@@ -441,7 +432,7 @@ if (count)
     }
 
 if (!rsHandle)                  // Close handle
-    _lclose(handle);
+    close(handle);
 
 AckBuildGrid(ae);       // Build object lists
 return(0);

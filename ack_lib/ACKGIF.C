@@ -1,13 +1,6 @@
 // This source file contains the functions needed to read in GIF files.
 // (c) 1995 ACK Software (Lary Myers)
-#include <windows.h>
 #include <stdio.h>
-#include <conio.h>
-#include <process.h>
-#include <bios.h>
-#include <fcntl.h>
-#include <malloc.h>
-#include <string.h>
 
 #include "ack3d.h"
 #include "ackeng.h"

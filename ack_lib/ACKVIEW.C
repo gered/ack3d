@@ -1,17 +1,6 @@
 // This file contains the declarations and functions to set up views for the
 // ray casting engine.
-#include <windows.h>    // Required for Windows version of engine
-#include <stdlib.h>
 #include <stdio.h>
-#include <conio.h>
-#include <dos.h>
-#include <mem.h>
-#include <io.h>
-#include <fcntl.h>
-#include <time.h>
-#include <string.h>
-#include <sys\stat.h>
-#include <limits.h>
 
 #include "ack3d.h"      // Main ACK-3D internal and interface data structures
 #include "ackeng.h"     // Intrnal structures and constants

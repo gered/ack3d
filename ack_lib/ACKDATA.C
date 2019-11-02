@@ -1,11 +1,10 @@
-#include <windows.h>
 #include <stdio.h>
 
 #include "ack3d.h"
 #include "ackeng.h"
 
 long scPtr;
-UCHAR *bmWall;
+UCHAR *bmWall = NULL;
 
 long bmDistance;
 long BackDropRows;
@@ -16,13 +15,13 @@ long yPglobal;
 long xBegGlobal;
 long yBegGlobal;
 
-ACKENG *aeGlobal;
-USHORT *xGridGlobal;
-USHORT *yGridGlobal;
+ACKENG *aeGlobal = NULL;
+USHORT *xGridGlobal = NULL;
+USHORT *yGridGlobal = NULL;
 long xPglobalHI;
 long yPglobalHI;
-ULONG *rbaTable;
-short rsHandle;
+ULONG *rbaTable = NULL;
+int rsHandle;
 
 long LastX1;
 long LastY1;
@@ -45,15 +44,15 @@ short ErrorCode;
 long xMapPosn;
 long yMapPosn;
 
-USHORT *Grid;
-USHORT *ObjGrid;
+USHORT *Grid = NULL;
+USHORT *ObjGrid = NULL;
 SLICE Slice[VIEW_WIDTH];
-SLICE *sPtr;
+SLICE *sPtr = NULL;
 
 short TotalSpecial;
 
 short DistanceTable[MAX_DISTANCE + 1];
-long *AdjustTable;
+long *AdjustTable = NULL;
 
 short xSecretmPos;
 short xSecretmPos1;
@@ -66,18 +65,18 @@ short ySecretColumn;
 short TotalSecret;
 short ViewColumn;
 
-long *SinTable;
-long *CosTable;
+long *SinTable = NULL;
+long *CosTable = NULL;
 
-long *LongTanTable;
-long *LongInvTanTable;
+long *LongTanTable = NULL;
+long *LongInvTanTable = NULL;
 long InvCosTable[INT_ANGLE_360];
 long InvSinTable[INT_ANGLE_360];
-long *LongCosTable;
-long *ViewCosTable;
+long *LongCosTable = NULL;
+long *ViewCosTable = NULL;
 
-long *xNextTable;
-long *yNextTable;
+long *xNextTable = NULL;
+long *yNextTable = NULL;
 
 short LastFloorAngle = -1;
 short LastFloorX;
@@ -113,12 +112,12 @@ long Floorku;
 long Floorkv;
 long Floorkdu;
 long Floorkdv;
-UCHAR *Floorbm;
-UCHAR *Floorscr;
-UCHAR *FloorscrTop;
-UCHAR *Floorptr2;
-UCHAR *Floors1;
-UCHAR *Floors2;
+UCHAR *Floorbm = NULL;
+UCHAR *Floorscr = NULL;
+UCHAR *FloorscrTop = NULL;
+UCHAR *Floorptr2 = NULL;
+UCHAR *Floors1 = NULL;
+UCHAR *Floors2 = NULL;
 long Floorht;
 long Floorwt;
 short Floorvht;
@@ -132,18 +131,21 @@ short LastWallHeight;
 short PlayerAngle;
 short ViewAngle;
 USHORT SysFlags;
-UCHAR **WallbMaps;
-UCHAR *VidTop;
-UCHAR *VidBottom;
+UCHAR **WallbMaps = NULL;
+UCHAR *VidTop = NULL;
+UCHAR *VidBottom = NULL;
 short BotRowTable[320];
 USHORT FloorMap[4096];
 USHORT CeilMap[4096];
 UCHAR  HitMap[4096];
 
-UCHAR *VidSeg;
+UINT *VidSeg = 0xA0000;
 char *scantables[96];
-UCHAR   AckKeys[128];   // Buffer for keystrokes
-long AckTimerCounter;
+volatile UCHAR   AckKeys[128];   // Buffer for keystrokes
+volatile long AckTimerCounter;
+volatile short AckTmCount=0;
+volatile short AckTmDelay=0;
+volatile UCHAR KeyPressed;
 
 // **** End of Data ****
 

@@ -1,5 +1,8 @@
 /*         ACK-3D ( Animation Construction Kit 3D )           */
 
+#ifndef ACKEXT_H_INCLUDED
+#define ACKEXT_H_INCLUDED
+
 extern  UCHAR       *BackArray[];
 extern  long        xPglobal;
 extern  long        yPglobal;
@@ -16,7 +19,7 @@ extern  ULONG       *rbaTable;
 extern  long        bmDistance;
 
 
-extern  short       rsHandle;
+extern  int         rsHandle;
 extern  long        LastX1;
 extern  long        LastY1;
 extern  long        iLastX;
@@ -115,4 +118,11 @@ extern  USHORT      FloorMap[];
 extern  USHORT      CeilMap[];
 extern  char        *scantables[];
 
+extern  volatile UCHAR AckKeys[];
+extern  volatile UCHAR KeyPressed;
+extern  volatile long AckTimerCounter;
+extern  volatile short AckTmCount;
+extern  volatile short AckTmDelay;
+
+#endif
 

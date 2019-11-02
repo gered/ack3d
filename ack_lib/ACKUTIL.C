@@ -1,46 +1,82 @@
-#include <windows.h>
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <dos.h>
-#include <mem.h>
 #include <io.h>
 #include <fcntl.h>
-#include <time.h>
-#include <string.h>
-#include <sys\stat.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 
 #include "ack3d.h"
 #include "ackeng.h"
 #include "ackext.h"
 
-typedef struct {
-    int sel;
-    int off;
-    } SELOFF;
-
-void AckGetIntVector(int VecNum,int *sel,int *off);
-void AckSetIntVector(int VecNum,int sel,void *VecOff);
-void AckKbdInt(void);
-void AckTimerHandler(void);
-void AckSetTextMode(void);
 
     long    AckMemUsed;
     short   AckDisplayErrors;
-    SELOFF  OldKeybdInt;
+    void (__interrupt __far *OldKeybdInt)();
     char    AckKeyboardSetup;
-    SELOFF  OldTimerInt;
+    void (__interrupt __far *OldTimerInt)();
     char    AckTimerSetup;
+
+//=============================================================================
+// Keyboard interrupt 9
+//=============================================================================
+void __interrupt __far AckKbdInt(void)
+{
+UCHAR scanCode, x;
+
+scanCode = inp(0x60); // read keyboard data port
+x = inp(0x61);
+outp(0x61, (x | 0x80));
+outp(0x61, x);
+outp(0x20, 0x20);
+
+AckKeys[scanCode & 127] = 1;
+KeyPressed = 1;
+if (scanCode & 128)
+    {
+    AckKeys[scanCode & 127] = 0;
+    KeyPressed = 0;
+    }
+}
+
+
+//=============================================================================
+// Timer interrupt - simply increments a counter for use in program
+// Calls the old timer after X iterations have cycled so clock stays correct
+//=============================================================================
+void __interrupt __far AckTimerHandler(void)
+{
+
+AckTimerCounter++;
+
+AckTmCount++;
+if (AckTmCount > AckTmDelay)
+    {
+    OldTimerInt();
+    AckTmCount -= AckTmDelay;
+    }
+else
+    {
+    _enable();
+    outp(0x20,0x20);
+    }
+}
+
 
 //北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北
 // Establish a hook into interrupt 9 for keyboard handling
 // The application can access which key is pressed by looking at the
 // AckKeys global array
 //北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北
-#ifndef _MSC_VER
 void AckSetupKeyboard(void)
 {
-AckGetIntVector(9,&OldKeybdInt.sel,&OldKeybdInt.off);
-AckSetIntVector(9,_CS,AckKbdInt);
+memset(AckKeys, 0, sizeof(UCHAR)*128);
+KeyPressed = 0;
+
+OldKeybdInt = _dos_getvect(0x9);
+_dos_setvect(0x9, AckKbdInt);
 AckKeyboardSetup = 1;
 }
 
@@ -51,11 +87,13 @@ AckKeyboardSetup = 1;
 //北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北
 void AckSetupTimer(void)
 {
-AckGetIntVector(0x1C,&OldTimerInt.sel,&OldTimerInt.off);
-AckSetIntVector(0x1C,_CS,AckKbdInt);
+AckTimerCounter = 0;
+AckTmCount = 0;
+
+OldTimerInt = _dos_getvect(0x1C);
+_dos_setvect(0x1C, AckTimerHandler);
 AckTimerSetup = 1;
 }
-#endif
 
 //北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北
 // Utility routine used to track memory usage by the ACK engine and
@@ -134,18 +172,18 @@ if (buf == NULL)
 
 ErrCode = 0;
 if (!rsHandle)
-    handle = _lopen(PalName,O_RDWR|O_BINARY);
+    handle = open(PalName,O_RDONLY|O_BINARY);
 else
     {
     handle = rsHandle;
-    _llseek(handle,rbaTable[(ULONG)PalName],SEEK_SET);
+    lseek(handle,rbaTable[(ULONG)PalName],SEEK_SET);
     }
 
 if (handle > 0)
     {
     read(handle,buf,768);
     if (!rsHandle)
-    _lclose(handle);
+    close(handle);
 
     memset(buf,0,3);        // Make sure color 0 is always black
     AckSetPalette(buf);

@@ -1,164 +1,162 @@
 
-        IDEAL
-        JUMPS
-        P386
-        P387            ; Allow 386 processor
+IDEAL
+JUMPS
+P386
+P387            ; Allow 386 processor
+
+model flat
+
+codeseg
+
+include "ackrtn.inc"
+
+extrn   _gMultiWalls:word
+extrn   _WallDistTable:dword
+extrn   _BackDropRows:dword
+extrn   _FloorCeilRtn:dword
+extrn   _Resolution:word
+extrn   _ScreenOffset:word
+extrn   _bmDistance:dword
+extrn   _bmWall:dword
+extrn   _scPtr:dword
+extrn   _VidTop:dword
+extrn   _VidBottom:dword
+extrn   _Floors1:dword
+extrn   _Floors2:dword
+extrn   _PlayerAngle:word
+extrn   _BackArray:dword
+extrn   _gWinStartX:word
+extrn   _gWinStartY:word
+extrn   _gWinEndX:word
+extrn   _gWinEndY:word
+extrn   _gWinHeight:word
+extrn   _gWinWidth:word
+extrn   _gCenterRow:word
+extrn   _gCenterOff:word
+
+extrn   _scVid:dword
+extrn   _scWall:dword
+extrn   _scPal:dword
+extrn   _scdst:word
+extrn   _scwht:word
+extrn   _scmulti:word
+extrn   _sctopht:word
+extrn   _scbotht:word
+extrn   _scsavwht:word
+extrn   _scmulcnt:word
+extrn   _scsavVid:dword
+extrn   _scbNum:word
+extrn   _scMulData:dword
+extrn   _scColumn:dword
+extrn   _WallbMaps:dword
+
+extrn   _FloorMap:word
+extrn   _CeilMap:word
+extrn   _LastWallHeight:word
+extrn   _ViewAngle:word
+extrn   _ScreenOffset:word
+extrn   _xPglobal:dword
+extrn   _yPglobal:dword
+extrn   _xBegGlobal:dword
+extrn   _yBegGlobal:dword
+extrn   _aeGlobal:dword
+extrn   _xGridGlobal:dword
+extrn   _yGridGlobal:dword
+extrn   _xPglobalHI:dword
+extrn   _yPglobalHI:dword
+extrn   _rbaTable:dword
+extrn   _rsHandle:dword
+extrn   _LastX1:dword
+extrn   _LastY1:dword
+extrn   _iLastX:dword
+extrn   _iLastY:dword
+extrn   _MaxDistance:word
+extrn   _ErrorCode:word
+extrn   _xMapPosn:dword
+extrn   _yMapPosn:dword
+extrn   _Grid:dword
+extrn   _ObjGrid:dword
+extrn   _ViewHeight:word
+extrn   _CeilingHeight:word
+extrn   _gTopColor:byte
+extrn   _gBottomColor:byte
+extrn   _PlayerAngle:word
+extrn   _gScrnBuffer:dword
+extrn   _gBkgdBuffer:dword
+extrn   _gCenterOff:word
+extrn   _gWinHeight:word
+extrn   _SysFlags:word
 
 
-        MASM
-        .MODEL FLAT     ;32-bit OS/2 model
-        .CODE
-        IDEAL
+extrn   _xSecretmPos:word
+extrn   _xSecretmPos1:word
+extrn   _xSecretColumn:word
 
-        include "ackrtn.inc"
+extrn   _ySecretmPos:word
+extrn   _ySecretmPos1:word
+extrn   _ySecretColumn:word
 
-        extrn   _gMultiWalls:word
-        extrn   _WallDistTable:dword
-        extrn   _BackDropRows:dword
-        extrn   _FloorCeilRtn:dword
-        extrn   _Resolution:word
-        extrn   _ScreenOffset:word
-        extrn   _bmDistance:dword
-        extrn   _bmWall:dword
-        extrn   _scPtr:dword
-        extrn   _VidTop:dword
-        extrn   _VidBottom:dword
-        extrn   _Floors1:dword
-        extrn   _Floors2:dword
-        extrn   _PlayerAngle:word
-        extrn   _BackArray:dword
-        extrn   _gWinStartX:word
-        extrn   _gWinStartY:word
-        extrn   _gWinEndX:word
-        extrn   _gWinEndY:word
-        extrn   _gWinHeight:word
-        extrn   _gWinWidth:word
-        extrn   _gCenterRow:word
-        extrn   _gCenterOff:word
+extrn   _TotalSecret:word
+extrn   _ViewColumn:word
+extrn   _SinTable:dword
+extrn   _CosTable:dword
+extrn   _LongTanTable:dword
+extrn   _LongInvTanTable:dword
+extrn   _InvCosTable:byte
+extrn   _InvSinTable:byte
+extrn   _LongCosTable:dword
+extrn   _ViewCosTable:dword
+extrn   _xNextTable:dword
+extrn   _yNextTable:dword
 
-        extrn   _scVid:dword
-        extrn   _scWall:dword
-        extrn   _scPal:dword
-        extrn   _scdst:word
-        extrn   _scwht:word
-        extrn   _scmulti:word
-        extrn   _sctopht:word
-        extrn   _scbotht:word
-        extrn   _scsavwht:word
-        extrn   _scmulcnt:word
-        extrn   _scsavVid:dword
-        extrn   _scbNum:word
-        extrn   _scMulData:dword
-        extrn   _scColumn:dword
-        extrn   _WallbMaps:dword
+extrn   _LastMapPosn:word
+extrn   _LastObjectHit:word
+extrn   _TotalObjects:word
+extrn   _FoundObjectCount:word
+extrn   _ObjectsSeen:byte
+extrn   _MoveObjectCount:word
+extrn   _MoveObjectList:byte
+extrn   _ObjNumber:byte
+extrn   _ObjRelDist:byte
+extrn   _ObjColumn:byte
 
-        extrn   _FloorMap:word
-        extrn   _CeilMap:word
-        extrn   _LastWallHeight:word
-        extrn   _ViewAngle:word
-        extrn   _ScreenOffset:word
-        extrn   _xPglobal:dword
-        extrn   _yPglobal:dword
-        extrn   _xBegGlobal:dword
-        extrn   _yBegGlobal:dword
-        extrn   _aeGlobal:dword
-        extrn   _xGridGlobal:dword
-        extrn   _yGridGlobal:dword
-        extrn   _xPglobalHI:dword
-        extrn   _yPglobalHI:dword
-        extrn   _rbaTable:dword
-        extrn   _rsHandle:word
-        extrn   _LastX1:dword
-        extrn   _LastY1:dword
-        extrn   _iLastX:dword
-        extrn   _iLastY;dword
-        extrn   _MaxDistance:word
-        extrn   _ErrorCode:word
-        extrn   _xMapPosn:dword
-        extrn   _yMapPosn:dword
-        extrn   _Grid:dword
-        extrn   _ObjGrid:dword
-        extrn   _ViewHeight:word
-        extrn   _CeilingHeight:word
-        extrn   _gTopColor:byte
-        extrn   _gBottomColor:byte
-        extrn   _PlayerAngle:word
-        extrn   _gScrnBuffer:dword
-        extrn   _gBkgdBuffer:dword
-        extrn   _gCenterOff:word
-        extrn   _gWinHeight:word
-        extrn   _SysFlags:word
+extrn   _x_xPos:dword
+extrn   _x_yPos:dword
+extrn   _x_xNext:dword
+extrn   _x_yNext:dword
+extrn   _y_xPos:dword
+extrn   _y_yPos:dword
+extrn   _y_xNext:dword
+extrn   _y_yNext:dword
 
+extrn   _Slice:dword
+extrn   _sPtr:dword
+extrn   _HitMap:byte
 
-        extrn   _xSecretmPos:word
-        extrn   _xSecretmPos1:word
-        extrn   _xSecretColumn:word
+extrn   xRaySetup_:near
+extrn   yRaySetup_:near
+extrn   BuildSlice_:near
+extrn   xRayCast_:near
+extrn   yRayCast_:near
+extrn   AckDrawFloor_:near
+extrn   AckDrawFloorOnly_:near
+extrn   AckDrawCeilingOnly_:near
+extrn   DrawWalls_:near
+extrn   CheckDoors_:near
+extrn   BuildSliceMulti_:near
+extrn   FindObject_:near
 
-        extrn   _ySecretmPos:word
-        extrn   _ySecretmPos1:word
-        extrn   _ySecretColumn:word
-
-        extrn   _TotalSecret:word
-        extrn   _ViewColumn:word
-        extrn   _SinTable:dword
-        extrn   _CosTable:dword
-        extrn   _LongTanTable:dword
-        extrn   _LongInvTanTable:dword
-        extrn   _InvCosTable:byte
-        extrn   _InvSinTable:byte
-        extrn   _LongCosTable:dword
-        extrn   _ViewCosTable:dword
-        extrn   _xNextTable:dword
-        extrn   _yNextTable:dword
-
-        extrn   _LastMapPosn:word
-        extrn   _LastObjectHit:word
-        extrn   _TotalObjects:word
-        extrn   _FoundObjectCount:word
-        extrn   _ObjectsSeen:byte
-        extrn   _MoveObjectCount:word
-        extrn   _MoveObjectList:byte
-        extrn   _ObjNumber:byte
-        extrn   _ObjRelDist:byte
-        extrn   _ObjColumn:byte
-
-        extrn   _x_xPos:dword
-        extrn   _x_yPos:dword
-        extrn   _x_xNext:dword
-        extrn   _x_yNext:dword
-        extrn   _y_xPos:dword
-        extrn   _y_yPos:dword
-        extrn   _y_xNext:dword
-        extrn   _y_yNext:dword
-
-        extrn   _Slice:dword
-        extrn   _sPtr:dword
-        extrn   _HitMap:byte
-
-        ACKEXT  xRaySetup
-        ACKEXT  yRaySetup
-        ACKEXT  BuildSlice
-        ACKEXT  xRayCast
-        ACKEXT  yRayCast
-        ACKEXT  AckDrawFloor
-        ACKEXT  AckDrawFloorOnly
-        ACKEXT  AckDrawCeilingOnly
-        ACKEXT  DrawWalls
-        ACKEXT  CheckDoors
-        ACKEXT  BuildSliceMulti
-        ACKEXT  FindObject
-
-        ACKPUBS xRayCastMulti
-        ACKPUBS yRayCastMulti
-        ACKPUBS ShowColLow
-        ACKPUBS ShowColMaskLow
-        ACKPUBS BuildUpView
+public xRayCastMulti_
+public yRayCastMulti_
+public ShowColLow_
+public ShowColMaskLow_
+public BuildUpView_
 
 align 2
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-;
+; void ShowColLow(void)
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-ACKPROC ShowColLow
+proc ShowColLow_ near
         push    ebp
         push    esi
         push    edi
@@ -319,9 +317,9 @@ alldone:
 
 align 2
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-;
+; void ShowColMaskLow(void)
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-ACKPROC ShowColMaskLow
+proc ShowColMaskLow_ near
         push    ebp
         push    esi
         push    edi
@@ -463,12 +461,10 @@ m_alldone:
         endp
 
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-;
+; USHORT xRayCastMulti(void)
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-ACKPROC xRayCastMulti
-         push    ebp
-         mov        ebp,esp
-         sub        esp,50
+proc xRayCastMulti_ near
+;         sub        esp,50
          push    esi
          push    edi
          push    ebx
@@ -561,18 +557,14 @@ xRayDone:
          pop        ebx
          pop        edi
          pop        esi
-         mov        esp,ebp
-         pop        ebp
          ret
          endp
 
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-;
+; USHORT yRayCastMulti(void)
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-ACKPROC yRayCastMulti
-         push    ebp
-         mov        ebp,esp
-         sub        esp,50
+proc yRayCastMulti_ near
+;         sub        esp,50
          push    esi
          push    edi
          push    ebx
@@ -664,16 +656,14 @@ yRayDone:
          pop        ebx
          pop        edi
          pop        esi
-         mov        esp,ebp
-         pop        ebp
          ret
          endp
 
 
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-;
+; void CheckHitMap(void)
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-ACKPROC CheckHitMap
+proc CheckHitMap_ near
         mov     edi,offset _HitMap
         mov     edx,edi
         mov     ecx,4096
@@ -701,9 +691,9 @@ chmDone:
         endp
 
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-;
+; void BuildUpView(void)
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-ACKPROC BuildUpView
+proc BuildUpView_ near
         push    ebp     ; Save registers used by this routine
         push    esi
         push    edi
@@ -711,7 +701,7 @@ ACKPROC BuildUpView
         push    ecx
         push    edx
 
-        ACKCALL CheckDoors      ; Determine the state of the doors used in the view
+        call CheckDoors_      ; Determine the state of the doors used in the view
 
         mov     edi,offset _HitMap      ; Access the hit map
         mov     ecx,1024                ; Size of the hit map
@@ -768,14 +758,14 @@ buv050:
         add     eax,ebx                         ; Add offset to base address
         mov     [_sPtr],eax                     ; Set up pointer to actual column slice
         movzx   edi,[_ViewAngle]                ; Use current viewing angle
-        ACKCALL xRaySetup                       ; Set up x ray to start casting
+        call xRaySetup_                       ; Set up x ray to start casting
 
 buv060:
-        ACKCALL yRaySetup                       ; Set up y ray to start casting
+        call yRaySetup_                       ; Set up y ray to start casting
 
 buv070:
         mov     [word ptr _LastWallHeight],0    ; For checking mult-height walls
-        ACKCALL BuildSlice                      ; Build the current slice
+        call BuildSlice_                      ; Build the current slice
         cmp     [word ptr _gMultiWalls],0       ; Are multi-height walls used?
         jz      short buv080                    ; Nope, no need to check
 
@@ -788,7 +778,7 @@ buv070:
         cmp     [word ptr eax+saDist],96        ; Distance from POV to slice is
         jle     short buv080                    ; less than or equal to 96
 
-        ACKCALL BuildSliceMulti                 ; Build the current slice for
+        call BuildSliceMulti_                   ; Build the current slice for
                                                 ; a multi-height wall
 buv080:
         movzx   eax,[_ViewColumn]               ; Get current column
@@ -811,10 +801,10 @@ buv100:
         jl      buv050                  ; Nope; go build next slice
 
 buv_exit:
-        ACKCALL CheckHitMap
-        ACKCALL FindObject              ; Update slice structures with objects found
-        call    [dword ptr _FloorCeilRtn]       ; Build the floor and ceiling
-        ACKCALL DrawWalls                       ; Build the walls
+        call CheckHitMap_
+        call FindObject_              ; Update slice structures with objects found
+        call [dword ptr _FloorCeilRtn]       ; Build the floor and ceiling
+        call DrawWalls_                        ; Build the walls
 
         pop     edx     ; Restore the registers used
         pop     ecx

@@ -1,18 +1,8 @@
 // This source file contains the internal functions needed to add objects
 // to the slice structures as a view is being built.
 // (c) 1995 ACK Software (Lary Myers)
-#include <windows.h>
-#include <stdlib.h>
 #include <stdio.h>
-#include <conio.h>
-#include <dos.h>
-#include <mem.h>
-#include <io.h>
-#include <fcntl.h>
-#include <time.h>
 #include <string.h>
-#include <sys\stat.h>
-#include <limits.h>
 
 #include "ack3d.h"      // Main ACK-3D internal and interface data structures
 #include "ackeng.h"     // Internal data structures and constants

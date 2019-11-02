@@ -1,82 +1,79 @@
 
-    IDEAL
-    JUMPS
-    P386
-    P387
+IDEAL
+JUMPS
+P386
+P387
 
+model flat
 
-    MASM
-    .MODEL FLAT
-
-    .DATA
+dataseg
 
 SVTABLE dd  ?
 ENDPOS  dd  ?
 
 
-    .CODE
-    IDEAL
+codeseg
 
 
-    include "ackrtn.inc"
+include "ackrtn.inc"
 
-    extrn   _VidSeg:dword
-    extrn   _Resolution:word
-    extrn   _ScreenOffset:word
-    extrn   _bmDistance:dword
-    extrn   _bmWall:dword
-    extrn   _scPtr:dword
-    extrn   _VidTop:dword
-    extrn   _VidBottom:dword
-    extrn   _Floors1:dword
-    extrn   _Floors2:dword
+extrn   _VidSeg:dword
+extrn   _Resolution:word
+extrn   _ScreenOffset:word
+extrn   _bmDistance:dword
+extrn   _bmWall:dword
+extrn   _scPtr:dword
+extrn   _VidTop:dword
+extrn   _VidBottom:dword
+extrn   _Floors1:dword
+extrn   _Floors2:dword
 
-    extrn   _gPalTable:dword
-    extrn   _gWinStartX:word
-    extrn   _gWinStartY:word
-    extrn   _gWinEndX:word
-    extrn   _gWinEndY:word
-    extrn   _gWinHeight:word
-    extrn   _ViewHeight:word
-    extrn   _SysFlags:word
-    extrn   _Slice:byte
-    extrn   _gScrnBuffer:dword
-    extrn   _gCenterOff:word
-    extrn   _Floorht:word
-    extrn   _Floorscr:dword
-    extrn   _gWinStartOffset:dword
+extrn   _gPalTable:dword
+extrn   _gWinStartX:word
+extrn   _gWinStartY:word
+extrn   _gWinEndX:word
+extrn   _gWinEndY:word
+extrn   _gWinHeight:word
+extrn   _ViewHeight:word
+extrn   _SysFlags:word
+extrn   _Slice:byte
+extrn   _gScrnBuffer:dword
+extrn   _gCenterOff:word
+extrn   _Floorht:word
+extrn   _Floorscr:dword
+extrn   _gWinStartOffset:dword
 
-    extrn   _scVid:dword
-    extrn   _scWall:dword
-    extrn   _scPal:dword
-    extrn   _scdst:word
-    extrn   _scwht:word
-    extrn   _scmulti:word
-    extrn   _sctopht:word
-    extrn   _scbotht:word
-    extrn   _scsavwht:word
-    extrn   _scmulcnt:word
-    extrn   _scsavVid:dword
-    extrn   _scbNum:word
-    extrn   _scMulData:dword
-    extrn   _scColumn:dword
-    extrn   _WallbMaps:dword
-    extrn   _LowerTable:dword
-    extrn   _gBottomOff:dword
+extrn   _scVid:dword
+extrn   _scWall:dword
+extrn   _scPal:dword
+extrn   _scdst:word
+extrn   _scwht:word
+extrn   _scmulti:word
+extrn   _sctopht:word
+extrn   _scbotht:word
+extrn   _scsavwht:word
+extrn   _scmulcnt:word
+extrn   _scsavVid:dword
+extrn   _scbNum:word
+extrn   _scMulData:dword
+extrn   _scColumn:dword
+extrn   _WallbMaps:dword
+extrn   _LowerTable:dword
+extrn   _gBottomOff:dword
 
-    ACKEXT  ShowColLow
-    ACKEXT  ShowColMaskLow
+extrn  ShowColLow_:near
+extrn  ShowColMaskLow_:near
 
-    ACKPUBS ShowCol
-    ACKPUBS ShowColMask
-    ACKPUBS DrawWalls
+public ShowCol_
+public ShowColMask_
+public DrawWalls_
 
 
 align 2
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-;
+; void ShowCol(void)
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-ACKPROC ShowCol
+proc ShowCol_ near
     push    ebp
     push    esi
     push    edi
@@ -224,9 +221,9 @@ alldone:
 
 align 2
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-;
+; void ShowColMask(void)
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-ACKPROC ShowColMask
+proc ShowColMask_ near
     push    ebp
     push    esi
     push    edi
@@ -369,8 +366,9 @@ m_alldone:
 
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
 ; This routine runs through the list of slices and draws the walls.
+; void DrawWalls(void)
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-ACKPROC DrawWalls
+proc DrawWalls_ near
      push    ebp
      push    esi
      push    edi
@@ -537,11 +535,11 @@ stwlr050:
     mov     esi,ebx
     cmp     [byte ptr ebp+saType],ST_WALL   ;transparent wall?
     je      short stwlr060          ;nope, use solid slice routine
-     ACKCALL    ShowColMaskLow
+     call    ShowColMaskLow_
      jmp        short stwlr070
 
 stwlr060:
-     ACKCALL    ShowColLow
+     call    ShowColLow_
 
 stwlr070:
     mov     ebx,esi

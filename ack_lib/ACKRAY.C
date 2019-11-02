@@ -3,15 +3,6 @@
 // CopyRight (c) 1993      Author: Lary Myers
 //***************************************************************************
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <dos.h>
-#include <mem.h>
-#include <io.h>
-#include <fcntl.h>
-#include <time.h>
-#include <string.h>
-#include <sys\stat.h>
 #include "ack3d.h"
 #include "ackeng.h"
 #include "ackext.h"
@@ -38,12 +29,13 @@ for (i = 0; i < FoundObjectCount; i++)
 return(result);
 }
 
-    long    x_xPos,x_yPos,x_xNext,x_yNext;
-    long    y_xPos,y_yPos,y_xNext,y_yNext;
+//    long    x_xPos,x_yPos,x_xNext,x_yNext;
+//    long    y_xPos,y_yPos,y_xNext,y_yNext;
 
 //*************************************************************************
 //
 //*************************************************************************
+/*
 void xRaySetup(void)
 {
 
@@ -65,10 +57,12 @@ else
 x_yPos = (((long)x_xPos - (long)xPglobal) * LongTanTable[ViewAngle]) + yPglobalHI;
 
 }
+*/
 
 //**************************************************************************
 //
 //**************************************************************************
+/*
 UINT xRayCast(void)
 {
     UINT    Color;
@@ -153,7 +147,7 @@ while (1)
 
 return(0);          // Return that no wall was found
 }
-
+*/
 
 //*************************************************************************
 //
@@ -267,6 +261,7 @@ return(0);      // Return that no wall was found
 //*************************************************************************
 //
 //*************************************************************************
+/*
 void yRaySetup(void)
 {
 
@@ -288,10 +283,12 @@ else
 y_xPos = (((long)y_yPos - (long)yPglobal) * LongInvTanTable[ViewAngle]) + xPglobalHI;
 
 }
+*/
 
 //*************************************************************************
 //
 //*************************************************************************
+/*
 UINT yRayCast(void)
 {
     UINT    Color;
@@ -376,6 +373,7 @@ while (1)
 
 return(0);      // Return here if no Y wall is found
 }
+*/
 
 //*************************************************************************
 //

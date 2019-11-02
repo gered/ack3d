@@ -1,14 +1,10 @@
 
-#include <windows.h>
-#include <stdlib.h>
 #include <stdio.h>
-#include <dos.h>
-#include <mem.h>
+#include <string.h>
 #include <io.h>
 #include <fcntl.h>
-#include <time.h>
-#include <string.h>
-#include <sys\stat.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
 #include "ack3d.h"
 #include "ackeng.h"
@@ -48,7 +44,8 @@ return(0);
 //北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北
 short AckLoadBitmap(ACKENG *ae,short BitmapNumber,short BitmapType,char *BitmapName)
 {
-    short    handle,bFlag;
+    int      handle;
+    short    bFlag;
     short    x,y,bLen;
     short    sPos,dPos;
     UCHAR    ch;
@@ -103,7 +100,7 @@ if (BitmapType == TYPE_OBJECT)
 
 if (!bFlag)
     {
-    handle = _lopen(BitmapName,OF_READ);
+    handle = open(BitmapName,O_RDONLY|O_BINARY);
     if (handle < 1)
         {
         AckFree(buf);
@@ -113,7 +110,7 @@ if (!bFlag)
 
     read(handle,buf,4);     // Skip width and height for now
     read(handle,buf,BITMAP_SIZE);
-    _lclose(handle);
+    close(handle);
     }
 
 for (y = 0; y < BITMAP_HEIGHT; y++)

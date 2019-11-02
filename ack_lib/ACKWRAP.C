@@ -1,29 +1,15 @@
-#include <windows.h>
-#include <stdlib.h>
 #include <stdio.h>
 #include <dos.h>
-#include <mem.h>
 #include <io.h>
-#include <fcntl.h>
-#include <time.h>
-#include <string.h>
-#include <sys\stat.h>
 
 #include "ack3d.h"
 #include "ackeng.h"
 #include "ackext.h"
 
-typedef struct {
-    int sel;
-    int off;
-    } SELOFF;
-
 extern  char    AckKeyboardSetup;
-extern  SELOFF  OldKeybdInt;
+extern  void (__interrupt __far *OldKeybdInt)();
 extern  char    AckTimerSetup;
-extern  SELOFF  OldTimerInt;
-
-void AckSetIntVector(int VecNum,int sel,int VecOff);
+extern  void (__interrupt __far *OldTimerInt)();
 
 //北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北
 // Frees up buffers and closes any resource file that may be open.
@@ -63,12 +49,12 @@ short AckWrapUp (ACKENG * ae)
 
 if (AckKeyboardSetup)
     {
-    AckSetIntVector(9,OldKeybdInt.sel,OldKeybdInt.off);
+    _dos_setvect(0x9, OldKeybdInt);
     AckKeyboardSetup = 0;
     }
 if (AckTimerSetup)
     {
-    AckSetIntVector(0x1C,OldTimerInt.sel,OldTimerInt.off);
+    _dos_setvect(0x1C, OldTimerInt);
     AckTimerSetup = 0;
     }
 

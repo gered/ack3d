@@ -1,23 +1,12 @@
 // This source file contains the functions needed to process floors.
 // (c) 1995 ACK Software (Lary Myers)
-#include <windows.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <conio.h>
-#include <dos.h>
-#include <mem.h>
-#include <io.h>
-#include <fcntl.h>
-#include <time.h>
-#include <string.h>
-#include <sys\stat.h>
-#include <limits.h>
-
 #include "ack3d.h"
 #include "ackeng.h"
 #include "ackext.h"
 
 #define MAX_F_VIEWHALFHEIGHT   50
+
+void DrawBackDrop(void);
 
 extern  long FloorCosTable[];
 extern    short   gWinStartX;

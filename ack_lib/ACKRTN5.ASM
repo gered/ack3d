@@ -1,152 +1,148 @@
 
-        IDEAL
-        JUMPS
-        P386
-        P387            ; Allow 386 processor
+IDEAL
+JUMPS
+P386
+P387            ; Allow 386 processor
 
+model flat
 
-        MASM
-        .MODEL FLAT     ;32-bit OS/2 model
-        IDEAL
+include "ackrtn.inc"
 
+extrn   _WallDistTable:dword
+extrn   _FloorMap:word
+extrn   _CeilMap:word
+extrn   _LastWallHeight:word
+extrn   _ViewAngle:word
+extrn   _ScreenOffset:word
+extrn   _xPglobal:dword
+extrn   _yPglobal:dword
+extrn   _xBegGlobal:dword
+extrn   _yBegGlobal:dword
+extrn   _aeGlobal:dword
+extrn   _xGridGlobal:dword
+extrn   _yGridGlobal:dword
+extrn   _xPglobalHI:dword
+extrn   _yPglobalHI:dword
+extrn   _rbaTable:dword
+extrn   _rsHandle:dword
+extrn   _LastX1:dword
+extrn   _LastY1:dword
+extrn   _iLastX:dword
+extrn   _iLastY:dword
+extrn   _MaxDistance:word
+extrn   _BackArray:dword
+extrn   _zdTable:dword
+extrn   _ErrorCode:word
+extrn   _xMapPosn:dword
+extrn   _yMapPosn:dword
+extrn   _Grid:dword
+extrn   _ObjGrid:dword
+extrn   _WallbMaps:dword
+extrn   _ViewHeight:word
+extrn   _CeilingHeight:word
+extrn   _gTopColor:byte
+extrn   _gBottomColor:byte
+extrn   _PlayerAngle:word
+extrn   _gScrnBuffer:dword
+extrn   _gBkgdBuffer:dword
+extrn   _gCenterOff:word
+extrn   _gWinStartOffset:dword
+extrn   _gWinHeight:word
+extrn   _gWinEndY:dword
+extrn   _SysFlags:word
+extrn   _sPtr:dword
+extrn   _mxGridGlobal:dword
+extrn   _myGridGlobal:dword
 
-        include "ackrtn.inc"
+extrn   _xSecretmPos:word
+extrn   _xSecretmPos1:word
+extrn   _xSecretColumn:word
 
-        extrn   _WallDistTable:dword
-        extrn   _FloorMap:word
-        extrn   _CeilMap:word
-        extrn   _LastWallHeight:word
-        extrn   _ViewAngle:word
-        extrn   _ScreenOffset:word
-        extrn   _xPglobal:dword
-        extrn   _yPglobal:dword
-        extrn   _xBegGlobal:dword
-        extrn   _yBegGlobal:dword
-        extrn   _aeGlobal:dword
-        extrn   _xGridGlobal:dword
-        extrn   _yGridGlobal:dword
-        extrn   _xPglobalHI:dword
-        extrn   _yPglobalHI:dword
-        extrn   _rbaTable:dword
-        extrn   _rsHandle:word
-        extrn   _LastX1:dword
-        extrn   _LastY1:dword
-        extrn   _iLastX:dword
-        extrn   _iLastY;dword
-        extrn   _MaxDistance:word
-        extrn   _BackArray:dword
-        extrn   _zdTable:dword
-        extrn   _ErrorCode:word
-        extrn   _xMapPosn:dword
-        extrn   _yMapPosn:dword
-        extrn   _Grid:dword
-        extrn   _ObjGrid:dword
-        extrn   _WallbMaps:dword
-        extrn   _ViewHeight:word
-        extrn   _CeilingHeight:word
-        extrn   _gTopColor:byte
-        extrn   _gBottomColor:byte
-        extrn   _PlayerAngle:word
-        extrn   _gScrnBuffer:dword
-        extrn   _gBkgdBuffer:dword
-        extrn   _gCenterOff:word
-        extrn   _gWinStartOffset:dword
-        extrn   _gWinHeight:word
-        extrn   _gWinEndY:dword
-        extrn   _SysFlags:word
-        extrn   _sPtr:dword
-        extrn   _mxGridGlobal:dword
-        extrn   _myGridGlobal:dword
+extrn   _ySecretmPos:word
+extrn   _ySecretmPos1:word
+extrn   _ySecretColumn:word
 
-        extrn   _xSecretmPos:word
-        extrn   _xSecretmPos1:word
-        extrn   _xSecretColumn:word
+extrn   _TotalSecret:word
+extrn   _ViewColumn:word
+extrn   _SinTable:dword
+extrn   _CosTable:dword
+extrn   _LongTanTable:dword
+extrn   _LongInvTanTable:dword
+extrn   _InvCosTable:byte
+extrn   _InvSinTable:byte
+extrn   _LongCosTable:dword
+extrn   _ViewCosTable:dword
+extrn   _xNextTable:dword
+extrn   _yNextTable:dword
 
-        extrn   _ySecretmPos:word
-        extrn   _ySecretmPos1:word
-        extrn   _ySecretColumn:word
+extrn   _LastMapPosn:word
+extrn   _LastObjectHit:word
+extrn   _TotalObjects:word
+extrn   _FoundObjectCount:word
+extrn   _ObjectsSeen:byte
+extrn   _MoveObjectCount:word
+extrn   _MoveObjectList:byte
+extrn   _ObjNumber:byte
+extrn   _ObjRelDist:byte
+extrn   _ObjColumn:byte
 
-        extrn   _TotalSecret:word
-        extrn   _ViewColumn:word
-        extrn   _SinTable:dword
-        extrn   _CosTable:dword
-        extrn   _LongTanTable:dword
-        extrn   _LongInvTanTable:dword
-        extrn   _InvCosTable:byte
-        extrn   _InvSinTable:byte
-        extrn   _LongCosTable:dword
-        extrn   _ViewCosTable:dword
-        extrn   _xNextTable:dword
-        extrn   _yNextTable:dword
+extrn   _x_xPos:dword
+extrn   _x_yPos:dword
+extrn   _x_xNext:dword
+extrn   _x_yNext:dword
+extrn   _y_xPos:dword
+extrn   _y_yPos:dword
+extrn   _y_xNext:dword
+extrn   _y_yNext:dword
 
-        extrn   _LastMapPosn:word
-        extrn   _LastObjectHit:word
-        extrn   _TotalObjects:word
-        extrn   _FoundObjectCount:word
-        extrn   _ObjectsSeen:byte
-        extrn   _MoveObjectCount:word
-        extrn   _MoveObjectList:byte
-        extrn   _ObjNumber:byte
-        extrn   _ObjRelDist:byte
-        extrn   _ObjColumn:byte
+extrn   _Resolution:word
+extrn   _Flooru:dword
+extrn   _Floorv:dword
+extrn   _Floordu:dword
+extrn   _Floordv:dword
+extrn   _Floorkx:dword
+extrn   _Floorky:dword
+extrn   _Floorku:dword
+extrn   _Floorkv:dword
+extrn   _Floorkdu:dword
+extrn   _Floorkdv:dword
+extrn   _Floorbm:dword
+extrn   _Floorscr:dword
+extrn   _Floors1:dword
+extrn   _Floors2:dword
+extrn   _FloorscrTop:dword
+extrn   _Floorptr2:dword
+extrn   _Floorht:dword
+extrn   _Floorwt:dword
+extrn   _Floorvht:word
+extrn   _Flooreht:word
+extrn   _FloorLastbNum:dword
+extrn   _FloorLastbm:dword
 
-        extrn   _x_xPos:dword
-        extrn   _x_yPos:dword
-        extrn   _x_xNext:dword
-        extrn   _x_yNext:dword
-        extrn   _y_xPos:dword
-        extrn   _y_yPos:dword
-        extrn   _y_xNext:dword
-        extrn   _y_yNext:dword
+extrn   _bmDistance:dword
+extrn   _scwht:word
+extrn   _scWall:dword
+extrn   _scPal:dword
+extrn   _scVid:dword
+extrn   _scantables:dword
 
-        extrn   _Resolution:word
-        extrn   _Flooru:dword
-        extrn   _Floorv:dword
-        extrn   _Floordu:dword
-        extrn   _Floordv:dword
-        extrn   _Floorkx:dword
-        extrn   _Floorky:dword
-        extrn   _Floorku:dword
-        extrn   _Floorkv:dword
-        extrn   _Floorkdu:dword
-        extrn   _Floorkdv:dword
-        extrn   _Floorbm:dword
-        extrn   _Floorscr:dword
-        extrn   _Floors1:dword
-        extrn   _Floors2:dword
-        extrn   _FloorscrTop:dword
-        extrn   _Floorptr2:dword
-        extrn   _Floorht:dword
-        extrn   _Floorwt:dword
-        extrn   _Floorvht:word
-        extrn   _Flooreht:word
-        extrn   _FloorLastbNum:dword
-        extrn   _FloorLastbm:dword
+extrn   AckDrawFloor_:near
+extrn   AckDrawFloorOnly_:near
+extrn   AckDrawCeilingOnly_:near
+extrn   DrawBackDrop_:near
+extrn   AckDrawCeilingOnlyNS_:near
+extrn   AckDrawFloorOnlyNS_:near
 
-        extrn   _bmDistance:dword
-        extrn   _scwht:word
-        extrn   _scWall:dword
-        extrn   _scPal:dword
-        extrn   _scVid:dword
-        extrn   _scantables:dword
+public AckDrawFloorNS_
+public DrawSolidCeilAndFloorNS_
+public DrawSolidCeilAndFloor_
+public DrawSolidFloorAndCeilNS_
+public DrawSolidFloorAndCeil_
+public DrawSolidCeilSolidFloor_
+public AckDoubleBuffer_
 
-        ACKEXT  AckDrawFloor
-        ACKEXT  AckDrawFloorOnly
-        ACKEXT  AckDrawCeilingOnly
-        ACKEXT  DrawBackDrop
-        ACKEXT  AckDrawCeilingOnlyNS
-        ACKEXT  AckDrawFloorOnlyNS
+dataseg
 
-        ACKPUBS AckDrawFloorNS
-        ACKPUBS DrawSolidCeilAndFloorNS
-        ACKPUBS DrawSolidCeilAndFloor
-        ACKPUBS DrawSolidFloorAndCeilNS
-        ACKPUBS DrawSolidFloorAndCeil
-        ACKPUBS DrawSolidCeilSolidFloor
-        ACKPUBS AckDoubleBuffer
-
-        MASM
-        .DATA
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
 ; Globals used by the AckDrawFloor routine
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
@@ -180,13 +176,12 @@ WALLDIST dd     ?
 DSTPTR  dd      ?
 COLNUM  dd      ?
 
-    .CODE
-    IDEAL
+codeseg
 
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-;
+; void AckDrawFloorNS(void)
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-ACKPROC AckDrawFloorNS
+proc AckDrawFloorNS_ near
          push    ebp
          push    esi
     push    edi
@@ -415,9 +410,9 @@ adf_exit:
 
 
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-;
+; void DrawSolidCeilAndFloor(void)
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-ACKPROC DrawSolidCeilAndFloor
+proc DrawSolidCeilAndFloor_ near
     mov     edi,[_gScrnBuffer]
     movzx   ecx,[word ptr _gCenterOff]
     mov     al,[byte ptr _gTopColor]
@@ -426,14 +421,14 @@ ACKPROC DrawSolidCeilAndFloor
     rep     stosw
     rcl     cx,1
     rep     stosb
-    ACKCALL AckDrawFloorOnly
+    call AckDrawFloorOnly_
     ret
     endp
 
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
 ;
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-ACKPROC DrawSolidCeilAndFloorNS
+proc DrawSolidCeilAndFloorNS_ near
          mov        edi,[_gScrnBuffer]
          movzx   ecx,[word ptr _gCenterOff]
          mov        al,[byte ptr _gTopColor]
@@ -442,14 +437,14 @@ ACKPROC DrawSolidCeilAndFloorNS
          rep        stosw
          rcl        cx,1
          rep        stosb
-         ACKCALL        AckDrawFloorOnlyNS
+         call       AckDrawFloorOnlyNS_
          ret
          endp
 
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
 ;
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-ACKPROC DrawSolidFloorAndCeilNS
+proc DrawSolidFloorAndCeilNS_ near
     mov     edi,[_gScrnBuffer]
     movzx   ecx,[word ptr _gCenterOff]
     add     edi,ecx
@@ -459,14 +454,14 @@ ACKPROC DrawSolidFloorAndCeilNS
     rep     stosw
     rcl     cx,1
     rep     stosb
-    ACKCALL  AckDrawCeilingOnlyNS
+    call  AckDrawCeilingOnlyNS_
     ret
     endp
 
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
 ;
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-ACKPROC DrawSolidFloorAndCeil
+proc DrawSolidFloorAndCeil_ near
     mov     edi,[_gScrnBuffer]
     movzx   ecx,[word ptr _gCenterOff]
     add     edi,ecx
@@ -476,14 +471,14 @@ ACKPROC DrawSolidFloorAndCeil
     rep     stosw
     rcl     cx,1
     rep     stosb
-    ACKCALL AckDrawCeilingOnly
+    call AckDrawCeilingOnly_
     ret
     endp
 
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
 ;
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-ACKPROC DrawSolidCeilSolidFloor
+proc DrawSolidCeilSolidFloor_ near
     mov     edi,[_gScrnBuffer]
     movzx   ecx,[word ptr _gCenterOff]
     mov     al,[byte ptr _gTopColor]
@@ -508,7 +503,7 @@ ACKPROC DrawSolidCeilSolidFloor
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
 ;
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-ACKPROC AckDoubleBuffer
+proc AckDoubleBuffer_ near
     push    ebp
     mov     ebp,esp
     push    esi

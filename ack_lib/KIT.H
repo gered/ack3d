@@ -4,6 +4,9 @@
 //  Module: KIT.H
 // (c) CopyRight 1994 All Rights Reserved
 
+#ifndef KIT_H_INCLUDED
+#define KIT_H_INCLUDED
+
 #define MODE_GRAPHICS   0x13
 #define MODE_TEXT   0x03
 
@@ -136,4 +139,6 @@ short ShowPickList(char **p,short SortFlag);
 // Prototypes in SETS.C
 //=============================================================================
 short LoadSet(char *fName);
+
+#endif
 

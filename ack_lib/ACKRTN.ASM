@@ -1,15 +1,14 @@
 
-    locals
-    IDEAL
-    JUMPS
-    P386
-    P387        ; Allow 386 processor
+locals
+IDEAL
+JUMPS
+P386
+P387        ; Allow 386 processor
+
+model flat
 
 
-    MASM
-    .MODEL FLAT,STDCALL ;32-bit OS/2 model
-
-.data
+dataseg
 
 COLOR   dw  ?
 RETVAL  dw  ?
@@ -23,10 +22,9 @@ SX  dd  ?
 
 
 
-    .CODE
-    IDEAL
+codeseg
 
-    include "ackrtn.inc"
+include "ackrtn.inc"
 
 SC_INDEX    EQU 03C4h   ; Sequencer Controller access
 HIGH_ADDR   equ 80h ; High byte of screen offset
@@ -45,113 +43,107 @@ SCREEN_WIDTH    equ 320 ;# of pixels across screen
 SCREEN_HEIGHT   equ 400 ;# of scan lines on screen
 
 
-    extrn   _ViewAngle:word
-    extrn   _ScreenOffset:word
-    extrn   _xPglobal:dword
-    extrn   _yPglobal:dword
-    extrn   _xBegGlobal:dword
-    extrn   _yBegGlobal:dword
-    extrn   _aeGlobal:dword
-    extrn   _xGridGlobal:dword
-    extrn   _yGridGlobal:dword
-    extrn   _xPglobalHI:dword
-    extrn   _yPglobalHI:dword
-    extrn   _rbaTable:dword
-    extrn   _rsHandle:word
-    extrn   _LastX1:dword
-    extrn   _LastY1:dword
-    extrn   _iLastX:dword
-    extrn   _iLastY;dword
-    extrn   _MaxDistance:word
-    extrn   _ErrorCode:word
-    extrn   _xMapPosn:dword
-    extrn   _yMapPosn:dword
-    extrn   _Grid:dword
-    extrn   _ObjGrid:dword
+extrn   _ViewAngle:word
+extrn   _ScreenOffset:word
+extrn   _xPglobal:dword
+extrn   _yPglobal:dword
+extrn   _xBegGlobal:dword
+extrn   _yBegGlobal:dword
+extrn   _aeGlobal:dword
+extrn   _xGridGlobal:dword
+extrn   _yGridGlobal:dword
+extrn   _xPglobalHI:dword
+extrn   _yPglobalHI:dword
+extrn   _rbaTable:dword
+extrn   _rsHandle:dword
+extrn   _LastX1:dword
+extrn   _LastY1:dword
+extrn   _iLastX:dword
+extrn   _iLastY:dword
+extrn   _MaxDistance:word
+extrn   _ErrorCode:word
+extrn   _xMapPosn:dword
+extrn   _yMapPosn:dword
+extrn   _Grid:dword
+extrn   _ObjGrid:dword
 
-    extrn   _xSecretmPos:word
-    extrn   _xSecretmPos1:word
-    extrn   _xSecretColumn:word
+extrn   _xSecretmPos:word
+extrn   _xSecretmPos1:word
+extrn   _xSecretColumn:word
 
-    extrn   _ySecretmPos:word
-    extrn   _ySecretmPos1:word
-    extrn   _ySecretColumn:word
+extrn   _ySecretmPos:word
+extrn   _ySecretmPos1:word
+extrn   _ySecretColumn:word
 
-    extrn   _TotalSecret:word
-    extrn   _ViewColumn:word
-    extrn   _SinTable:dword
-    extrn   _CosTable:dword
-    extrn   _LongTanTable:dword
-    extrn   _LongInvTanTable:dword
-    extrn   _InvCosTable:byte
-    extrn   _InvSinTable:byte
-    extrn   _LongCosTable:dword
-    extrn   _ViewCosTable:dword
-    extrn   _xNextTable:dword
-    extrn   _yNextTable:dword
+extrn   _TotalSecret:word
+extrn   _ViewColumn:word
+extrn   _SinTable:dword
+extrn   _CosTable:dword
+extrn   _LongTanTable:dword
+extrn   _LongInvTanTable:dword
+extrn   _InvCosTable:byte
+extrn   _InvSinTable:byte
+extrn   _LongCosTable:dword
+extrn   _ViewCosTable:dword
+extrn   _xNextTable:dword
+extrn   _yNextTable:dword
 
-    extrn   _LastMapPosn:word
-    extrn   _LastObjectHit:word
-    extrn   _TotalObjects:word
-    extrn   _FoundObjectCount:word
-    extrn   _ObjectsSeen:byte
-    extrn   _MoveObjectCount:word
-    extrn   _MoveObjectList:byte
-    extrn   _ObjNumber:byte
-    extrn   _ObjRelDist:byte
-    extrn   _ObjColumn:byte
+extrn   _LastMapPosn:word
+extrn   _LastObjectHit:word
+extrn   _TotalObjects:word
+extrn   _FoundObjectCount:word
+extrn   _ObjectsSeen:byte
+extrn   _MoveObjectCount:word
+extrn   _MoveObjectList:byte
+extrn   _ObjNumber:byte
+extrn   _ObjRelDist:byte
+extrn   _ObjColumn:byte
 
-    extrn   _x_xPos:dword
-    extrn   _x_yPos:dword
-    extrn   _x_xNext:dword
-    extrn   _x_yNext:dword
-    extrn   _y_xPos:dword
-    extrn   _y_yPos:dword
-    extrn   _y_xNext:dword
-    extrn   _y_yNext:dword
+extrn   _x_xPos:dword
+extrn   _x_yPos:dword
+extrn   _x_xNext:dword
+extrn   _x_yNext:dword
+extrn   _y_xPos:dword
+extrn   _y_yPos:dword
+extrn   _y_xNext:dword
+extrn   _y_yNext:dword
 
-    extrn   _Floorscr:dword
-    extrn   _Floors1:dword
-    extrn   _Floors2:dword
-    extrn   _FloorscrTop:dword
-    extrn   _Floorptr2:dword
-    extrn   _Floorht:word
-    extrn   _Floorwt:word
+extrn   _Floorscr:dword
+extrn   _Floors1:dword
+extrn   _Floors2:dword
+extrn   _FloorscrTop:dword
+extrn   _Floorptr2:dword
+extrn   _Floorht:word
+extrn   _Floorwt:word
 
-    extrn   _gScrnBuffer:dword
-    extrn   _gWinStartY:word
-    extrn   _gWinStartX:word
-    extrn   _gWinWidth:word
-    extrn   _gWinHeight:word
+extrn   _gScrnBuffer:dword
+extrn   _gWinStartY:word
+extrn   _gWinStartX:word
+extrn   _gWinWidth:word
+extrn   _gWinHeight:word
 
-    extrn   _gWinFullWidth:word
-    extrn   _gWinDWORDS:dword
-    extrn   _gWinStartOffset:dword
+extrn   _gWinFullWidth:word
+extrn   _gWinDWORDS:dword
+extrn   _gWinStartOffset:dword
 
-    extrn   _VidSeg:dword
-    extrn   _AckKeys:byte
+extrn   _VidSeg:dword
+extrn   _AckKeys:byte
 
-    extrn   _OurDataSeg:word
+extrn   _HitMap:byte
 
-    extrn   _HitMap:byte
-
-    ACKPUBS AckInkey
-    ACKPUBS AckKbdInt
-    ACKPUBS AckPutVideo
-    ACKPUBS AckGetVideo
-    ACKPUBS AckCopyToVideo
-    ACKPUBS AckSetPalette
-    ACKPUBS AckDisplayScreen
-    ACKPUBS AckInitVideoSelector
-    ACKPUBS AckGetIntVector
-    ACKPUBS AckSetIntVector
-    ACKPUBS AckSetVGAmode
-    ACKPUBS AckSetTextMode
-    ACKPUBS AckDrawPage
-    ACKPUBS xRaySetup
-    ACKPUBS yRaySetup
-    ACKPUBS xRayCast
-    ACKPUBS yRayCast
+public AckInkey_
+public AckPutVideo_
+public AckGetVideo_
+public AckCopyToVideo_
+public AckSetPalette_
+public AckDisplayScreen_
+public AckSetVGAmode_
+public AckSetTextMode_
+public AckDrawPage_
+public xRaySetup_
+public yRaySetup_
+public xRayCast_
+public yRayCast_
 
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
 ; Checks for a keystroke and returns 0 if none, else scan/char in AX
@@ -159,7 +151,7 @@ SCREEN_HEIGHT   equ 400 ;# of scan lines on screen
 ; to the AckKbdInt routine below.
 ; unsigned short AckInkey(void);
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-ACKPROC AckInkey
+proc AckInkey_ near
     push    ebx
     mov     ax,0100h
     int     16h
@@ -176,51 +168,12 @@ ackinkey_10:
     endp
 
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-; Interrupt 9 keyboard handler. Places keys into the keyboard array so they
-; can be checked by the application.
-; Do NOT call this routine directly!!!
-;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-ACKPROC AckKbdInt
-    push    eax
-    push    ebx
-    push    esi
-    push    ds
-    xor     ebx,ebx
-    in      al,60h
-    mov     bl,al
-    in      al,61h
-    mov     ah,al
-    or      al,80h
-    out     61h,al
-    mov     al,ah
-    out     61h,al
-    mov     al,20h
-    out     20h,al
-    mov     ax,cs:[word ptr _OurDataSeg]
-    mov     ds,ax
-    mov     esi,offset _AckKeys
-    mov     eax,ebx
-    and     eax,127
-    mov     [byte ptr esi+eax],1
-    test    ebx,128
-    jz      aki_10
-    mov     [byte ptr esi+eax],0
-
-aki_10:
-    pop     ds
-    pop     esi
-    pop     ebx
-    pop     eax
-    iretd
-    endp
-
-;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
 ; Older version which now simply calls AckDrawPage.
 ; void AckDisplayScreen(void);
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-ACKPROC AckDisplayScreen
+proc AckDisplayScreen_ near
     push    ebp
-    ACKCALL AckDrawPage
+    call AckDrawPage_
     pop ebp
     xor eax,eax
     ret
@@ -229,164 +182,70 @@ ACKPROC AckDisplayScreen
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
 ; Puts a single byte onto the video
 ; void AckPutVideo(unsigned int offset,unsigned char color);
+;  eax: offset
+;  edx: color
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-ACKPROC AckPutVideo
-    push    ebp
-    mov ebp,esp
-    push    es
+proc AckPutVideo_ near
     push    ebx
     push    edi
-    mov bx,[word ptr _VidSeg+2]
-    mov es,bx
-    movzx   edi,[word ptr _VidSeg]
-    add edi,[dword ptr ebp+8]
-    mov edx,[ebp+12]
+    mov     edi,[_VidSeg]
+    add edi,eax
+    mov edx,edx
     mov [edi],dl
     pop edi
     pop ebx
-    pop es
-    pop ebp
     ret
     endp
 
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
 ; Retrieves a single byte from the video
 ; unsigned char AckGetVideo(unsigned int offset);
+;  eax: offset
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-ACKPROC AckGetVideo
-    push    ebp
-    mov ebp,esp
-    push    ds
+proc AckGetVideo_ near
     push    ebx
     push    esi
-    movzx   esi,[word ptr _VidSeg]
-    add esi,[dword ptr ebp+8]
-    mov ax,[word ptr _VidSeg+2]
-    mov ds,ax
+    mov     esi,[_VidSeg]
+    add esi,eax
     mov al,[esi]
     mov ah,0
     pop esi
     pop ebx
-    pop ds
-    pop ebp
     ret
     endp
 
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
 ; Copies a block from the data segment buffer to the video screen
 ; void AckCopyToVideo(unsigned int SrcOff,unsigned int len);
+;  eax: SrcOff
+;  edx: len
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-ACKPROC AckCopyToVideo
-    push    ebp
-    mov ebp,esp
-    push    es
-    push    ebx
+proc AckCopyToVideo_ near
     push    ecx
-    push    edx
     push    esi
     push    edi
-    mov esi,[ebp+8]
-    mov ecx,[ebp+12]
-    movzx   edi,[word ptr _VidSeg]
-    mov ax,[word ptr _VidSeg+2]
-    mov es,ax
+    mov esi,eax
+    mov ecx,edx
+    mov     edi,[_VidSeg]
     rep movsb
     pop edi
     pop esi
-    pop edx
     pop ecx
-    pop ebx
-    pop es
-    pop ebp
-    ret
-    endp
-
-
-;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-; Retrieves a selector to Video memory and stores it in the VidSeg global
-; void AckInitVideoSelector(void);
-;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-ACKPROC AckInitVideoSelector
-    push    ebx
-    push    ecx
-    push    edx
-    mov     ax,2    ; Allocate selector for real mode address
-    mov     bx,0A000h   ; Get Video address
-    int     31h
-    mov     [word ptr _VidSeg+2],ax
-    mov     [word ptr _VidSeg],0
-    pop     edx
-    pop     ecx
-    pop     ebx
     ret
     endp
 
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-; Retrieves a protected mode interrupt vector.
-; void AckGetIntVector(int VectorNumber,int *sel,int *off);
+; void AckSetPalette(UCHAR *PalBuffer)
+;  eax: PalBuffer
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-ACKPROC AckGetIntVector
-    push    ebp
-    mov     ebp,esp
+proc AckSetPalette_ near
     push    ebx
     push    ecx
     push    edx
-    push    es
-    mov     ebx,[ebp+8]
-    mov     eax,204h
-    int     31h
-    mov     ebx,[ebp+12]
-    mov     [ebx],cx
-    mov     ebx,[ebp+16]
-    mov     [ebx],dx
-    pop     es
-;   mov     eax,ecx
-    pop     edx
-    pop     ecx
-    pop     ebx
-    pop     ebp
-    ret
-    endp
-
-;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-; Sets a protected mode interrupt handler.
-; void AckSetIntVector(int VecNum,unsigned int VecSel,unsigned int VecOff);
-;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-ACKPROC AckSetIntVector
-    push    ebp
-    mov     ebp,esp
-    push    ebx
-    push    ecx
-    push    edx
-    mov     ebx,[ebp+8]
-    mov     ecx,[ebp+12]
-    mov     edx,[ebp+16]
-;;  mov     cx,cs
-    mov     eax,205h
-    cli
-    int     31h
-    sti
-    pop     edx
-    pop     ecx
-    pop     ebx
-    pop     ebp
-    ret
-    endp
-
-;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-;
-;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-ACKPROC AckSetPalette
-    push    ebp
-    mov     ebp,esp
-    push    ds
-    push    ebx
-    push    ecx
-    push    edx
-    mov     esi,[ebp+8]
+    mov     esi,eax
     mov     ebx,0
     mov     ecx,256
-    mov     dx,3c8h
+    mov     edx,3c8h
 
 asp_loop:
     mov     al,bl
@@ -405,15 +264,13 @@ asp_loop:
     pop     edx
     pop     ecx
     pop     ebx
-    pop     ds
-    pop     ebp
     ret
     endp
 
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-;
+; void AckSetVGAmode(void)
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-ACKPROC AckSetVGAmode
+proc AckSetVGAmode_ near
     push    ebx
     push    ecx
     push    edx
@@ -485,9 +342,9 @@ ACKPROC AckSetVGAmode
 
 
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-;
+; void AckSetTextMode(void)
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-ACKPROC AckSetTextMode
+proc AckSetTextMode_ near
     push    ebx
     push    ecx
     push    edx
@@ -500,20 +357,16 @@ ACKPROC AckSetTextMode
     endp
 
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-;
+; void AckDrawPage(void)
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-ACKPROC AckDrawPage
+proc AckDrawPage_ near
     push    esi
     push    edi
     push    ebx
     push    ecx
     push    edx
-    push    es
-    push    ds
 
-;;  mov     edi,[_VidSeg]
-    mov     edi,0
-    mov     di,[word ptr _VidSeg]
+    mov     edi,[_VidSeg]
     mov     esi,[_gScrnBuffer]
     cmp     [word ptr _gWinFullWidth],0
     jz      short dp_smallscreen
@@ -522,10 +375,6 @@ ACKPROC AckDrawPage
     add     edi,eax
     add     esi,eax
     mov     ecx,[_gWinDWORDS]
-
-    mov     ax,[word ptr _VidSeg+2]
-    mov     es,ax
-;;  mov     ds,ax
 
     mov     dx,3dah
 
@@ -541,8 +390,6 @@ fp030:
 
     rep     movsd
 
-    pop     ds
-    pop     es
     pop     edx
     pop     ecx
     pop     ebx
@@ -557,15 +404,12 @@ dp_smallscreen:
     movzx   eax,[_gWinStartX]
     add     edi,eax
     add     esi,eax
-    mov     dx,[_gWinHeight]
+    movzx   edx,[_gWinHeight]
     inc     dx
     movzx   ebx,[_gWinWidth]
+    push    ebp
     mov     ebp,320
     sub     ebp,ebx     ;width to advance pointers
-
-    mov     ax,[word ptr _VidSeg+2]
-    mov     es,ax
-;;  mov     ds,ax
 
 dp010:
     mov     ecx,ebx
@@ -579,8 +423,7 @@ dp010:
     jnz     dp010
 
 dp090:
-    pop     ds
-    pop     es
+    pop     ebp
     pop     edx
     pop     ecx
     pop     ebx
@@ -591,9 +434,9 @@ dp090:
 
 
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-;
+; void xRaySetup(void)
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-ACKPROC xRaySetup
+proc xRaySetup_ near
     push    esi     ; Save registers used
     push    ebx
     push    ecx
@@ -640,9 +483,9 @@ xr_cont:
     endp
 
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-;
+; USHORT xRayCast(void)
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-ACKPROC xRayCast
+proc xRayCast_ near
     push    esi     ; Save registers used
     push    edi
     push    ebx
@@ -781,9 +624,9 @@ xRayDone:
 
 
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-;
+; void yRaySetup(void)
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-ACKPROC yRaySetup
+proc yRaySetup_ near
     push    esi
     push    ebx
     push    ecx
@@ -825,9 +668,9 @@ y_yr_cont:
     endp
 
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-;
+; USHORT yRayCast(void)
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-ACKPROC yRayCast
+proc yRayCast_ near
     push    esi
     push    edi
     push    ebx

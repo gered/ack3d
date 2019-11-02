@@ -5,11 +5,17 @@
 // and the ACK-3D library. The four main data structures set up in this header file
 // include: ACKENG, DOORS, NEWOBJECT, and OBJSEQ.
 
+#ifndef ACK3D_H_INCLUDED
+#define ACK3D_H_INCLUDED
+
+#include <stddef.h>
+
 // USED TO RID OURSELVES OF THE MANY CASTING PROBLEMS
 #define CAST(t,f) (t)(f)
 
 // Internal definitions used to simplify field declarations.
 typedef unsigned long   ULONG;
+typedef unsigned int    UINT;
 typedef unsigned short  USHORT;
 typedef unsigned char   UCHAR;
 
@@ -427,9 +433,10 @@ void AckSetPalette(UCHAR *PalBuffer);
 void AckSetVGAmode(void);
 
 // Places video in 80x25 color text mode 3.
-void AckSetTextmode(void);
+void AckSetTextMode(void);
 
 // Displays the contents of ScreenBuffer and OverlayBuffer if desired.
 short AckDisplayScreen(void);
 
+#endif
 

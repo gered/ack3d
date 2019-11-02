@@ -1,17 +1,3 @@
-
-#include <windows.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <dos.h>
-#include <mem.h>
-#include <io.h>
-#include <fcntl.h>
-#include <time.h>
-#include <string.h>
-#include <sys\stat.h>
-
-//typedef unsigned short USHORT;
-
 #include "ack3d.h"
 #include "ackeng.h"
 

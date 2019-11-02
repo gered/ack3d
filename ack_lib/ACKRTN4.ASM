@@ -1,14 +1,12 @@
 
-    IDEAL
-    JUMPS
-    P386
-    P387        ; Allow 386 processor
+IDEAL
+JUMPS
+P386
+P387        ; Allow 386 processor
 
+model flat
 
-    MASM
-    .MODEL FLAT ;32-bit OS/2 model
-
-.DATA
+dataseg
 
 SVTABLE dd  ?
 
@@ -16,116 +14,106 @@ SAVEVID dd  ?
 SAVEROW dd  ?
 
 
-    .CODE
-    IDEAL
+codeseg
 
 
-    include "ackrtn.inc"
+include "ackrtn.inc"
 
-    extrn   _BackDropRows:dword
-    extrn   _PlayerAngle:word
-    extrn   _BackArray:dword
-    extrn   _Resolution:word
-    extrn   _ScreenOffset:word
-    extrn   _bmDistance:dword
-    extrn   _bmWall:dword
-    extrn   _scPtr:dword
-    extrn   _VidTop:dword
-    extrn   _VidBottom:dword
-    extrn   _Floors1:dword
-    extrn   _Floors2:dword
+extrn   _BackDropRows:dword
+extrn   _PlayerAngle:word
+extrn   _BackArray:dword
+extrn   _Resolution:word
+extrn   _ScreenOffset:word
+extrn   _bmDistance:dword
+extrn   _bmWall:dword
+extrn   _scPtr:dword
+extrn   _VidTop:dword
+extrn   _VidBottom:dword
+extrn   _Floors1:dword
+extrn   _Floors2:dword
 
-    extrn   _gPalTable:dword
-    extrn   _gWinStartX:word
-    extrn   _gWinStartY:word
-    extrn   _gWinEndX:word
-    extrn   _gWinEndY:word
-    extrn   _gWinHeight:word
-    extrn   _ViewHeight:word
-    extrn   _SysFlags:word
-    extrn   _Slice:byte
-    extrn   _gScrnBuffer:dword
-    extrn   _gCenterOff:word
-    extrn   _gCenterRow:word
-    extrn   _Floorscr:dword
-    extrn   _gWinStartOffset:dword
+extrn   _gPalTable:dword
+extrn   _gWinStartX:word
+extrn   _gWinStartY:word
+extrn   _gWinEndX:word
+extrn   _gWinEndY:word
+extrn   _gWinHeight:word
+extrn   _ViewHeight:word
+extrn   _SysFlags:word
+extrn   _Slice:byte
+extrn   _gScrnBuffer:dword
+extrn   _gCenterOff:word
+extrn   _gCenterRow:word
+extrn   _Floorscr:dword
+extrn   _gWinStartOffset:dword
 
-    extrn   _scVid:dword
-    extrn   _scWall:dword
-    extrn   _scPal:dword
-    extrn   _scdst:word
-    extrn   _scwht:word
-    extrn   _scmulti:word
-    extrn   _sctopht:word
-    extrn   _scbotht:word
-    extrn   _scsavwht:word
-    extrn   _scmulcnt:word
-    extrn   _scsavVid:dword
-    extrn   _scbNum:word
-    extrn   _scMulData:dword
-    extrn   _scColumn:dword
-    extrn   _WallbMaps:dword
-    extrn   _LowerTable:dword
-    extrn   _gBottomOff:dword
-    extrn   _LightFlag:word
+extrn   _scVid:dword
+extrn   _scWall:dword
+extrn   _scPal:dword
+extrn   _scdst:word
+extrn   _scwht:word
+extrn   _scmulti:word
+extrn   _sctopht:word
+extrn   _scbotht:word
+extrn   _scsavwht:word
+extrn   _scmulcnt:word
+extrn   _scsavVid:dword
+extrn   _scbNum:word
+extrn   _scMulData:dword
+extrn   _scColumn:dword
+extrn   _WallbMaps:dword
+extrn   _LowerTable:dword
+extrn   _gBottomOff:dword
+extrn   _LightFlag:word
 
-    ACKEXT  ShowCol
-    ACKEXT  ShowColMask
+extrn  ShowCol_:near
+extrn  ShowColMask_:near
 
-    extrn   _Resolution:word
-    extrn   _Flooru:dword
-    extrn   _Floorv:dword
-    extrn   _Floordu:dword
-    extrn   _Floordv:dword
-    extrn   _Floorkx:dword
-    extrn   _Floorky:dword
-    extrn   _Floorku:dword
-    extrn   _Floorkv:dword
-    extrn   _Floorkdu:dword
-    extrn   _Floorkdv:dword
-    extrn   _Floorbm:dword
-    extrn   _Floorscr:dword
-    extrn   _Floors1:dword
-    extrn   _Floors2:dword
-    extrn   _FloorscrTop:dword
-    extrn   _Floorptr2:dword
-    extrn   _Floorwt:dword
-    extrn   _Floorvht:word
-    extrn   _Flooreht:word
-    extrn   _FloorMap:word
-    extrn   _gScrnBufferCenter:dword
-    extrn   _gWinHalfHeight:word
-    extrn   _zdTable:dword
-    extrn   _CosTable:dword
-    extrn   _SinTable:dword
-    extrn   _xPglobal:dword
-    extrn   _yPglobal:dword
-    extrn   _WallDistTable:dword
-    extrn   _CeilMap:word
-    extrn   _AckTimerCounter:dword
+extrn   _Resolution:word
+extrn   _Flooru:dword
+extrn   _Floorv:dword
+extrn   _Floordu:dword
+extrn   _Floordv:dword
+extrn   _Floorkx:dword
+extrn   _Floorky:dword
+extrn   _Floorku:dword
+extrn   _Floorkv:dword
+extrn   _Floorkdu:dword
+extrn   _Floorkdv:dword
+extrn   _Floorbm:dword
+extrn   _Floorscr:dword
+extrn   _Floors1:dword
+extrn   _Floors2:dword
+extrn   _FloorscrTop:dword
+extrn   _Floorptr2:dword
+extrn   _Floorwt:dword
+extrn   _Floorvht:word
+extrn   _Flooreht:word
+extrn   _FloorMap:word
+extrn   _gScrnBufferCenter:dword
+extrn   _gWinHalfHeight:word
+extrn   _zdTable:dword
+extrn   _CosTable:dword
+extrn   _SinTable:dword
+extrn   _xPglobal:dword
+extrn   _yPglobal:dword
+extrn   _WallDistTable:dword
+extrn   _CeilMap:word
+extrn   _AckTimerCounter:dword
 
-    ACKPUBS Mymemset
-    ACKPUBS AckSpeedUp
-    ACKPUBS AckSlowDown
-    ACKPUBS ShowColNS
-    ACKPUBS ShowColMaskNS
-    ACKPUBS DrawBackDrop
-    ACKPUBS AckTimerHandler
+public Mymemset_
+public AckSpeedUp_
+public AckSlowDown_
+public ShowColNS_
+public ShowColMaskNS_
+public DrawBackDrop_
 
 
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
 ;
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-ACKPROC AckTimerHandler
-    inc     cs:[dword ptr _AckTimerCounter]
-    iretd
-    endp
-
-;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-;
-;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-ACKPROC Mymemset
-     push    edi
+proc Mymemset_ near
+    push    edi
     push    ebx
     push    ecx
     push    edx
@@ -149,9 +137,9 @@ ACKPROC Mymemset
 
 
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-;
+; void AckSpeedUp(void)
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-ACKPROC AckSpeedUp
+proc AckSpeedUp_ near
      push    ebx
      push    edx
      mov        bx,ax
@@ -174,9 +162,9 @@ ACKPROC AckSpeedUp
     endp
 
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-;
+; void AckSlowDown(void)
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-ACKPROC AckSlowDown
+proc AckSlowDown_ near
      push    edx
      mov        dx,43h
      mov        al,36h
@@ -193,9 +181,9 @@ ACKPROC AckSlowDown
 
 
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-;
+; void DrawBackDrop(void)
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-ACKPROC DrawBackDrop
+proc DrawBackDrop_ near
     push    ebp
     push    esi
     push    edi
@@ -254,9 +242,9 @@ dbd030:
 
 
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-;
+; void ShowColNS(void)
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-ACKPROC ShowColNS
+proc ShowColNS_ near
      push    ebp
     push    esi
     push    edi
@@ -353,9 +341,9 @@ sns_alldone:
 
 
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-;
+; void ShowColMaskNS(void)
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-ACKPROC ShowColMaskNS
+proc ShowColMaskNS_ near
      push    ebp
      push    esi
      push    edi

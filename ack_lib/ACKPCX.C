@@ -1,11 +1,10 @@
 // This source file contains the functions needed to read in PCX files.
 // (c) 1995 ACK Software (Lary Myers)
-#include <windows.h>
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
-#include <dos.h>
+#include <io.h>
+#include <fcntl.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 
 //typedef unsigned short USHORT;
 
@@ -61,15 +60,15 @@ unsigned char *AckReadPCX(char *filename)
     long i;
     int mode=NORMAL,nbytes;
     char abyte,*p;
-    short   handle;
+    int   handle;
     PcxFile *pcx;
 
 pcx = &pcxGlobal;
 // Open the file since no resource is open.
 if (!rsHandle)
     {
-    handle = _lopen(filename,OF_READ); // Open the file for reading
-    if (handle == HFILE_ERROR) // Make sure file is opened
+    handle = open(filename,O_RDONLY|O_BINARY); // Open the file for reading
+    if (handle < 1) // Make sure file is opened
         {
         ErrorCode = ERR_BADFILE;
         return NULL;
@@ -79,11 +78,11 @@ else // Use the resource instead
     {
     handle = rsHandle; // Use the handle to the resource file
     // Move to the location in the resource where the data is stored
-    _llseek(handle,rbaTable[(ULONG)filename],SEEK_SET);
+    lseek(handle,rbaTable[(ULONG)filename],SEEK_SET);
     }
 
 
-_lread(handle,&pcx->hdr,sizeof(PcxHeader)); // Read in the header data
+read(handle,&pcx->hdr,sizeof(PcxHeader));   // Read in the header data
 pcx->width=1+pcx->hdr.xmax-pcx->hdr.xmin;   // Store width and height
 pcx->height=1+pcx->hdr.ymax-pcx->hdr.ymin;
 // Store number of bytes used for image
@@ -93,7 +92,7 @@ pcx->imagebytes=(unsigned int)(pcx->width*pcx->height);
 if (pcx->imagebytes > PCX_MAX_SIZE)
     {
     if (!rsHandle)
-        _lclose(handle);
+        close(handle);
     ErrorCode = ERR_INVALIDFORM;
     return(NULL);
     }
@@ -105,7 +104,7 @@ pcx->bitmap=(char*)AckMalloc(pcx->imagebytes+4);
 if (pcx->bitmap == NULL)    // Make sure memory is allocated
     {
     if (!rsHandle)
-        _lclose(handle);
+        close(handle);
     ErrorCode = ERR_NOMEMORY;
     return(NULL);
     }
@@ -117,11 +116,11 @@ for (i=0;i<pcx->imagebytes;i++)
     {
     if (mode == NORMAL)     // Normal color read mode
         {
-        _lread(handle,&abyte,1);    // Read in pixel value from file
+        read(handle,&abyte,1);      // Read in pixel value from file
         if ((unsigned char)abyte > 0xbf) // Value read > 191
             {
             nbytes=abyte & 0x3f;    // Get the RLE counter
-            _lread(handle,&abyte,1);
+            read(handle,&abyte,1);
             if (--nbytes > 0)       // Is counter greater than 1?
                 mode=RLE;           // Yes, we're in RLE mode
             }
@@ -135,18 +134,18 @@ for (i=0;i<pcx->imagebytes;i++)
 // end of file. For a resource file we need to find the position where
 // the next file starts and then backup 768 bytes
 if (rsHandle)
-    _llseek(handle,rbaTable[(ULONG)(filename + 1)]-768L,SEEK_CUR);
+    lseek(handle,rbaTable[(ULONG)(filename + 1)]-768L,SEEK_CUR);
 else
-    _llseek(handle,-768L,SEEK_END);
+    lseek(handle,-768L,SEEK_END);
 
 // Store the palette data in our global colordat array
-_lread(handle,colordat,768);
+read(handle,colordat,768);
 p=colordat;
 for (i=0;i<768;i++)            // bit shift palette
     *p++ = *p >> 2;
 
 if (!rsHandle)                  // Close pcx file if not using a resource
-    _lclose(handle);
+    close(handle);
 
 // Add in bitmap width and height to first 4 bytes of buffer
 p = pcx->bitmap;
