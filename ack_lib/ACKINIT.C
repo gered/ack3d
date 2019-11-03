@@ -83,7 +83,7 @@ BackDropRows = 100;
 
 for (i = 0; i < 640; i++)
     {
-    BackArray[i] = AckMalloc(BackDropRows+1);
+    BackArray[i] = (UCHAR*)AckMalloc(BackDropRows+1);
     if (BackArray[i] == NULL)
         return(ERR_NOMEMORY);
     memset(BackArray[i],topcolor,BackDropRows);
@@ -190,7 +190,7 @@ for (ldst = 10;ldst < 2048; ldst++)
        }
     if (j)
         {
-        lp = AckMalloc(len);
+        lp = (short*)AckMalloc(len);
         if (lp == NULL)
             {
             return;
@@ -324,7 +324,7 @@ for (len = 0; len < VIEW_WIDTH; len++)
     memset(sa,0,sizeof(SLICE));              // Set all data to 0
     for (ca = 0; ca < 8; ca++)
         {
-        saNext = AckMalloc(sizeof(SLICE));   // Create a slice structure to link in
+        saNext = (SLICE*)AckMalloc(sizeof(SLICE));   // Create a slice structure to link in
         if (saNext == NULL)
             return(ERR_NOMEMORY);            // Check for memory allocation
         memset(saNext,0,sizeof(SLICE));      // Initialize all data to 0
@@ -423,7 +423,7 @@ if (count)
         ae->myGrid[pos+GRID_WIDTH] = mPtr;
         read(handle,buf,MAX_MULTI);
         buf[MAX_MULTI] = '\0';
-        len = strlen(buf);
+        len = strlen((char*)buf);
         if (len > MAX_MULTI) len = MAX_MULTI;
         *mPtr = len;
         if (len)

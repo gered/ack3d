@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <dos.h>
+#include <conio.h>
 #include <io.h>
 #include <fcntl.h>
 #include <sys/types.h>
@@ -72,7 +73,7 @@ else
 //北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北
 void AckSetupKeyboard(void)
 {
-memset(AckKeys, 0, sizeof(UCHAR)*128);
+memset((void*)AckKeys, 0, sizeof(UCHAR)*128);
 KeyPressed = 0;
 
 OldKeybdInt = _dos_getvect(0x9);
@@ -105,7 +106,7 @@ void *AckMalloc(size_t mSize)
 
 mSize += sizeof(long);
 mSize++;
-mBlock = malloc(mSize);
+mBlock = (UCHAR*)malloc(mSize);
 
 if (mBlock == NULL)
     {
@@ -166,7 +167,7 @@ short AckLoadAndSetPalette(char *PalName)
     short     handle,ErrCode;
     char    *buf;
 
-buf = AckMalloc(800);
+buf = (char*)AckMalloc(800);
 if (buf == NULL)
     return(ERR_NOMEMORY);
 
@@ -186,7 +187,7 @@ if (handle > 0)
     close(handle);
 
     memset(buf,0,3);        // Make sure color 0 is always black
-    AckSetPalette(buf);
+    AckSetPalette((UCHAR*)buf);
     }
 else
     ErrCode = ERR_BADFILE;

@@ -33,14 +33,14 @@ void SetupFloors(ACKENG *ae)
     long    x,y,dist;
     long    Lastx,Lasty;
 
-for ( i=0; i<12;i++ ) scantables[i] = ae->PalTable + (7*256);
-for ( i=12;i<24;i++ ) scantables[i] = ae->PalTable + (6*256);
-for ( i=24;i<36;i++ ) scantables[i] = ae->PalTable + (5*256);
-for ( i=36;i<48;i++ ) scantables[i] = ae->PalTable + (4*256);
-for ( i=48;i<60;i++ ) scantables[i] = ae->PalTable + (3*256);
-for ( i=60;i<72;i++ ) scantables[i] = ae->PalTable + (2*256);
-for ( i=72;i<84;i++ ) scantables[i] = ae->PalTable + (1*256);
-for ( i=84;i<96;i++ ) scantables[i] = ae->PalTable;
+for ( i=0; i<12;i++ ) scantables[i] = (char*)(ae->PalTable + (7*256));
+for ( i=12;i<24;i++ ) scantables[i] = (char*)(ae->PalTable + (6*256));
+for ( i=24;i<36;i++ ) scantables[i] = (char*)(ae->PalTable + (5*256));
+for ( i=36;i<48;i++ ) scantables[i] = (char*)(ae->PalTable + (4*256));
+for ( i=48;i<60;i++ ) scantables[i] = (char*)(ae->PalTable + (3*256));
+for ( i=60;i<72;i++ ) scantables[i] = (char*)(ae->PalTable + (2*256));
+for ( i=72;i<84;i++ ) scantables[i] = (char*)(ae->PalTable + (1*256));
+for ( i=84;i<96;i++ ) scantables[i] = (char*)(ae->PalTable);
 
 Scale_Fac = (89 - ViewHeight) * 5;
 

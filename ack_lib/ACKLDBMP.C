@@ -81,7 +81,7 @@ if ((x*y) != BITMAP_SIZE)
 memmove(buf,&buf[4],BITMAP_SIZE);
 bFlag = 1;
 
-bmp = AckMalloc(bLen);
+bmp = (UCHAR*)AckMalloc(bLen);
 if (bmp == NULL)
     {
     AckFree(buf);

@@ -139,7 +139,7 @@ USHORT FloorMap[4096];
 USHORT CeilMap[4096];
 UCHAR  HitMap[4096];
 
-UINT *VidSeg = 0xA0000;
+UINT *VidSeg = (UINT*)0xA0000;
 char *scantables[96];
 volatile UCHAR   AckKeys[128];   // Buffer for keystrokes
 volatile long AckTimerCounter;

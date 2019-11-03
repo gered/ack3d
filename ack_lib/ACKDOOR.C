@@ -1,5 +1,6 @@
 // This source file contains the functions needed to process doors.
 // (c) 1995 ACK Software (Lary Myers)
+#include <stdlib.h>
 #include "ack3d.h"
 #include "ackeng.h"
 #include "ackext.h"

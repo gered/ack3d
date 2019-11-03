@@ -2,6 +2,7 @@
 // (c) 1995 ACK Software (Lary Myers)
 
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "ack3d.h"
 #include "ackeng.h"

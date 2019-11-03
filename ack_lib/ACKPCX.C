@@ -96,7 +96,7 @@ if (pcx->imagebytes > PCX_MAX_SIZE)
     return(NULL);
     }
 
-pcx->bitmap=(char*)AckMalloc(pcx->imagebytes+4);
+pcx->bitmap=(UCHAR*)AckMalloc(pcx->imagebytes+4);
 
 if (pcx->bitmap == NULL)
     {
@@ -105,7 +105,7 @@ if (pcx->bitmap == NULL)
     ErrorCode = ERR_NOMEMORY;
     return(NULL);
     }
-p=&pcx->bitmap[4];
+p=(char*)&pcx->bitmap[4];
 
 for (i=0;i<pcx->imagebytes;i++)
     {
@@ -127,14 +127,14 @@ for (i=0;i<pcx->imagebytes;i++)
 
 fseek(f,-768L,SEEK_END);      // get palette from pcx file
 fread(colordat,768,1,f);
-p=colordat;
+p=(char*)colordat;
 for (i=0;i<768;i++)        // bit shift palette
     *p++=*p >>2;
 
 if (!rsHandle)
     fclose(f);
 
-p = pcx->bitmap;
+p = (char*)pcx->bitmap;
 (*(short *)p) = pcx->width;
 p += sizeof(short);
 (*(short *)p) = pcx->height;

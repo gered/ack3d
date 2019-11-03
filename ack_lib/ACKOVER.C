@@ -48,7 +48,7 @@ while (vLen > 0)
 (*(short *)&ae->ScreenBuffer[bPos]) = 0;
 bPos += 2;
 
-ae->OverlayBuffer = AckMalloc(bPos);
+ae->OverlayBuffer = (UCHAR*)AckMalloc(bPos);
 
 if (ae->OverlayBuffer != NULL)
     {

@@ -212,7 +212,7 @@ unsigned char *AckReadiff(char *picname)
         }
 
     CloseFile(pic);
-    return((char *)savedestx);
+    return((unsigned char *)savedestx);
     }
 
 long ByteFlipLong(long NUMBER)

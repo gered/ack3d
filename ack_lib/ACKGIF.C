@@ -16,6 +16,7 @@
 *****************************************************************************/
 
 #include <stdio.h>
+#include <string.h>
 #include <conio.h>
 #include <bios.h>
 #include <fcntl.h>
@@ -147,7 +148,7 @@ else
     }
 
 fread(buf,1,6,fp);
-if( strncmp( buf, "GIF", 3 ) )
+if( strncmp( (char*)buf, "GIF", 3 ) )
     {
     if (!rsHandle)
     fclose(fp);

@@ -1,6 +1,7 @@
 // This file contains the declarations and functions to set up views for the
 // ray casting engine.
 #include <stdio.h>
+#include <string.h>
 
 #include "ack3d.h"      // Main ACK-3D internal and interface data structures
 #include "ackeng.h"     // Intrnal structures and constants

@@ -9,6 +9,7 @@
 #include <malloc.h>
 #include <mem.h>
 #include <string.h>
+#include <ctype.h>
 #include <dos.h>
 #include <time.h>
 #include <io.h>
@@ -166,6 +167,9 @@ volatile short cframes=0, count=0, ticks=0;
          };
 
 
+void ShowStatus(void);
+
+
 //=============================================================================
 //
 //=============================================================================
@@ -235,7 +239,7 @@ short LoadSmallFont(void)
     int     len;
 
 ht = 2;
-smFont = AckReadiff((UCHAR *)ht);
+smFont = (char*)AckReadiff((char*)ht);
 if (smFont == NULL)
     return(-1);
 
@@ -905,7 +909,7 @@ if (MouseInstalled() != -1)
     return(1);
     }
 
-ae = AckMalloc(sizeof(ACKENG));
+ae = (ACKENG*)AckMalloc(sizeof(ACKENG));
 if (ae == NULL)
     {
     printf("Unable to get required memory.\n");
@@ -1016,7 +1020,7 @@ buf = AckReadiff(fName);
 if (buf == NULL)
     return(-1);
 
-Video = (char *)0xA0000;
+Video = (UCHAR*)0xA0000;
 memmove(Video,&buf[4],64000);
 
 AckSetPalette(colordat);
@@ -2174,7 +2178,7 @@ EndBGmusic();
 ShutDownFlag = 1;
 AckSlowDown();          // Set the timer back to normal speed
 AckWrapUp(ae);
-AckSetTextmode();
+AckSetTextMode();
 
 return(0);
 }
