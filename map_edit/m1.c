@@ -116,26 +116,26 @@ void ShowMaskedBitmap(int x,int y,UCHAR *bm);
     UCHAR   *Bitmaps[256];
     UCHAR   *ObjBitmaps[256];
     UCHAR   ObjbmNum[256];
-    UINT    MedxGrid[GRID_ARRAY];
-    UINT    MedyGrid[GRID_ARRAY];
-    UINT    MedGrid[GRID_MAX];
-    UINT    MobGrid[GRID_MAX];
-    UINT    MedFloorMap[GRID_MAX];
-    UINT    MedCeilMap[GRID_MAX];
+    USHORT  MedxGrid[GRID_ARRAY];
+    USHORT  MedyGrid[GRID_ARRAY];
+    USHORT  MedGrid[GRID_MAX];
+    USHORT  MobGrid[GRID_MAX];
+    USHORT  MedFloorMap[GRID_MAX];
+    USHORT  MedCeilMap[GRID_MAX];
     UCHAR   *MedMultiPtrs[GRID_MAX];
     int     GridRow,GridCol;
     int     ViewMode;
     int     ViewType,LastViewType;
     int     EditType;
-    UINT    WallFlags;
-    UINT    ObjFlags;
+    USHORT  WallFlags;
+    USHORT  ObjFlags;
     int     MaxCol,MaxRow;
     int     LastgRow,LastgCol;
     int     ModifyFlag;
     short   LastMX,LastMY;
-    UINT    CurrentCode;
-    UINT    LastWallCode;
-    UINT    LastObjCode;
+    USHORT  CurrentCode;
+    USHORT  LastWallCode;
+    USHORT  LastObjCode;
     UCHAR   BaseColor;
     UCHAR   *VidBuf;
     UCHAR   *BgBuf;
@@ -582,7 +582,7 @@ void DrawMultiBitmaps(int gPos,int x,int y)
 {
     int     cnt;
     UCHAR   *bmPtr,*mPtr;
-    UINT    bNum;
+    USHORT  bNum;
 
 mPtr = MedMultiPtrs[gPos];
 if (mPtr == NULL)
@@ -617,7 +617,7 @@ void DrawGrid3D(void)
     int     gPos,gOrg,row,col;
     UCHAR   *bmPtr;
     UCHAR   sValue,color,sValue1;
-    UINT    bNum;
+    USHORT  bNum;
 
 xOrg = MAP_X + 128;
 yOrg = MAP_Y + GD_FHT;
@@ -828,7 +828,7 @@ void DrawGrid2D(void)
 {
     int     x,y,gRow,gCol;
     int     row,col,gOrg,gPos;
-    UINT    mCode;
+    USHORT  mCode;
     UCHAR   sValue,color,sValue1;
 
 gOrg = (GridRow * GRID_WIDTH) + GridCol;
@@ -959,8 +959,8 @@ for (col = 0; col < 12; col++)
 void DrawFloorCeil(void)
 {
     int     row,col,x,y,pos,pOrg;
-    UINT    bCode;
-    UINT    *buf;
+    USHORT  bCode;
+    USHORT  *buf;
 
 if (ViewType == VT_FLOOR)
     buf = MedFloorMap;
@@ -1000,8 +1000,8 @@ ShowMouse();
 void DrawObjects(void)
 {
     int     row,col,x,y,pos,pOrg;
-    UINT    bCode;
-    UINT    *buf;
+    USHORT  bCode;
+    USHORT  *buf;
     UCHAR   bcLow;
 
 buf = MobGrid;
@@ -1364,7 +1364,7 @@ return(pos);
 //=============================================================================
 //
 //=============================================================================
-short ObjectInMap(UINT oCode)
+short ObjectInMap(USHORT oCode)
 {
     int     i;
 
@@ -1386,7 +1386,7 @@ return(0);
 void PutCode(short mx,short my)
 {
     int     x,y,pos;
-    UINT    wFlags,cCode;
+    USHORT  wFlags,cCode;
 
 if ((pos = GetGridPos(mx,my)) == -1)
     {
@@ -1494,7 +1494,7 @@ switch (ViewType)
 void GetCode(short mx,short my)
 {
     int     x,y,pos;
-    UINT    wFlags,cCode;
+    USHORT  wFlags,cCode;
 
 if ((pos = GetGridPos(mx,my)) == -1)
     {
@@ -1865,10 +1865,10 @@ switch (ViewType)
 //=============================================================================
 //
 //=============================================================================
-void DrawBorder(UINT bCode)
+void DrawBorder(USHORT bCode)
 {
     short   row,col;
-    UINT    offset;
+    USHORT  offset;
 
 if (ViewType != VT_MAP)
     {
@@ -1964,7 +1964,7 @@ void EditMulti(int mode,short gx,short gy)
 {
     int     i,x,y,x1,y1,pos,done,num;
     short   mx,my,mbuttons;
-    UINT    OldCurrent;
+    USHORT  OldCurrent;
     UCHAR   bCode;
     UCHAR   *mPtr;
     HS      hs[4];
@@ -2193,17 +2193,17 @@ switch (OptNum)
 //=============================================================================
 //
 //=============================================================================
-void main(short argc,char **argv)
+int main(short argc,char **argv)
 {
     short   mx,my,mButtons;
     short   Action,done,rFlag;
     int     result;
-    UINT    OldCode,key;
+    USHORT  OldCode,key;
 
 if (MouseInstalled() != -1)
     {
     printf("Mouse required.\n");
-    return;
+    return 1;
     }
 
 VidBuf = (UCHAR *)malloc(64000);
@@ -2211,7 +2211,7 @@ BlankbmBuf = (UCHAR *)malloc(4100);
 if (VidBuf == NULL || BlankbmBuf == NULL)
     {
     printf("Not enough memory\n");
-    return;
+    return 1;
     }
 
 memset(BlankbmBuf,0,4100);
@@ -2226,7 +2226,7 @@ for (mx = 0; mx < 256; mx++)
 if (LoadDescFile(argv[1]))
     {
     printf("\nError reading ASCII file - ErrorCode = %d\n",ReadErrorCode);
-    return;
+    return 1;
     }
 
 memmove(bmPalette,colordat,768);
@@ -2245,51 +2245,22 @@ if (LoadGridMap(MapName))
 if (AckOpenResource("MEDIT.DTF"))
     {
     printf("Unable to locate MEDIT.DTF\n");
-    return;
+    return 1;
     }
 
 
 if (LoadSmallFont())
     {
     printf("Error loading SPFONT.BBM\n");
-    return;
+    return 1;
     }
 
 if (LoadMedFont())
     {
     printf("Error loading FONT6X9.BBM\n");
-    return;
+    return 1;
     }
 
-
-#if 0
-Bitmaps[1] = AckReadiff("m1.bbm");
-if (Bitmaps[1] == NULL)
-    {
-    printf("Error loading m1.bbm");
-    return;
-    }
-
-Bitmaps[2] = AckReadiff("m12.bbm");
-if (Bitmaps[2] == NULL)
-    {
-    printf("Error loading m12.bbm");
-    return;
-    }
-
-ObjBitmaps[1] = AckReadiff("slime1a.bbm");
-
-
-strcpy(MapName,"kit.map");
-if (LoadGridMap(MapName))
-    {
-    memset(MedGrid,0,(GRID_MAX * 2));
-    memset(MobGrid,0,(GRID_MAX * 2));
-    }
-
-memset(MedFloorMap,0,(GRID_MAX * 2));
-memset(MedCeilMap,0,(GRID_MAX * 2));
-#endif
 
 ViewMode = VM_2D;
 ViewType = VT_MAP;
@@ -2641,6 +2612,7 @@ while (!done)
     }
 
 AckSetTextmode();
+return 0;
 
 }
 
