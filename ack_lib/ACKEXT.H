@@ -3,6 +3,10 @@
 #ifndef ACKEXT_H_INCLUDED
 #define ACKEXT_H_INCLUDED
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 extern  UCHAR       *BackArray[];
 extern  long        xPglobal;
 extern  long        yPglobal;
@@ -123,6 +127,10 @@ extern  volatile UCHAR KeyPressed;
 extern  volatile long AckTimerCounter;
 extern  volatile short AckTmCount;
 extern  volatile short AckTmDelay;
+
+#ifdef __cplusplus
+};
+#endif
 
 #endif
 

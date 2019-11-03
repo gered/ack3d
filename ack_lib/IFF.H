@@ -1,6 +1,10 @@
 #ifndef IFF_H_INCLUDED
 #define IFF_H_INCLUDED
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #ifndef NULL
 #define NULL 0
 #endif
@@ -97,6 +101,10 @@ long ByteFlipLong(long);
 void ByteFlipShort(short *);
 short iffswab(unsigned short);
 short swab(unsigned short);
+
+#ifdef __cplusplus
+};
+#endif
 
 #endif
 

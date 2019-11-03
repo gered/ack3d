@@ -10,6 +10,10 @@
 
 #include <stddef.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 // USED TO RID OURSELVES OF THE MANY CASTING PROBLEMS
 #define CAST(t,f) (t)(f)
 
@@ -396,6 +400,12 @@ short AckWrapUp(ACKENG *ae);
 //*************************************************************************
 // The user callable functions defined in ACKUTIL.C.
 //*************************************************************************
+// Establish a hook into interrupt 9 for keyboard handling
+void AckSetupKeyboard(void);
+
+// Establish a hook into the user timer interrupt
+void AckSetupTimer(void);
+
 // Internal memory allocation for development purposes
 void *AckMalloc(size_t mSize);
 
@@ -437,6 +447,19 @@ void AckSetTextMode(void);
 
 // Displays the contents of ScreenBuffer and OverlayBuffer if desired.
 short AckDisplayScreen(void);
+
+//*************************************************************************
+// The user callable functions defined in ACKRTN4.ASM.
+//*************************************************************************
+// Sets the rate at which the timer interrupt will be called
+void AckSpeedUp(int rate);
+
+// Restores original timer interrupt call rate
+void AckSlowDown(void);
+
+#ifdef __cplusplus
+};
+#endif
 
 #endif
 

@@ -8,6 +8,10 @@
 #ifndef ACKENG_H_INCLUDED
 #define ACKENG_H_INCLUDED
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define TRANS_WALLS     0
 #define FLOOR_ACTIVE    1
 #define USE_XMS         0       // Set to 0 if XMS not desired
@@ -64,6 +68,10 @@ typedef struct _slicer {
     struct _slicer *Prev;   // References the wall slice in front of current slice
     struct _slicer *Next;   // References the wall slice behind the current slice
     } SLICE;
+
+#ifdef __cplusplus
+};
+#endif
 
 #endif
 

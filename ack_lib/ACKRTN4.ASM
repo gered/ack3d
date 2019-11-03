@@ -137,12 +137,13 @@ proc Mymemset_ near
 
 
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-; void AckSpeedUp(void)
+; void AckSpeedUp(int rate)
+;  eax: rate
 ;±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
 proc AckSpeedUp_ near
      push    ebx
      push    edx
-     mov        bx,ax
+     mov        ebx,eax
     mov     ax,0FFFFH
     xor     dx,dx
     idiv    bx
