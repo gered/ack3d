@@ -19,14 +19,20 @@ object_files = &
     measm.obj &
     mouse.obj
 
-
 cc_flags_debug = /d2 /zp1 /4r /fp3 /j
-cc_flags_release = /d1+ /zp1 /4r /fp3 /ontx /oe=40 /j
+cc_flags_release = /d1+ /zp1 /4r /fp3 /onetx /j
 cc_flags = /mf /i=$(acklib_incdir) $(cc_flags_$(target_config))
 
 link_flags_debug = debug all
 link_flags_release = debug all
 link_flags = $(link_flags_$(target_config))
+
+asm_flags_debug = /zi
+asm_flags_release = /zi
+asm_flags = /m /ml $(asm_flags_$(target_config))
+
+.NOCHECK
+build : $(target_name).exe
 
 .c.obj: .AUTODEPEND
     wcc386 $[. /zq $(cc_flags)
@@ -55,9 +61,6 @@ clean : .SYMBOLIC
     del $(mapedit_dtf)
     del $(target_name).exe
     del $(target_name).lnk
-
-.NOCHECK
-build : $(target_name).exe
 
 .NOCHECK
 run : $(target_name).exe

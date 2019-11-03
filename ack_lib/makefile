@@ -27,7 +27,7 @@ object_files = &
 
 
 cc_flags_debug = /d2 /zp1 /4r /fp3 /j
-cc_flags_release = /d1+ /zp1 /4r /fp3 /ontx /oe=40 /j
+cc_flags_release = /d1+ /zp1 /4r /fp3 /onetx /j
 cc_flags = /mf $(cc_flags_$(target_config))
 
 link_flags_debug = debug all
@@ -37,6 +37,10 @@ link_flags = $(link_flags_$(target_config))
 asm_flags_debug = /zi
 asm_flags_release = /zi
 asm_flags = /m /ml $(asm_flags_$(target_config))
+
+
+.NOCHECK
+build : $(target_name).lib
 
 
 .c.obj: .AUTODEPEND
@@ -62,9 +66,5 @@ clean : .SYMBOLIC
     del $(target_name).lnk
     del $(target_name).lbc
 
-.NOCHECK
-build : $(target_name).lib
 
-.NOCHECK
-library : $(target_name).lib
 
