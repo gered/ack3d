@@ -1,0 +1,136 @@
+; Map Editor File for Mall Demo
+
+Walls:
+Files:
+1 ,WALL1.BBM
+2 ,WALL.BBM
+3 ,WALL2.BBM
+4 ,WALL3.BBM
+5 ,STONES.BBM
+6 ,STONE.BBM
+7 ,STONE1.BBM
+8 ,STONE2.BBM
+9 ,BRKWIN.BBM
+10,BRKWALL.BBM
+11,TILES.BBM
+12,GRNBRK.BBM
+13,PAVE1.BBM
+14,PAVE.BBM
+15,PAVE2.BBM
+16,PAVE3.BBM
+17,PAVE4.BBM
+18,PAVE5.BBM
+19,PAVE6.BBM
+20,PAVE7.BBM
+21,BRNWALL1.BBM
+22,BLWALL.BBM
+23,GRSLANT.BBM
+24,DIAMOND.BBM
+25,REDWALL.BBM
+26,REDWIN.BBM
+27,REDWIN1.BBM
+28,REDWIN2.BBM
+29,REDWIN3.BBM
+30,WALLENT.BBM
+31,CEIL1.BBM
+32,CEIL2.BBM
+33,PAVE8.BBM
+34,PAVE9.BBM
+35,PAVE10.BBM
+36,CEIL3.BBM
+37,BRNWALL2.BBM
+38,BRNWALL3.BBM
+39,PATTERN1.BBM
+40,FOOD.BBM
+41,HOTDOG.BBM
+EndWalls:
+
+Objects:
+Files:
+ 1,PLANT1.BBM
+ 2,BUSHES.BBM
+ 3,SERVDESK.BBM
+ 4,TABLE.BBM
+ 5,PARKING.BBM
+ 6,SALE.BBM
+ 7,PARKLITE.BBM
+EndFiles:
+
+Number:	 1
+Bitmaps: 1
+
+Number:	 2
+Bitmaps: 1
+
+Number:	 3
+Bitmaps: 1
+
+Number:	 4
+Bitmaps: 1
+
+Number:	 5
+Bitmaps: 1
+
+Number:	 6
+Bitmaps: 1
+
+Number:	 7
+Bitmaps: 1
+
+Number:	 8
+Bitmaps: 2
+
+Number:	 9
+Bitmaps: 2
+
+Number:	 10
+Bitmaps: 2
+
+Number:	 11
+Bitmaps: 2
+
+Number:	 12
+Bitmaps: 2
+
+Number:	 13
+Bitmaps: 3
+
+Number:	 14
+Bitmaps: 3
+
+Number:	 15
+Bitmaps: 3
+
+Number:	 16
+Bitmaps: 3
+
+Number:	 17
+Bitmaps: 4
+
+Number:	 18
+Bitmaps: 4
+
+Number:	 19
+Bitmaps: 4
+
+Number:	 20
+Bitmaps: 4
+
+Number:	 21
+Bitmaps: 5
+
+Number:	 22
+Bitmaps: 6
+
+Number:	 23
+Bitmaps: 7
+
+Number:	 24
+Bitmaps: 7
+
+EndObjects:
+
+MapFile: mall.map
+
+
+
