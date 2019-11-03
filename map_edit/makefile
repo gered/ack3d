@@ -1,7 +1,9 @@
 target_config = debug
 
-test_map_files_dir = fdemo
+test_map_files_dir = ..\fdemo\assets
 test_map_file = fdemo.l01
+#test_map_files_dir = ..\mall\assets
+#test_map_file = mall.l01
 
 target_name = mapedit
 
