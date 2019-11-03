@@ -2,6 +2,8 @@
 // Author: Lary Myers
 // Copyright (c) 1994
 
+#ifndef M1_H_INCLUDED
+#define M1_H_INCLUDED
 
 #define RES_SMFONT  0   // Resource ID's
 #define RES_MDFONT  1
@@ -219,4 +221,6 @@ int QueryBox(int x,int y,char *Msg);
 //  Functions in m1read.c
 //-----------------------------------------------------------------------------
 short LoadDescFile(char *fName);
+
+#endif
 

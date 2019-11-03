@@ -1,21 +1,19 @@
 
-    IDEAL
-    JUMPS
-    include "prologue.mac"
-    P386        ; 386 specific opcodes and shit allowed.
-    P387        ; Allow 386 processor
+IDEAL
+JUMPS
+include "prologue.mac"
+P386        ; 386 specific opcodes and shit allowed.
+P387        ; Allow 386 processor
 
+model flat
 
-    MASM
-    .MODEL FLAT ;32-bit OS/2 model
-    .CODE
-    IDEAL
+codeseg
 
-    PUBLIC      SetPalette2_
-    PUBLIC      SetVGAmode_
-    PUBLIC      SetTextMode_
-    PUBLIC      inkey_
-    PUBLIC      PutHex_
+PUBLIC      SetPalette2_
+PUBLIC      SetVGAmode_
+PUBLIC      SetTextMode_
+PUBLIC      inkey_
+PUBLIC      PutHex_
 
 ;==============================================================================
 ; void SetPalette2(unsigned char *PalBuf,short count);
@@ -119,5 +117,6 @@ Proc    PutHex_ near
     pop edi
     ret
     endp
+
     end
 

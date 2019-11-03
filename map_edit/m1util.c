@@ -3,18 +3,11 @@
 // Author: Lary Myers
 // Copyright (c) 1994
 
-#include <stdlib.h>
 #include <stdio.h>
+#include <ctype.h>
 #include <malloc.h>
 #include <dos.h>
-#include <mem.h>
-#include <io.h>
-#include <fcntl.h>
-#include <time.h>
 #include <string.h>
-#include <process.h>
-#include <bios.h>
-#include <sys\stat.h>
 #include "ack3d.h"
 #include "ackeng.h"
 #include "m1.h"
@@ -50,7 +43,7 @@ short LoadSmallFont(void)
     int     len;
 
 ht = 2;
-smFont = AckReadiff((char *)RES_SMFONT);   // "spfont.bbm");
+smFont = (char*)AckReadiff((char *)RES_SMFONT);   // "spfont.bbm");
 if (smFont == NULL)
     return(-1);
 
@@ -71,7 +64,7 @@ short LoadMedFont(void)
     int     len;
 
 ht = 2;
-mdFont = AckReadiff((char *)RES_MDFONT);   // "font6x9.bbm");
+mdFont = (char*)AckReadiff((char *)RES_MDFONT);   // "font6x9.bbm");
 if (mdFont == NULL)
     return(-1);
 

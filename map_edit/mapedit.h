@@ -1,5 +1,8 @@
 /* Header file for ACK-3D Map Editor */
 
+#ifndef MAPEDIT_H_INCLUDED
+#define MAPEDIT_H_INCLUDED
+
 #define CURRENT_SQUAREX     161
 #define CURRENT_SQUAREY     4
 
@@ -49,4 +52,6 @@ char *AddExtent(char *,char *);
 unsigned short inkey(void);
 void SetVGAmode(void);
 void SetTextMode(void);
+
+#endif
 

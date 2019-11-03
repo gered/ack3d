@@ -7,13 +7,9 @@
 #include <stdio.h>
 #include <malloc.h>
 #include <dos.h>
-#include <mem.h>
 #include <io.h>
 #include <fcntl.h>
-#include <time.h>
 #include <string.h>
-#include <process.h>
-#include <bios.h>
 #include <sys\stat.h>
 #include "ack3d.h"
 #include "ackeng.h"
@@ -85,7 +81,7 @@ if (LoadType)
     }
 
 
-bmp = malloc(4096);
+bmp = (unsigned char*)malloc(4096);
 if (bmp == NULL)
     {
     ReadErrorCode = ERR_NOMEMORY;

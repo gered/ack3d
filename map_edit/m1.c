@@ -7,17 +7,14 @@
 #include <stdio.h>
 #include <malloc.h>
 #include <dos.h>
-#include <mem.h>
 #include <io.h>
 #include <fcntl.h>
-#include <time.h>
 #include <string.h>
-#include <process.h>
-#include <bios.h>
 #include <sys\stat.h>
 #include "ack3d.h"
 #include "ackeng.h"
 #include "m1.h"
+#include "mapedit.h"
 
 extern  UCHAR   colordat[];
 extern  char    *smFont;
@@ -2611,7 +2608,7 @@ while (!done)
     }
     }
 
-AckSetTextmode();
+AckSetTextMode();
 return 0;
 
 }

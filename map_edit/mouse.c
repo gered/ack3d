@@ -6,7 +6,7 @@
 
 #include <dos.h>
 #include <stdio.h>
-#include <dos.h>
+#include <string.h>
 
     int MouseModifier = 2;
 
