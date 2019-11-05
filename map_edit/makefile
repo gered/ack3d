@@ -1,9 +1,8 @@
 target_config = debug
 
-test_map_files_dir = ..\fdemo\assets
-test_map_file = fdemo.l01
-#test_map_files_dir = ..\mall\assets
-#test_map_file = mall.l01
+test_map_file = ..\example\assets\example.med
+#test_map_file = ..\fdemo\assets\fdemo.l01
+#test_map_file = ..\mall\assets\mall.l01
 
 target_name = mapedit
 
@@ -64,15 +63,9 @@ clean : .SYMBOLIC
 
 .NOCHECK
 run : $(target_name).exe
-    copy $(target_name).exe $(test_map_files_dir)
-    copy $(mapedit_dtf) $(test_map_files_dir)
-    cd $(test_map_files_dir)
     $(target_name).exe $(test_map_file)
 
 .NOCHECK
 debug : $(target_name).exe
-    copy $(target_name).exe $(test_map_files_dir)
-    copy $(mapedit_dtf) $(test_map_files_dir)
-    cd $(test_map_files_dir)
     wd /swap /trap=rsi $(target_name).exe $(test_map_file)
 

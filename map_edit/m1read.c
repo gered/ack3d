@@ -13,7 +13,7 @@
 #include <sys\stat.h>
 #include "ack3d.h"
 #include "ackeng.h"
-
+#include "m1.h"
 
 extern      UCHAR   *Bitmaps[];
 extern      UCHAR   *ObjBitmaps[];
@@ -58,18 +58,19 @@ if (!(stricmp(GetExtent(BitmapName),"GIF")))
 if (!(stricmp(GetExtent(BitmapName),"PCX")))
     LoadType = 3;
 
+GetCombinedPath(assetsPath, BitmapName);
 
 if (LoadType)
     {
     switch (LoadType) {
     case 1:
-        bmp = AckReadiff(BitmapName);
+        bmp = AckReadiff(tempFilename);
         break;
     case 2:
-        bmp = AckReadgif(BitmapName);
+        bmp = AckReadgif(tempFilename);
         break;
     case 3:
-        bmp = AckReadPCX(BitmapName);
+        bmp = AckReadPCX(tempFilename);
         break;
     }
 
@@ -103,7 +104,7 @@ if (BitmapType == TYPE_OBJECT)
     ObjBitmaps[BitmapNumber] = bmp;
 
 
-handle = open(BitmapName,O_RDWR|O_BINARY);
+handle = open(tempFilename,O_RDWR|O_BINARY);
 if (handle < 1)
     {
     free(bmp);
@@ -198,6 +199,7 @@ short LoadDescFile(char *fName)
     char    fBuf[128];
     char    *s;
 
+// don't need to combine this filepath with anything. just use it as-is
 fp = fopen(fName,"rt");
 if (fp == NULL)
     {

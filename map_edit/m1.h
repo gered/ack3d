@@ -152,6 +152,12 @@ void MouseReleased(void);
 //-----------------------------------------------------------------------------
 //  Functions in m1.c
 //-----------------------------------------------------------------------------
+extern char assetsPath[];
+extern char exePath[];
+extern char tempFilename[];
+
+void FindFilePaths(const char *exeFile, const char *descFile);
+char* GetCombinedPath(const char *base, const char *file);
 short GetAction(short mx,short my);
 short GetSelAction(short mx,short my);
 void DrawYline(int x,int y);

@@ -145,6 +145,36 @@ void ShowMaskedBitmap(int x,int y,UCHAR *bm);
     UCHAR   MapPalette[768];
 
 //=============================================================================
+// for dealing with paths
+//=============================================================================
+
+char assetsPath[200] = "";
+char exePath[200] = "";
+char tempFilename[200] = "";
+
+void FindFilePaths(const char *exeFile, const char *descFile) {
+    char *end;
+
+    if (descFile) {
+        end = strrchr(descFile, '\\');
+        if (end)
+            strncpy(assetsPath, descFile, ((end+1) - descFile));
+    }
+
+    if (exeFile) {
+        end = strrchr(exeFile, '\\');
+        if (end)
+            strncpy(exePath, exeFile, ((end+1) - exeFile));
+    }
+}
+
+char* GetCombinedPath(const char *base, const char *file) {
+    strncpy(tempFilename, base, 200);
+    strncat(tempFilename, file, 200);
+    return tempFilename;
+}
+
+//=============================================================================
 //
 //=============================================================================
 short GetAction(short mx,short my)
@@ -1131,7 +1161,8 @@ short LoadGridMap(char *Name)
     int     mLen,aLen;
     UCHAR   *mPtr;
 
-handle = open(Name,O_RDONLY|O_BINARY);
+GetCombinedPath(assetsPath, Name);
+handle = open(tempFilename,O_RDONLY|O_BINARY);
 if (handle < 1)
     return(-1);
 
@@ -1208,7 +1239,8 @@ short SaveGridMap(char *Name)
     int     mLen,aLen;
     UCHAR   *mPtr;
 
-handle = open(Name,O_RDWR|O_BINARY|O_CREAT|O_TRUNC,S_IREAD|S_IWRITE);
+GetCombinedPath(assetsPath, Name);
+handle = open(tempFilename,O_RDWR|O_BINARY|O_CREAT|O_TRUNC,S_IREAD|S_IWRITE);
 if (handle < 1)
     return(-1);
 
@@ -2197,6 +2229,8 @@ int main(short argc,char **argv)
     int     result;
     USHORT  OldCode,key;
 
+    FindFilePaths(argv[0], argv[1]);
+
 if (MouseInstalled() != -1)
     {
     printf("Mouse required.\n");
@@ -2239,7 +2273,8 @@ if (LoadGridMap(MapName))
     printf("\nNew map file %s will be created.\n",MapName);
     }
 
-if (AckOpenResource("MEDIT.DTF"))
+GetCombinedPath(exePath, "MEDIT.DTF");
+if (AckOpenResource(tempFilename))
     {
     printf("Unable to locate MEDIT.DTF\n");
     return 1;
