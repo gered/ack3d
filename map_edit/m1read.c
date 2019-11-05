@@ -53,17 +53,25 @@ short LoadBitmap(short BitmapNumber,char *BitmapName,short BitmapType)
 LoadType = 0;
 if (!(stricmp(GetExtent(BitmapName),"BBM")))
     LoadType = 1;
-
 if (!(stricmp(GetExtent(BitmapName),"GIF")))
     LoadType = 2;
+if (!(stricmp(GetExtent(BitmapName),"PCX")))
+    LoadType = 3;
 
 
 if (LoadType)
     {
-    if (LoadType == 1)
-    bmp = AckReadiff(BitmapName);
-    else
-    bmp = AckReadgif(BitmapName);
+    switch (LoadType) {
+    case 1:
+        bmp = AckReadiff(BitmapName);
+        break;
+    case 2:
+        bmp = AckReadgif(BitmapName);
+        break;
+    case 3:
+        bmp = AckReadPCX(BitmapName);
+        break;
+    }
 
     if (bmp == NULL)
     {
