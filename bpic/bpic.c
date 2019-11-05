@@ -13,6 +13,29 @@
 
     unsigned    long    rTable[MAX_RBA+1];
 
+//=============================================================================
+// for dealing with paths
+//=============================================================================
+
+char dataPath[200] = "";
+char tempFilename[200] = "";
+
+void FindFilePaths(const char *dataFile) {
+    char *end;
+
+    if (dataFile) {
+        end = strrchr(dataFile, '\\');
+        if (end)
+            strncpy(dataPath, dataFile, ((end+1) - dataFile));
+    }
+}
+
+char* GetCombinedPath(const char *base, const char *file) {
+    strncpy(tempFilename, base, 200);
+    strncat(tempFilename, file, 200);
+    return tempFilename;
+}
+
 
 /****************************************************************************
 **                                     **
@@ -62,6 +85,8 @@ if (argc < 3)
     return(1);
     }
 
+FindFilePaths(argv[1]);
+
 xferbuf = malloc(64000);
 if (xferbuf == NULL)
     {
@@ -107,8 +132,8 @@ while (1)
     continue;
 
     printf("Processing....%s\n",dbuf);
-
-    InHandle = open(dbuf,O_RDWR|O_BINARY);
+    GetCombinedPath(dataPath, dbuf);
+    InHandle = open(tempFilename,O_RDWR|O_BINARY);
 
     if (InHandle < 1)
     {

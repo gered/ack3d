@@ -1,5 +1,8 @@
 target_config = debug
 
+test_dat_file = ..\example\assets\example.dat
+test_out_file = pics.dtf
+
 target_name = bpic
 
 object_files = bpic.obj
@@ -41,9 +44,9 @@ clean : .SYMBOLIC
 
 .NOCHECK
 run : $(target_name).exe
-    $(target_name).exe
+    $(target_name).exe $(test_dat_file) $(test_out_file)
 
 .NOCHECK
 debug : $(target_name).exe
-    wd /swap /trap=rsi $(target_name).exe
+    wd /swap /trap=rsi $(target_name).exe $(test_dat_file) $(test_out_file)
 
