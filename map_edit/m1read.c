@@ -15,6 +15,7 @@
 #include "ackeng.h"
 #include "m1.h"
 
+extern      UCHAR   colordat[];
 extern      UCHAR   *Bitmaps[];
 extern      UCHAR   *ObjBitmaps[];
 extern      UCHAR   ObjbmNum[];
@@ -36,6 +37,20 @@ if (e == NULL)
 e++;
 
 return(e);
+}
+
+short LoadPalette(char *paletteName) {
+    FILE *fp;
+
+    GetCombinedPath(assetsPath, paletteName);
+    fp = fopen(tempFilename, "rb");
+    if (fp == NULL)
+        return -1;
+
+    fread(colordat, 768, 1, fp);
+
+    fclose(fp);
+    return 0;
 }
 
 /****************************************************************************
@@ -275,6 +290,10 @@ while (1)
     if (!strnicmp(LineBuf,"PALFILE:",8))
     {
     strcpy(PalName,SkipSpaces(&LineBuf[8]));
+    if (LoadPalette(PalName)) {
+        printf("Error loading palette \"%s\".\n",PalName);
+        result = -1;
+    }
     continue;
     }
 
