@@ -877,7 +877,7 @@ for (row = 0; row < 9; row++)
         Draw2Dxline(x-5,y+5,mCode);
         if (mCode & WALL_TYPE_MULTI)
         DrawxLineMulti(x-5,y+5,(mCode ^ 15)-14);
-        if (mCode & (DOOR_TYPE_SLIDE+DOOR_TYPE_SPLIT))
+        if (mCode & (DOOR_TYPE_SECRET+DOOR_TYPE_SLIDE+DOOR_TYPE_SPLIT))
         DrawxLineMulti(x-5,y+5,255);
         }
 
@@ -888,7 +888,7 @@ for (row = 0; row < 9; row++)
         Draw2Dxline(x+15,y+5,mCode);
         if (mCode & WALL_TYPE_MULTI)
         DrawxLineMulti(x+15,y+5,(mCode ^ 15)-14);
-        if (mCode & (DOOR_TYPE_SLIDE+DOOR_TYPE_SPLIT))
+        if (mCode & (DOOR_TYPE_SECRET+DOOR_TYPE_SLIDE+DOOR_TYPE_SPLIT))
         DrawxLineMulti(x+15,y+5,255);
         }
 
@@ -899,7 +899,7 @@ for (row = 0; row < 9; row++)
         Draw2Dyline(x,y,mCode);
         if (mCode & WALL_TYPE_MULTI)
         DrawyLineMulti(x,y,(mCode ^ 15)-14);
-        if (mCode & (DOOR_TYPE_SLIDE+DOOR_TYPE_SPLIT))
+        if (mCode & (DOOR_TYPE_SECRET+DOOR_TYPE_SLIDE+DOOR_TYPE_SPLIT))
         DrawyLineMulti(x,y,255);
         }
 
@@ -910,7 +910,7 @@ for (row = 0; row < 9; row++)
         Draw2Dyline(x,y+17,mCode);
         if (mCode & WALL_TYPE_MULTI)
         DrawyLineMulti(x,y+17,(mCode ^ 15)-14);
-        if (mCode & (DOOR_TYPE_SLIDE+DOOR_TYPE_SPLIT))
+        if (mCode & (DOOR_TYPE_SECRET+DOOR_TYPE_SLIDE+DOOR_TYPE_SPLIT))
         DrawyLineMulti(x,y+17,255);
         }
 
