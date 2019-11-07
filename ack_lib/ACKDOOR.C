@@ -123,17 +123,17 @@ if (xSecretColumn)
                 if (xSecretColumn > 0)
                     {
                     xSecretColumn -= (BITMAP_WIDTH - 1);
-                    xGridGlobal[my] = DOOR_TYPE_SECRET + 1;
+                    xGridGlobal[my] = DOOR_TYPE_SECRET + aeGlobal->NonSecretCode;
                     xSecretmPos1 = my;
                     my--;
-                    xGridGlobal[my] = DOOR_TYPE_SECRET + 1;
+                    xGridGlobal[my] = DOOR_TYPE_SECRET + aeGlobal->NonSecretCode;
                     xSecretmPos = my;
                     }
                 else
                     {
                     xSecretColumn += (BITMAP_WIDTH - 1);
-                    xGridGlobal[my] = DOOR_TYPE_SECRET + 1;
-                    xGridGlobal[my + 1] = DOOR_TYPE_SECRET + 1;
+                    xGridGlobal[my] = DOOR_TYPE_SECRET + aeGlobal->NonSecretCode;
+                    xGridGlobal[my + 1] = DOOR_TYPE_SECRET + aeGlobal->NonSecretCode;
                     xSecretmPos = my;
                     xSecretmPos = my + 1;
                     }
@@ -189,17 +189,17 @@ if (ySecretColumn)
                 if (ySecretColumn > 0)
                     {
                     ySecretColumn -= (BITMAP_WIDTH - 1);
-                    yGridGlobal[my] = DOOR_TYPE_SECRET + 1;
+                    yGridGlobal[my] = DOOR_TYPE_SECRET + aeGlobal->NonSecretCode;
                     ySecretmPos1 = my;
                     my -= GRID_WIDTH;
-                    yGridGlobal[my] = DOOR_TYPE_SECRET + 1;
+                    yGridGlobal[my] = DOOR_TYPE_SECRET + aeGlobal->NonSecretCode;
                     ySecretmPos = my;
                     }
                 else
                     {
                     ySecretColumn += (BITMAP_WIDTH - 1);
-                    yGridGlobal[my] = DOOR_TYPE_SECRET + 1;
-                    yGridGlobal[my + GRID_WIDTH] = DOOR_TYPE_SECRET + 1;
+                    yGridGlobal[my] = DOOR_TYPE_SECRET + aeGlobal->NonSecretCode;
+                    yGridGlobal[my + GRID_WIDTH] = DOOR_TYPE_SECRET + aeGlobal->NonSecretCode;
                     ySecretmPos = my;
                     ySecretmPos = my + GRID_WIDTH;
                     }
