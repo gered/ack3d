@@ -55,7 +55,7 @@ unsigned char *AckReadPCX(char *filename)
 {
     long i;
     int mode=NORMAL,nbytes;
-    char abyte,*p;
+    UCHAR abyte,*p;
     FILE *f;
     PcxFile *pcx;
 
@@ -105,14 +105,14 @@ if (pcx->bitmap == NULL)
     ErrorCode = ERR_NOMEMORY;
     return(NULL);
     }
-p=(char*)&pcx->bitmap[4];
+p=&pcx->bitmap[4];
 
 for (i=0;i<pcx->imagebytes;i++)
     {
     if(mode == NORMAL)
     {
     abyte=fgetc(f);
-    if ((unsigned char)abyte > 0xbf)
+    if (abyte > 0xbf)
         {
         nbytes=abyte & 0x3f;
         abyte=fgetc(f);
@@ -127,14 +127,14 @@ for (i=0;i<pcx->imagebytes;i++)
 
 fseek(f,-768L,SEEK_END);      // get palette from pcx file
 fread(colordat,768,1,f);
-p=(char*)colordat;
+p=colordat;
 for (i=0;i<768;i++)        // bit shift palette
     *p++=*p >>2;
 
 if (!rsHandle)
     fclose(f);
 
-p = (char*)pcx->bitmap;
+p = pcx->bitmap;
 (*(short *)p) = pcx->width;
 p += sizeof(short);
 (*(short *)p) = pcx->height;
