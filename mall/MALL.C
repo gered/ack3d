@@ -240,11 +240,11 @@ void ReadConfigFile(void)
     char    *s;
     char    rBuf[128];
 
-ModSound = 0;
+ModSound = 1;
 ModPort = 0x220;
 ModIRQ = 5;
 ModDMA = 1;
-strcpy(ModName,"MALL.MOD");
+strcpy(ModName,"WALK.MOD");
 
 fp = fopen("ack3d.cfg","rt");
 if (fp == NULL)
