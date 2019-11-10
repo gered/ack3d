@@ -274,6 +274,9 @@ if (i == 1 && xGridGlobal[xMapPosn] & DOOR_TYPE_SECRET)
         // Get grid map position that corresponds with the x wall
         // position of where the door starts
         xSecretmPos = xMapPosn;
+
+        aeGlobal->NonSecretCode = xGridGlobal[xMapPosn] & 0xff;
+
         if (iLastX > xPlayer)   // Door is to the right of player
             {
             xSecretmPos1 = xMapPosn + 1;
@@ -301,6 +304,9 @@ if (i == 2 && yGridGlobal[yMapPosn] & DOOR_TYPE_SECRET)
             return (DoorCode | POV_DOORLOCKED);
 
         ySecretmPos = yMapPosn;
+
+        aeGlobal->NonSecretCode = yGridGlobal[yMapPosn] & 0xff;
+
         if (iLastY > yPlayer)
             {
             LastMapPosn = yMapPosn;
