@@ -1,14 +1,23 @@
-// Function to process and ACK resource file
+/*
+ * ACK-3D Resource File Processing
+ * -------------------------------
+ *
+ * This source file is basically a copy of the ACKINFO.CPP file from the
+ * Windows example project discussed in chapter 14 of the book.
+ *
+ * There are some slight modifications that I've made though:
+ * - A global ACKENG structure is not assumed. You must pass one in to
+ *   ProcessInfoFile()
+ * - Functions for processing a scrolling backdrop have been copied from the
+ *   FDEMO/MALL demo projects and are included here since they are useful.
+ * - A function for loading a palette is included.
+ */
 
 #include <stdio.h>
 #include <io.h>
 #include "ack3d.h"
 #include "ackeng.h"
 #include "ackext.h"
-
-// The application MUST have a global variable called ae for use by this
-// routine.
-extern ACKENG *ae;
 
 // Globals
 int LineNumber;
@@ -43,17 +52,57 @@ void ProcessBackDrop(UCHAR *bPtr) {
     }
 }
 
+// Loads a bitmap (wall, object, screen/backdrop, etc) and returns a
+// pointer to the bitmap data. The first 4-bytes of the returned pointer
+// are the width and height (2 shorts) followed by the raw pixel data.
+// The filename passed can be either a string specifying a file or an
+// integer specifying a resource from the currently open resource file.
+UCHAR* LoadBitmap(UCHAR bitmapType, char *fName) {
+    UCHAR *bPtr = NULL;
+
+    switch (bitmapType) {
+    case BMLOAD_BBM:
+        bPtr = AckReadiff(fName);
+        break;
+    case BMLOAD_GIF:
+        bPtr = AckReadgif(fName);
+        break;
+    case BMLOAD_PCX:
+        bPtr = AckReadPCX(fName);
+        break;
+    }
+
+    return bPtr;
+}
+
+// Loads a 256 color palette and returns a pointer to the raw color data.
+UCHAR* LoadPalette(int resource) {
+    UCHAR *ptr = NULL;
+    FILE *fp;
+
+    fp = fdopen(rsHandle,"rb");
+    if (!fp)
+        return NULL;
+
+    fseek(fp, rbaTable[(int)resource], SEEK_SET);
+
+    ptr = (UCHAR*)AckMalloc(768);
+    fread(ptr, 768, 1, fp);
+
+    return ptr;
+}
+
 
 // Loads a background image and processes the image into the
 // separate slices for use at display time. Currently a background image
 // can be 640 columns wide. This number can be made dynamic if needbe and would
 // need to be changed in the routine below and in the DrawBackground routine
 // in the ACK engine.
-int LoadBackDrop(void) {
+int LoadBackDrop(ACKENG *ae) {
     UCHAR *bPtr;
 
     if (ResScrollBack) {
-        bPtr = AckReadiff((char*)ResScrollBack);
+        bPtr = LoadBitmap(ae->bmLoadType, (char*)ResScrollBack);
         if (bPtr == NULL)
             return 8;
 
@@ -63,6 +112,7 @@ int LoadBackDrop(void) {
 
     return 0;
 }
+
 
 // Reads a text line from the resource file
 int ReadLine(void) {
@@ -110,7 +160,7 @@ char *GetNextParm(char *s) {
 }
 
 // Loads a wall bitmap specified in info file
-int LoadWall(void) {
+int LoadWall(ACKENG *ae) {
     int wnum, rnum, result;
     long pos;
     char *lb;
@@ -133,7 +183,7 @@ int LoadWall(void) {
 }
 
 // Loads an object bitmap specified in info file
-int LoadObject(void) {
+int LoadObject(ACKENG *ae) {
     int onum, rnum, result;
     long pos;
     char *lb;
@@ -164,7 +214,7 @@ char *SkipSpaces(char *s) {
 }
 
 // Creates and object of the desired style
-int CreateObject(void) {
+int CreateObject(ACKENG *ae) {
     short onum, vnum;
     short result, oType;
     short NumViews, bmPerView;
@@ -289,7 +339,7 @@ int CreateObject(void) {
 }
 
 // Reads the ASCII info file and processes the commands.
-int ProcessInfoFile(void) {
+int ProcessInfoFile(ACKENG *ae) {
     int result;
     int mode;
     long pos;
@@ -323,7 +373,7 @@ int ProcessInfoFile(void) {
             if (!strnicmp(LineBuffer, "ENDBITMAPS:", 11))
                 mode = 4;
             else
-                result = LoadWall();
+                result = LoadWall(ae);
             break;
 
         case 2:     // Object bitmaps
@@ -335,14 +385,14 @@ int ProcessInfoFile(void) {
             if (!strnicmp(LineBuffer, "ENDBITMAPS:", 11))
                 mode = 5;
             else
-                result = LoadObject();
+                result = LoadObject(ae);
             break;
 
         case 3:     // Create Object
             if (!strnicmp(LineBuffer, "ENDDESC:", 8))
                 mode = 5;
             else
-                result = CreateObject();
+                result = CreateObject(ae);
             break;
 
         case 4:     // Walls topic

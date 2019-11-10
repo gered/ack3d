@@ -24,6 +24,7 @@
 #include "ack3d.h"
 #include "ackeng.h"
 #include "ackext.h"
+#include "assets.h"
 
 #define KEY_RIGHT     77
 #define KEY_UP        72
@@ -33,22 +34,54 @@
 #define KEY_ESCAPE    1
 
 #define TURN_SPEED       5
-#define TURN_SPEED_DECAY 3
-#define MOVE_SPEED       5
-#define MOVE_SPEED_DECAY 3
-#define BASE_MOVE_AMOUNT 8
-#define BASE_TURN_AMOUNT INT_ANGLE_4
+#define TURN_SPEED_DECAY 2
+#define MOVE_SPEED       4
+#define MOVE_SPEED_DECAY 1
+#define BASE_MOVE_AMOUNT 5
+#define BASE_TURN_AMOUNT INT_ANGLE_2
 
 // ACK3D bitmap loading routines, such as AckReadiff(), will automatically
 // populate (and re-populate) this array with palette found in that image
-// file. still, this must be manually set with AckSetPalette()
+// file. still, this (or any other palette color data) must be manually set
+// with AckSetPalette()
 extern unsigned char colordat[];
 
-int ProcessInfoFile(void);
+// These are the ranges used for distance shading. Will need to be modified
+// for the new color palette used.
+// For ACK-3D's distance-based light shading to look best, your palette really
+// needs to be designed with this in mind (and your bitmaps too). Many of the
+// ACK-3D demo assets don't look so good with it.
+ColorRange ranges[64] = {
+    1,15,
+    16,16,
+    32,16,
+    48,16,
+    64,16,
+    80,16,
+    96,8,
+    104,8,
+    112,8,
+    120,8,
+    136,8,
+    144,8,
+    152,8,
+    160,8,
+    168,8,
+    176,8,
+    184,8,
+    192,16,
+    208,16,
+    224,16,
+    240,15,
+    0,0
+};
 
 // this is the main ACK3D engine structure. holds the map, bitmaps, objects,
 // and also the current state of the game world (as far as ACK3D is concerned)
 ACKENG *ae;
+
+UCHAR *uiFrame = NULL;
+UCHAR *palette = NULL;
 
 // this game loop made semi-overcomplicated by rudimentary turn/movement
 // acceleration logic
@@ -101,6 +134,7 @@ void GameLoop(void) {
         }
 
         if (AckKeys[KEY_SPACE]) {
+            AckKeys[KEY_SPACE] = 0;
             AckCheckDoorOpen(ae->xPlayer, ae->yPlayer, ae->PlayerAngle);
         }
 
@@ -141,14 +175,10 @@ int main(int argc, char *argv[]) {
     // ack3d renderer viewport size. on 486 and lower-spec machines, you
     // probably do not want this to be at full 320x200 for performance reasons
     // even reducing 320x200 by 20% makes a nice, noticeable difference!
-    ae->WinStartX = 0;
-    ae->WinStartY = 0;
-    ae->WinEndX = 319;
-    ae->WinEndY = 199;
-
-    // various other flags that can be set too
-    ae->LightFlag = SHADING_ON;
-    ae->DoorSpeed = 3;
+    ae->WinStartX = 16;
+    ae->WinStartY = 12;
+    ae->WinEndX = 303;
+    ae->WinEndY = 158;
 
     printf("Initializing ACK-3D\n");
 
@@ -184,18 +214,47 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    result = ProcessInfoFile();
+    result = ProcessInfoFile(ae);
     if (result) {
-        printf("Error while processing. Result code %d\n", result);
+        printf("Error while processing pics.dtf\n");
+        printf("Result code %d\nLine number: %d\nLine: %s\n", result, LineNumber, LineBuffer);
         return 1;
     }
 
     printf("Processing scrolling backdrop\n");
     // processes any (optional) scrolling backdrop that was loaded so it is
     // ready to be rendered
-    LoadBackDrop();
+    LoadBackDrop(ae);
 
+    // if the resource file specified a screen/ui bitmap, then load it
+    if (ResScreenBack) {
+        uiFrame = LoadBitmap(ae->bmLoadType, (char*)ResScreenBack);
+    }
+
+    // if the resource file specified a palette, then load it
+    if (PalResource) {
+        palette = LoadPalette(PalResource);
+    }
+
+    // we won't be loading anything else from the resource file now, so we
+    // can close it
     AckCloseResource();
+
+    // various other flags that can be set too.
+    // many of these can be set by the .INF file found in pics.dtf, so
+    // setting any of the ACKENG properties here would override the .INF
+    // settings.
+    ae->xPlayer = 32 *GRID_SIZE+(GRID_SIZE/2);  // x = middle of grid 32
+    ae->yPlayer = 32 *GRID_SIZE+(GRID_SIZE/2);  // y = middle of grid 32
+    ae->PlayerAngle = 0;
+
+    ae->LightFlag = SHADING_OFF;
+    ae->DoorSpeed = 3;
+
+    // Set palette for shading if needed
+    if (ae->LightFlag) {
+        AckSetupPalRanges(ae, ranges);
+    }
 
     printf("Finished initializing\n");
 
@@ -212,9 +271,31 @@ int main(int argc, char *argv[]) {
 
     AckSetupKeyboard();
     AckSetVGAmode();
-    AckSetPalette(colordat);
+
+    if (palette) {
+        // we loaded an explicitly specified palette from the resource file,
+        // so we'll set that one
+        AckSetPalette(palette);
+    } else {
+        // default to whatever the palette was from the last loaded bitmap
+        AckSetPalette(colordat);
+    }
+
+    // draw the full screen/ui frame. ACK-3D won't overwrite this because
+    // our WinStart/WinEnd was set to only draw to the viewport box that our
+    // screen/ui frame bitmap should have (so we only need to render this
+    // bitmap once)
+    if (uiFrame) {
+        memcpy((void*)0xA0000, uiFrame+4, 64000);
+    }
 
     GameLoop();
+
+    // anything allocated with AckMalloc can only be free'd with AckFree!
+    if (uiFrame)
+        AckFree(uiFrame);
+    if (palette)
+        AckFree(palette);
 
     AckWrapUp(ae);
     AckSetTextMode();

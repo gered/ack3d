@@ -7,7 +7,7 @@ acklib_lib = ..\ack_lib\acklib.lib
 
 object_files = &
     example.obj &
-    ackinfo.obj
+    assets.obj
 
 cc_flags_debug = /d2 /zp1 /4r /fp3 /j
 cc_flags_release = /d1+ /zp1 /4r /fp3 /onetx /j
